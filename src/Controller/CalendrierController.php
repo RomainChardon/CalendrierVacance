@@ -80,8 +80,6 @@ class CalendrierController extends AbstractController
             'moisUtiliser'=>$this->moisUtiliser,
             'moisUtiliserFormatLettre'=>$moisUtiliserFormatLettre,
             'anneeUtiliser'=>$this->anneeUtiliser,
-            // 'moisAfficher' => $this->moisAfficher,
-            // 'anneeAfficher' => $this->anneeAfficher,
 
             // Groupe d'utilisateur
             'tousLesGroupes' => $repoGroupe->findAll()
@@ -117,6 +115,17 @@ class CalendrierController extends AbstractController
             } else if ($this->traductionJour($jourAfficher) == "Dimanche") {
                 $siDimanche = true;
             }
+
+            $siFerier = false;
+            foreach ($this->createListeFerier($this->anneeUtiliser) as $jourFerier) {
+            
+                if ($jourFerier->format('d/m/Y') == $jourUtiliser->format('d/m/Y')) {
+                    $siFerier = true;
+                } else {
+                    $siFerier = false;
+                }
+
+            }
             
             $listDetailUser = [];
             $listeGroupe = $repoGroupe->findAll();
@@ -147,6 +156,7 @@ class CalendrierController extends AbstractController
                             'enVacances' => $enVacances,
                         );
                     }
+                    
 
                     $listDetailUser[$nomUser.'-'.$prenomUser] = array(
                         'nomUser' => $nomUser,
@@ -167,17 +177,42 @@ class CalendrierController extends AbstractController
                                 'siAujourdhui' => $siAujourdhui,
                                 'siSamedi' => $siSamedi,
                                 'siDimanche' => $siDimanche,
+                                'siFerier' => $siFerier,
                                 'listDetail' => $listDetailUser,
                             );
 
             $listDays[$numJours] = $listDaysLigne;
             
         }
+        dump($listDays);
         return $listDays;
     }
 
 
     
+    /**
+     * createListeFerier
+     *
+     * @return array
+     */
+    private function createListeFerier($annee): array
+    {
+        $listeFerier = array(
+            new DateTime('1/1/'.$annee), #jour de l'an
+            new DateTime('4/1/'.$annee), #fête du travail
+            new DateTime('5/8/'.$annee), #1945
+            new DateTime('7/14/'.$annee), #fête national
+            new DateTime('6/15/'.$annee), #Ascension
+            new DateTime('11/1/'.$annee), #Toussaint
+            new DateTime('11/11/'.$annee), #Armistice
+            new DateTime('12/25/'.$annee), #Noel
+        );
+
+        return $listeFerier;
+    }
+
+
+
     /**
      * createListeGenererMois
      *
