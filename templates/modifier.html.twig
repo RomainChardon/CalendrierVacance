@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier{% endblock %}
+
+{% block body %}
+<div class="conteneur">
+    <form action="{{ path('modifier_vacance', {'id':vacanceID.id}) }}" method="POST">
+        <div class="input-group flex-nowrap w-25 p-1.5">
+        <label for="date_debut" class="input-group-text" id="addon-wrapping">date début :</label>
+        <input type="date" name="date_debut" id="date_debut" class="form-control" aria-label="Username" aria-describedby="addon-wrapping" placeholder="{{ vacanceID.dateDebut|date("d/m/Y") }}">
+        </div>
+        <br>
+        <div class="input-group flex-nowrap w-25 p-1.5">
+        <label for="date_fin" class="input-group-text" id="addon-wrapping">date fin :</label>
+        <input type="date" name="date_fin" id="date_fin" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        </div>
+        <br>
+        <input type="submit" value="envoi" class="btn btn-outline-info">
+    </form>
+</div>
+
+{% endblock %}

@@ -1,0 +1,55 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UtilisateurController!{% endblock %}
+
+{% block body %}
+<div class="conteneur">
+
+<form action="{{ path('create_utilisateur') }}" method="POST">
+    <select name="groupe" class="form-select w-25 p-1.5" aria-label="Default select example" id="user">
+    {% for unGroupe in tousLesGroupes %}
+        <option value="{{ unGroupe.id }}">
+            {{ unGroupe.nomGroupe }}
+        </option>
+    {% endfor %}
+    </select>
+    <br>
+    <div class="input-group flex-nowrap w-25 p-1.5"> 
+    <label for="nom" class="input-group-text" id="addon-wrapping">Nom :</label>
+    <input type="text" name="nom" id="nom" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+    </div>
+    <br>
+    <div class="input-group flex-nowrap w-25 p-1.5"> 
+    <label for="nom" class="input-group-text" id="addon-wrapping">Prénom :</label>
+    <input type="text" name="prenom" id="prenom" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+    </div>
+    <br>
+    <input type="submit" value="envoi" class="btn btn-outline-info">
+</form>
+    <br>
+<table class="table table-striped table-hover w-50">
+        <tr>
+            <th>UserID</th>
+            <th>Nom</th>
+            <th>Prenom</th>
+            <th>Username</th>
+            <th>Groupe</th>
+            <th>Supprimer</th>
+            <th>Modifier</th>
+        </tr>
+    {% for unUtilisateur in tousLesUtilisateurs %}
+        <tr>
+            <td>{{ unUtilisateur.id }}</td>
+            <td>{{ unUtilisateur.nom }}</td>
+            <td>{{ unUtilisateur.prenom }}</td>
+            <td>{{ unUtilisateur.username }}</td>
+            <td>{{ unUtilisateur.groupe.nomGroupe }}</td>
+            
+            <td><form action="{{ path('remove_user',{'id':unUtilisateur.id}) }}" method="POST"><button type="submit">supprimer</button></form></td>
+            <td><form action="{{ path('modif_utilisateur',{'id':unUtilisateur.id}) }}" method="POST"><button type="submit">modifier</button></form></td>
+        </tr>
+    {% endfor %}
+</table>
+    
+</div>
+{% endblock %}

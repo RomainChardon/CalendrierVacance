@@ -1,0 +1,26 @@
+{% extends "base.html.twig" %}
+
+{% block title %}login{% endblock %}
+
+{% block body %}
+    <h1> Home page </h1>
+
+    {% if app.user %}
+        <a href="{{ path('app_logout') }}"> Logout </a>
+    {% else %}
+        <form novalidate method='POST'>
+            <div>
+                <label for="username">Username :</label><br>
+                <input type="text" name="username" id="username" required autofocus>
+            </div>
+            <div>
+                <label for="username">Password :</label><br>
+                <input type="password" name="password" id="password" required>
+            </div>
+
+            <input type="hidden" name="csrf_token" value="{{ csrf_token('login_form') }}">
+
+            <input type="submit" value="connexion">
+        </form>
+    {% endif %}
+{% endblock %}

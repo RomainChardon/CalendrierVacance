@@ -1,0 +1,64 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello CalendrierController!{% endblock %}
+
+{% block body %}
+<div class="calendrierConteneur">
+    <div class="head">
+        <form action="{{ path('calendrier') }}" method="get">
+            <select name="moisSelectionner" id="moisSelectionner" class="btn btn-outline-dark">
+                {% for mois in listeMois %}
+                    <option value="{{ loop.index }}" {% if loop.index == moisUtiliser %} selected {% endif %}>{{ mois }}</option>
+                {% endfor %}
+            </select>
+            <select name="anneeSelectionner" id="anneeSelectionner" class="btn btn-outline-dark">
+                {% for annee in listeAnnee %}
+                    <option value="{{annee}}" {% if annee == anneeUtiliser %} selected {% endif %}>{{annee}}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="valide" name="valide" class="btn btn-outline-dark">
+        </form>
+        <div class="formBtnMenu">
+        <form action="{{ path('index') }}" method="POST"><button type="submit" class="btn btn-outline-dark">vacances</button></form>
+             <form action="{{ path('utilisateur') }}" method="POST"><button type="submit" class="btn btn-outline-dark">utilisateur</button></form>
+            <form action="{{ path('groupe') }}" method="POST"><button type="submit" class="btn btn-outline-dark">groupe</button></form>
+        </div>
+
+        <div class="formBtnLogout">
+            <a href="{{ path('app_logout') }}"> Logout </a>
+        </div>
+        
+        
+    </div>
+
+
+    <table class="table table-hover w-50">
+        <tr>
+            <th>{{ moisUtiliserFormatLettre }} {{ anneeUtiliser }}</th> <th></th>
+            {% for unGroupe in tousLesGroupes %}
+                {% for user in unGroupe.getUsers %}
+                    <th class="groupeNom case" style="background-color:{{ unGroupe.couleur }}">{{ user.nom }} {{ user.prenom}}</th>
+                {% endfor %}
+            {% endfor %}
+        </tr>
+    
+    {% for days in listeDays %}
+            <tr {% if ( days.siAujourdhui ) %} style="background-color: #e4ff00" {% endif %} 
+                {% if (( days.siSamedi ) or ( days.siDimanche )) %} style="background-color: #fa9a3455" {% endif %}>
+                <td>{{days.jourNumero}}</td> <td>{{ days.jourLettre }}</td>
+                {% for detail in days.listDetail %}
+                    <td class="case" style="background-color: {{ detail.couleurGroupe }}30; text-align: center;">
+                        {% for vacance in detail %}
+                            {% for i in vacance %}
+                                {% if i.enVacances %}
+                                    X
+                                {% endif %}
+                            {% endfor %}
+                        {% endfor %}             
+                    </td>
+                {% endfor %}  
+            </tr>
+    {% endfor %}
+    </table>
+</div>
+{% endblock %}

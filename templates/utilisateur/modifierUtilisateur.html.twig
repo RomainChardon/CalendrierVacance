@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UtilisateurController!{% endblock %}
+
+{% block body %}
+<div class="conteneur">
+    <form action="{{ path('modifier_utilisateur', {'id':utilisateurID.id}) }}" method="POST">
+        <select name="groupe" id="user" class="form-select w-25 p-1.5" aria-label="Default select example" id="user">
+        {% for unGroupe in tousLesGroupes %}
+            <option value="{{ unGroupe.id }}">
+                {{ unGroupe.nomGroupe }}
+            </option>
+        {% endfor %}
+        </select>
+        <br>
+        <div class="input-group flex-nowrap w-25 p-1.5">
+        <label for="nom" class="input-group-text" id="addon-wrapping">nom :</label>
+        <input type="text" name="nom" id="nom" placeholder="{{ utilisateurID.nom }}" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        </div>
+        <br>
+        <div class="input-group flex-nowrap w-25 p-1.5">
+        <label for="nom" class="input-group-text" id="addon-wrapping">prenom :</label>
+        <input type="text" name="prenom" id="prenom" placeholder="{{ utilisateurID.prenom }}" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        </div>
+        <br>
+        <input type="submit" value="envoi" class="btn btn-outline-info">
+    </form>
+</div>
+
+{% endblock %}

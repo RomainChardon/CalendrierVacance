@@ -1,0 +1,44 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello GroupeController!{% endblock %}
+
+{% block body %}
+
+ 
+
+<div class="conteneur">
+    <form action="{{ path('create_groupe') }}" method="POST">
+        <div class="input-group flex-nowrap w-25 p-1.5">
+        <label for="nom" class="input-group-text" id="addon-wrapping">nom du groupe:</label>
+        <input type="text" name="nom" id="nom" placeholder="" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        </div>
+        <br>
+        <div class="input-group flex-nowrap w-25 p-1.5">
+        <label for="couleur" class="input-group-text" id="addon-wrapping">choisir une couleur:</label>
+        <input type="color" name="couleur" id="couleur" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        </div>
+        <br>
+        <input type="submit" value="envoi" class="btn btn-outline-info">
+    </form>
+    <br>
+
+    <table class="table table-striped table-hover w-50">
+        <tr>
+            <th>groupID</th>
+            <th>Nom du groupe</th>
+            <th>Couleur</th>
+            <th>Supprimer</th>
+        </tr>
+
+        {% for unGroupe in tousLesGroupes %} 
+            <tr>
+                <td>{{ unGroupe.id }}</td>
+                <td>{{ unGroupe.nomGroupe }}</td>
+                <td>{{ unGroupe.couleur }}</td>
+                <td> <form action="{{ path('remove_groupe',{'id':unGroupe.id}) }}" method="POST"><button type="submit">supprimer</button></form></td>
+            </tr>
+        {% endfor %}
+    </table>
+    
+</div>
+{% endblock %}
