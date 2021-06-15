@@ -45,6 +45,13 @@ class LoginFormAuthenticator extends AbstractAuthenticator
     public function authenticate(Request $request): PassportInterface
     {
         $user = $this->userRepository->findOneByUsername($request->request->get('username'));
+
+        # Save de l'username si erreur
+        $request->getSession()->set(
+            'app_login_form_old_username',
+            $request->request->get('username')
+        );
+
         if (!$user) {
             throw new CustomUserMessageAuthenticationException('Username non valide');
         }
@@ -66,7 +73,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
-        return new RedirectResponse('calendrier');
+        return new RedirectResponse('vacances/calendrier');
     }
     
     /**
@@ -77,7 +84,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator
      * @return Response
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
-    {    
+    {   
         return new RedirectResponse('/');
     }
 }

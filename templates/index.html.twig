@@ -7,10 +7,10 @@
     <form action="{{ path('create_vacances') }}" method="POST">
         <select name="user" id="user" class="form-select w-25 p-1.5" aria-label="Default select example">
             {% for unUtilisateur in tousLesUtilisateurs %}
-            <option value="{{ unUtilisateur.id }}">
+            <opti on value="{{ unUtilisateur.id }}">
                 {{ unUtilisateur.nom }}
                 {{ unUtilisateur.prenom }}
-            </option>
+            </opti>
             {% endfor %}
         </select>
         <br>

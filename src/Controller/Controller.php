@@ -18,6 +18,7 @@ use Doctrine\ORM\Mapping\Entity;
 use phpDocumentor\Reflection\PseudoTypes\False_;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 
+#[Route('/vacances')]
 class Controller extends AbstractController
 {
 

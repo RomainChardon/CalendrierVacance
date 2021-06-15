@@ -11,12 +11,12 @@ use App\Repository\VacancesRepository;
 use DateInterval;
 use DatePeriod;
 use DateTime;
-use Doctrine\DBAL\Schema\Index;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
+#[Route('/vacances')]
 class CalendrierController extends AbstractController
 {
     private string $moisActuel;
@@ -37,8 +37,6 @@ class CalendrierController extends AbstractController
     #[Route('/calendrier', name: 'calendrier')]
     public function aff_mois(Request $request,GroupeRepository $repoGroupe, VacancesRepository $repoVacances): Response
     {  
-        
-
         // Appele de la modification de l'annee et le mois
         if ($request->query->get('moisSelectionner')) {
             $this->afficherMois($request);
@@ -170,16 +168,16 @@ class CalendrierController extends AbstractController
 
             
             $listDaysLigne = array(
-                                'jourNumero' => $numJours,
-                                'jourLettre' => $this->traductionJour($jourAfficher),
-                                'jourUtiliser' => $jourUtiliser,
-                                'jourActuel' => $jourAujourdhui,
-                                'siAujourdhui' => $siAujourdhui,
-                                'siSamedi' => $siSamedi,
-                                'siDimanche' => $siDimanche,
-                                'siFerier' => $siFerier,
-                                'listDetail' => $listDetailUser,
-                            );
+                'jourNumero' => $numJours,
+                'jourLettre' => $this->traductionJour($jourAfficher),
+                'jourUtiliser' => $jourUtiliser,
+                'jourActuel' => $jourAujourdhui,
+                'siAujourdhui' => $siAujourdhui,
+                'siSamedi' => $siSamedi,
+                'siDimanche' => $siDimanche,
+                'siFerier' => $siFerier,
+                'listDetail' => $listDetailUser,
+            );
 
             $listDays[$numJours] = $listDaysLigne;
             

@@ -12,7 +12,10 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Http\Authenticator\Passport\UserPassportInterface;
 
+#[Route('/vacances')]
 class UtilisateurController extends AbstractController
 {
     #[Route('/utilisateur', name: 'utilisateur')]
@@ -26,7 +29,7 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/create_utilisateur', name: 'create_utilisateur')]
-    public function create_utilisateur(Request $request, GroupeRepository $repoGroupe): Response
+    public function create_utilisateur(Request $request, GroupeRepository $repoGroupe, UserPasswordEncoderInterface $userPass): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
 
@@ -34,10 +37,12 @@ class UtilisateurController extends AbstractController
 
         $utilisateur = new User();
 
+        $passHash = ($userPass->encodePassword($utilisateur, $request->request->get('password')));
+
         $utilisateur->setNom($request->request->get('nom'));
         $utilisateur->setPrenom($request->request->get('prenom'));
         $utilisateur->setUsername($request->request->get('nom') .'.'. $request->request->get('prenom'));
-        $utilisateur->setPassword('$argon2id$v=19$m=65536,t=4,p=1$eQJQnTvHBBb5RLWfZ3r+YQ$rm5V07vG/dzhrLDm7Xii3J4m+Ln5xPegPqY1XXG55C4');
+        $utilisateur->setPassword($passHash);
         $utilisateur->setGroupe($groupe);
         
         $entityManager->persist($utilisateur);
@@ -48,7 +53,7 @@ class UtilisateurController extends AbstractController
             'Utilisateur ajouté !!'
         );
 
-        return $this->redirectToRoute("home");
+        return $this->redirectToRoute("utilisateur");
     }
 
     #[Route('/supprimerUtilisateur/{id}/delete', name:'remove_user')]
