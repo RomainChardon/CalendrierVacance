@@ -15,7 +15,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Security\Http\Authenticator\Passport\UserPassportInterface;
 
-#[Route('/vacances')]
+#[Route('/vacances/gestionUtilisateur')]
 class UtilisateurController extends AbstractController
 {
     #[Route('/utilisateur', name: 'utilisateur')]
