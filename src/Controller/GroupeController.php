@@ -28,6 +28,11 @@ class GroupeController extends AbstractController
         $groupe = new Groupe();
         $groupe ->setNomGroupe($request->request->get('nom'));
         $groupe ->setCouleur($request->request->get('couleur'));
+        if ( $request->request->get('admin') == 'true') {
+            $groupe ->setAdmin(true);
+        } else {
+            $groupe ->setAdmin(false);
+        }
         $entityManager->persist($groupe);
         $entityManager->flush();
 

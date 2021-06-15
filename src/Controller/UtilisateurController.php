@@ -44,6 +44,10 @@ class UtilisateurController extends AbstractController
         $utilisateur->setUsername($request->request->get('nom') .'.'. $request->request->get('prenom'));
         $utilisateur->setPassword($passHash);
         $utilisateur->setGroupe($groupe);
+        if ($groupe->getAdmin() == "true" ) {
+            $role[]= 'ROLE_ADMIN';
+            $utilisateur->setRoles($role);
+        }
         
         $entityManager->persist($utilisateur);
         $entityManager->flush();

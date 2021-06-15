@@ -18,6 +18,11 @@
         <input type="color" name="couleur" id="couleur" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
         </div>
         <br>
+        <div>
+        <label for="admin" >admin :</label>
+        <input type="checkbox" name="admin" id="admin" value="true">
+        </div>
+        <br>
         <input type="submit" value="envoi" class="btn btn-outline-info">
     </form>
     <br>
@@ -26,6 +31,7 @@
         <tr>
             <th>groupID</th>
             <th>Nom du groupe</th>
+            <th>Groupe admin ?</th>
             <th>Couleur</th>
             <th>Supprimer</th>
         </tr>
@@ -34,6 +40,7 @@
             <tr>
                 <td>{{ unGroupe.id }}</td>
                 <td>{{ unGroupe.nomGroupe }}</td>
+                <td>{{ unGroupe.admin }}</td>
                 <td>{{ unGroupe.couleur }}</td>
                 <td> <form action="{{ path('remove_groupe',{'id':unGroupe.id}) }}" method="POST"><button type="submit">supprimer</button></form></td>
             </tr>

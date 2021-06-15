@@ -1,8 +1,11 @@
 {% extends 'base.html.twig' %}
+ 
+    
 
 {% block title %}Hello CalendrierController!{% endblock %}
 
 {% block body %}
+
 <div class="calendrierConteneur">
     <div class="head">
         <form action="{{ path('calendrier') }}" method="get">
@@ -20,8 +23,10 @@
         </form>
         <div class="formBtnMenu">
         <form action="{{ path('index') }}" method="POST"><button type="submit" class="btn btn-outline-dark">vacances</button></form>
-             <form action="{{ path('utilisateur') }}" method="POST"><button type="submit" class="btn btn-outline-dark">utilisateur</button></form>
+        {% if is_granted('ROLE_ADMIN') %}
             <form action="{{ path('groupe') }}" method="POST"><button type="submit" class="btn btn-outline-dark">groupe</button></form>
+            <form action="{{ path('utilisateur') }}" method="POST"><button type="submit" class="btn btn-outline-dark">utilisateur</button></form>
+        {% endif %}
         </div>
 
         <div class="formBtnLogout">

@@ -35,6 +35,11 @@ class Groupe
      */
     private $users;
 
+    /**
+     * @ORM\Column(type="boolean")
+     */
+    private $admin;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -97,6 +102,18 @@ class Groupe
                 $user->setGroupe(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getAdmin(): ?bool
+    {
+        return $this->admin;
+    }
+
+    public function setAdmin(bool $admin): self
+    {
+        $this->admin = $admin;
 
         return $this;
     }
