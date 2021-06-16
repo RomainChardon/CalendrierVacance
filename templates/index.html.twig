@@ -3,20 +3,20 @@
 {% block title %}Hello Controller!{% endblock %}
 
 {% block body %}
-<div class="conteneur">
+<div class="">
     <form action="{{ path('create_vacances') }}" method="POST">
-        <select name="user" id="user" class="form-select w-25 p-1.5" aria-label="Default select example">
+        <select name="user" id="user" class="">
             {% for unUtilisateur in tousLesUtilisateurs %}
-            <opti on value="{{ unUtilisateur.id }}">
+            <option value="{{ unUtilisateur.id }}">
                 {{ unUtilisateur.nom }}
                 {{ unUtilisateur.prenom }}
-            </opti>
+            </option>
             {% endfor %}
         </select>
         <br>
-        <div class="input-group flex-nowrap w-25 p-1.5"> 
-        <label for="date_debut" class="input-group-text" id="addon-wrapping">date début :</label>
-        <input type="date" name="date_debut" id="date_debut" class="form-control" aria-label="Username" aria-describedby="addon-wrapping" >
+        <div class=""> 
+        <label for="date_debut" class="">date début :</label>
+        <input type="date" name="date_debut" class="" id="date_debut">
         </div>
         <br>
         <div class="input-group flex-nowrap w-25 p-1.5"> 
