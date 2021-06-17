@@ -3,20 +3,34 @@
 {% block title %}Modifier{% endblock %}
 
 {% block body %}
-<div class="conteneur">
-    <form action="{{ path('modifier_vacance', {'id':vacanceID.id}) }}" method="POST">
-        <div class="input-group flex-nowrap w-25 p-1.5">
-        <label for="date_debut" class="input-group-text" id="addon-wrapping">date début :</label>
-        <input type="date" name="date_debut" id="date_debut" class="form-control" aria-label="Username" aria-describedby="addon-wrapping" placeholder="{{ vacanceID.dateDebut|date("d/m/Y") }}">
+<div class="bg-gray-100 flex justify-end">
+    <div class="fixed">
+        <button class="bg-blue-50 border border-blue-400 rounded shadow-md m-2 p-1 px-2"><a href="{{ path('calendrier') }}" >Retour calendrier</a></button>
+    </div>
+</div>
+
+<div class="min-h-screen flex flex-col justify-center bg-gray-100">
+    <div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
+        <div class="text-2xl m-3 font-extrabold text-center">
+                <h1 class="">Modifier une vacance</h1>
         </div>
-        <br>
-        <div class="input-group flex-nowrap w-25 p-1.5">
-        <label for="date_fin" class="input-group-text" id="addon-wrapping">date fin :</label>
-        <input type="date" name="date_fin" id="date_fin" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        <div class="mt-5">
+            <form action="{{ path('modifier_vacance', {'id':vacanceID.id}) }}" method="POST">
+                <div class="container mb-4">
+                    <label for="date_debut">Nouvelle date de début de vacances :</label> <br>
+                    <input type="date" name="date_debut" id="date_debut" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" value="{{ vacanceID.dateDebut|date('Y-m-d') }}" required>
+                </div>
+                <div class="">
+                    <label for="date_fin" class="" >Nouvelle date de fin de vacances :</label>
+                    <input type="date" name="date_fin" id="date_fin" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" value="{{ vacanceID.dateFin|date('Y-m-d') }}" required>
+                </div>
+
+                <div class="container w-full mt-9 mb-5 flex justify-end">
+                    <input type="submit" value="Modifier" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 px-6 hover:bg-blue-400 transition duration-200">
+                </div>
+            </form>
         </div>
-        <br>
-        <input type="submit" value="envoi" class="btn btn-outline-info">
-    </form>
+    </div>
 </div>
 
 {% endblock %}

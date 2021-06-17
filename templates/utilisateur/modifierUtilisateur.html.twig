@@ -3,28 +3,44 @@
 {% block title %}Hello UtilisateurController!{% endblock %}
 
 {% block body %}
-<div class="conteneur">
-    <form action="{{ path('modifier_utilisateur', {'id':utilisateurID.id}) }}" method="POST">
-        <select name="groupe" id="user" class="form-select w-25 p-1.5" aria-label="Default select example" id="user">
-        {% for unGroupe in tousLesGroupes %}
-            <option value="{{ unGroupe.id }}">
-                {{ unGroupe.nomGroupe }}
-            </option>
-        {% endfor %}
-        </select>
-        <br>
-        <div class="input-group flex-nowrap w-25 p-1.5">
-        <label for="nom" class="input-group-text" id="addon-wrapping">nom :</label>
-        <input type="text" name="nom" id="nom" placeholder="{{ utilisateurID.nom }}" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+<div class="bg-gray-100 flex justify-end">
+    <div class="fixed">
+        <button class="bg-blue-50 border border-blue-400 rounded shadow-md m-2 p-1 px-2"><a href="{{ path('calendrier') }}" >Retour calendrier</a></button>
+    </div>
+</div>
+
+<div class="min-h-screen flex flex-col justify-center bg-gray-100">
+    <div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
+        <div class="text-2xl m-3 font-extrabold text-center">
+            <h1 class="">Modifier utilisateur</h1>
         </div>
-        <br>
-        <div class="input-group flex-nowrap w-25 p-1.5">
-        <label for="nom" class="input-group-text" id="addon-wrapping">prenom :</label>
-        <input type="text" name="prenom" id="prenom" placeholder="{{ utilisateurID.prenom }}" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+        <div class="mt-5">
+            <form action="{{ path('modifier_utilisateur', {'id':utilisateurID.id}) }}" method="POST">
+                <div class="container mb-4">
+                    <select name="groupe" id="user" class="border border-blue-400 shadow-md rounded mt-1 h-9 w-full p-1.5" required>
+                    {% for unGroupe in tousLesGroupes %}
+                        <option value="{{ unGroupe.id }}">
+                            {{ unGroupe.nomGroupe }}
+                        </option>
+                    {% endfor %}
+                    </select>
+                </div>
+
+                <div class="">
+                    <label for="nom" class="input-group-text" id="addon-wrapping">nom :</label>
+                    <input type="text" name="nom" id="nom" placeholder="{{ utilisateurID.nom }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" required>
+                </div>
+                <div class="mt-5">
+                    <label for="nom" class="">prenom :</label>
+                    <input type="text" name="prenom" id="prenom" placeholder="{{ utilisateurID.prenom }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" required>
+                </div>
+
+                <div class="container w-full mt-9 mb-5 flex justify-end">
+                    <input type="submit" value="Modifier" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 px-6 hover:bg-blue-400 transition duration-200">
+                </div>
+            </form>
         </div>
-        <br>
-        <input type="submit" value="envoi" class="btn btn-outline-info">
-    </form>
+    </div>
 </div>
 
 {% endblock %}

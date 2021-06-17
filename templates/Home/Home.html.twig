@@ -3,6 +3,12 @@
 {% block title %}login{% endblock %}
 
 {% block body %}
+<div class="bg-gray-100 flex justify-end">
+    <div class="fixed">
+        <button class="bg-blue-50 border border-blue-400 rounded shadow-md m-2 p-1 px-2"><a href="{{ path('calendrier') }}" >Retour calendrier</a></button>
+    </div>
+</div>
+
 <div class="min-h-screen flex flex-col justify-center bg-gray-100">
     <div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
         <div class="text-2xl m-3 font-extrabold text-center">
@@ -17,11 +23,11 @@
             <div class="mt-5">
                 <div class="container mb-5">
                     <p class="mb-2">Voulez-vous retourner au calendrier ?</p>
-                    <a href="{{ path('calendrier') }}" class="border border-blue-400 shadow-md rounded p-1.5 hover:bg-blue-400 transition duration-200">Calendrier</a>
+                    <a href="{{ path('calendrier') }}" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 hover:bg-blue-400 transition duration-200">Calendrier</a>
                 </div>
                 <div class="container mb-5">
                     <p class="mb-2">Voulez-vous vous déconnecter ?</p>
-                    <a href="{{ path('app_logout') }}" class="border border-blue-400 shadow-md rounded p-1.5 hover:bg-blue-400 transition duration-200" >Se déconnecter</a>
+                    <a href="{{ path('app_logout') }}" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 hover:bg-blue-400 transition duration-200" >Se déconnecter</a>
                 </div>
             </div>
         {% else %}
@@ -29,19 +35,19 @@
         <div class="mt-5">
             <form novalidate method='POST'>
                 <div class="container mb-4">
-                    <label for="username">Username :</label><br>
+                    <label for="username">Nom d'utilisateur :</label><br>
                     <input type="text" name="username" id="username" value="{{ app.session.get(
                         'app_login_form_old_username') }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" required autofocus>
                 </div>
                 <div class="container mb-4">
-                    <label for="username">Password :</label><br>
+                    <label for="username">Mot de passe :</label><br>
                     <input type="password" name="password" id="password" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" required>
                 </div>
 
                 <input type="hidden" name="csrf_token" value="{{ csrf_token('login_form') }}">
 
                 <div class="container w-full mt-9 mb-5 flex justify-end">
-                    <input type="submit" value="connexion" class="border border-blue-400 shadow-md rounded p-1.5 hover:bg-blue-400 transition duration-200">
+                    <input type="submit" value="Connexion" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 hover:bg-blue-400 transition duration-200">
                 </div>
             </form>
         </div>

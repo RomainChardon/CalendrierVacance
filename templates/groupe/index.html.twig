@@ -3,49 +3,73 @@
 {% block title %}Hello GroupeController!{% endblock %}
 
 {% block body %}
+<div class="bg-gray-100 flex justify-end">
+    <div class="fixed">
+        <button class="bg-blue-50 border border-blue-400 rounded shadow-md m-2 p-1 px-2"><a href="{{ path('calendrier') }}" >Retour calendrier</a></button>
+    </div>
+</div>
 
- 
-
-<div class="conteneur">
-    <form action="{{ path('create_groupe') }}" method="POST">
-        <div class="input-group flex-nowrap w-25 p-1.5">
-        <label for="nom" class="input-group-text" id="addon-wrapping">nom du groupe:</label>
-        <input type="text" name="nom" id="nom" placeholder="" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
+<div class="min-h-screen flex flex-col justify-center bg-gray-100">
+    <div class="px-10 w-auto p-4 shadow-2xl mx-auto rounded-2xl bg-white">
+        <div class="px-10 w-96 p-4 mx-auto">
+            <div class="text-2xl font-extrabold text-center mb-5">
+                <h1 class="">Ajouter des groupes</h1> 
+            </div>
+            <form action="{{ path('create_groupe') }}" method="POST">
+                <div class="">
+                    <label for="nom">Nom du groupe :</label><br>
+                    <input type="text" name="nom" id="nom" class="border border-blue-400 shadow-md rounded p-1.5 w-full">
+                </div>
+                <div class="mt-3">
+                    <label for="couleur">Couleur du groupe :</label><br>
+                    <input type="color" name="couleur" id="couleur" class="border border-blue-400 shadow-md rounded my-1.5 h-9  p-1" >
+                </div>
+                <div class="mt-3">
+                    <label for="admin" >Accès administrateur :</label>
+                    <input type="checkbox" name="admin" id="admin" value="true" class="border border-blue-400 shadow-md rounded my-1.5 p-1">
+                </div>
+                <div class="container w-full mt-4 flex justify-end">
+                    <input type="submit" value="Ajouter" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 w-full px-5 hover:bg-blue-400 transition duration-200 ">
+                </div>
+            </form>
         </div>
-        <br>
-        <div class="input-group flex-nowrap w-25 p-1.5">
-        <label for="couleur" class="input-group-text" id="addon-wrapping">choisir une couleur:</label>
-        <input type="color" name="couleur" id="couleur" class="form-control" aria-label="Username" aria-describedby="addon-wrapping">
-        </div>
-        <br>
-        <div>
-        <label for="admin" >admin :</label>
-        <input type="checkbox" name="admin" id="admin" value="true">
-        </div>
-        <br>
-        <input type="submit" value="envoi" class="btn btn-outline-info">
-    </form>
-    <br>
 
-    <table class="table table-striped table-hover w-50">
-        <tr>
-            <th>groupID</th>
-            <th>Nom du groupe</th>
-            <th>Groupe admin ?</th>
-            <th>Couleur</th>
-            <th>Supprimer</th>
-        </tr>
 
-        {% for unGroupe in tousLesGroupes %} 
-            <tr>
-                <td>{{ unGroupe.id }}</td>
-                <td>{{ unGroupe.nomGroupe }}</td>
-                <td>{{ unGroupe.admin }}</td>
-                <td>{{ unGroupe.couleur }}</td>
-                <td> <form action="{{ path('remove_groupe',{'id':unGroupe.id}) }}" method="POST"><button type="submit">supprimer</button></form></td>
-            </tr>
-        {% endfor %}
-    </table>
-    
+        <table class="mt-5">
+            <thead class="p-2 border-b border-blue-400">
+                <tr>
+                    <th class="p-2 px-4 border-r border-blue-200">ID groupe</th>
+                    <th class="p-2 px-4 border-r border-blue-200">Nom du groupe</th>
+                    <th class="p-2 px-4 border-r border-blue-200">Administrateur</th>
+                    <th class="p-2 px-4 border-r border-blue-200">Couleur</th>
+                    <th class="p-2 px-4 border-r border-blue-200">Option</th>
+                </tr>
+            </thead>
+
+            <tbody class="text-center">
+                {% for unGroupe in tousLesGroupes %} 
+                    <tr class="p-2 border-b border-blue-400"> 
+                        <td class="p-2 border-r border-blue-200">{{ unGroupe.id }}</td>
+                        <td class="p-2 border-r border-blue-200">{{ unGroupe.nomGroupe }}</td>
+                        <td class="p-2 border-r border-blue-200">
+                            {% if unGroupe.admin == 1 %}
+                                Oui
+                            {% else %}
+                                Non
+                            {% endif %}
+                        </td>
+                        <td class="p-2 border-r border-blue-200">
+                            <input type="color" value="{{ unGroupe.couleur }}" disabled>
+                        </td>
+                        <td class="p-2 border-r border-blue-200"> 
+                            <form action="{{ path('remove_groupe',{'id':unGroupe.id}) }}" method="POST">
+                                <button type="submit" class="border border-red-400 bg-red-50 shadow-md rounded p-1 w-full hover:bg-red-400 transition duration-200">supprimer</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 </div>
 {% endblock %}
