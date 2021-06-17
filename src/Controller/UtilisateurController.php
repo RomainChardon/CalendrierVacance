@@ -34,7 +34,7 @@ class UtilisateurController extends AbstractController
         $entityManager = $this->getDoctrine()->getManager();
 
         $groupe = $repoGroupe->find($request->request->get('groupe'));
-
+        
         $utilisateur = new User();
 
         $passHash = ($userPass->encodePassword($utilisateur, $request->request->get('password')));
