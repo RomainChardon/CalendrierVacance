@@ -27,7 +27,7 @@ class Controller extends AbstractController
     {
         return $this->render('/index.html.twig', [
             'tousLesUtilisateurs' => $repoUser->findAll(),
-            'toutesLesVacances' => $repoVacances->findAll(),
+            'toutesLesVacances' => $this->getUser()->getVacances(),
         ]);
     }
 
@@ -35,8 +35,7 @@ class Controller extends AbstractController
     public function create_vacances(Request $request, UserRepository $repoUser): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
-
-        $utilisateur = $repoUser->find($request->request->get('user'));
+        $utilisateur = $repoUser->find($this->getUser());
         $vacances = new Vacances();
 
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));

@@ -31,10 +31,11 @@ class UtilisateurController extends AbstractController
     #[Route('/create_utilisateur', name: 'create_utilisateur')]
     public function create_utilisateur(Request $request, GroupeRepository $repoGroupe, UserPasswordEncoderInterface $userPass): Response
     {
+
         $entityManager = $this->getDoctrine()->getManager();
 
         $groupe = $repoGroupe->find($request->request->get('groupe'));
-        
+
         $utilisateur = new User();
 
         $passHash = ($userPass->encodePassword($utilisateur, $request->request->get('password')));

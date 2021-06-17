@@ -182,7 +182,6 @@ class CalendrierController extends AbstractController
             $listDays[$numJours] = $listDaysLigne;
             
         }
-        dump($listDays);
         return $listDays;
     }
 
