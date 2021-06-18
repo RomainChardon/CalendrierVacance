@@ -8,7 +8,7 @@
            
            
            #}
-        {% block stylesheets %}
+        {% block stylesheet %}
             <link rel="stylesheet" href="{{ asset('style.css') }}">
             <link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
         {% endblock %}
@@ -18,13 +18,6 @@
         {% endblock %}
     </head>
     <body>
-        {% for message in app.flashes('msg') %}
-            <div class="bg-gray-100 flex justify-center ">
-                <div class="text-center w-56 m-6 p-6 bg-red-500 rounded-md relative">
-                    {{ message }}
-                </div>
-            </div>
-        {% endfor %}
         {% block body %}
         {% endblock %}
 
