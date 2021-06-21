@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20210615123932 extends AbstractMigration
+final class Version20210621141942 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,6 @@ final class Version20210615123932 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE groupe ADD COLUMN admin BOOLEAN NOT NULL');
         $this->addSql('DROP INDEX IDX_8D93D6497A45358C');
         $this->addSql('DROP INDEX UNIQ_8D93D649F85E0677');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, groupe_id, username, roles, password, nom, prenom FROM user');
@@ -45,11 +44,6 @@ final class Version20210615123932 extends AbstractMigration
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TEMPORARY TABLE __temp__groupe AS SELECT id, nom_groupe, couleur FROM groupe');
-        $this->addSql('DROP TABLE groupe');
-        $this->addSql('CREATE TABLE groupe (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, nom_groupe VARCHAR(255) NOT NULL, couleur VARCHAR(255) DEFAULT NULL)');
-        $this->addSql('INSERT INTO groupe (id, nom_groupe, couleur) SELECT id, nom_groupe, couleur FROM __temp__groupe');
-        $this->addSql('DROP TABLE __temp__groupe');
         $this->addSql('DROP INDEX UNIQ_8D93D649F85E0677');
         $this->addSql('DROP INDEX IDX_8D93D6497A45358C');
         $this->addSql('CREATE TEMPORARY TABLE __temp__user AS SELECT id, groupe_id, username, roles, password, nom, prenom FROM user');

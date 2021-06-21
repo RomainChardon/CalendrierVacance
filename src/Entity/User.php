@@ -47,7 +47,7 @@ class User implements UserInterface
     private $prenom;
 
     /**
-     * @ORM\ManyToMany(targetEntity=Vacances::class, inversedBy="users", cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity=Vacances::class, inversedBy="users", cascade={"persist", "remove"})
      */
     private $Vacances;
 

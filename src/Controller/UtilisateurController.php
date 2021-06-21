@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Security\Core\Validator\Constraints\UserPasswordValidator;
 use Symfony\Component\Security\Http\Authenticator\Passport\UserPassportInterface;
 
 #[Route('/vacances/gestionUtilisateur')]
@@ -45,7 +46,8 @@ class UtilisateurController extends AbstractController
         $utilisateur->setUsername($request->request->get('nom') .'.'. $request->request->get('prenom'));
         $utilisateur->setPassword($passHash);
         $utilisateur->setGroupe($groupe);
-        if ($groupe->getAdmin() == "true" ) {
+        
+        if ( $request->request->get('admin') == 'true') {
             $role[]= 'ROLE_ADMIN';
             $utilisateur->setRoles($role);
         }
@@ -90,6 +92,40 @@ class UtilisateurController extends AbstractController
     {
         $groupe = $repoGroupe->find($request->request->get('groupe'));
         $user->setNom($request->request->get('nom'));
+        $user->setPrenom($request->request->get('prenom'));
+
+        $groupe->addUser($user);
+        $manager->flush();
+
+        $this->addFlash(
+            'msg',
+            'Utilisateur modifié !!'
+        );
+
+        return $this->redirectToRoute("home");
+    }
+
+     #[Route('/user/{id}/modif', name: 'modif_user')]
+    public function afficherUser(User $user, GroupeRepository $repoGroupe, EntityManagerInterface $manager): Response
+    {
+        return $this->render('/utilisateur/modifierUser.html.twig', [
+            'utilisateurID' => $user,
+            "tousLesGroupes" => $repoGroupe->findAll()
+        ]);
+        
+        return $this->redirectToRoute("home");    
+    }
+
+    #[Route('/modifierUser/{id}/modif', name: 'modifier_user')]
+    public function modif_user(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $userPass, UserPasswordValidator $userPasswordValidator ): Response
+    {
+        $groupe = $repoGroupe->find($request->request->get('groupe'));
+        $user->setUsername($request->request->get('username'));
+        $oldPassword = $request->request->get('oldPassword');
+        if ($userPasswordValidator->validate($oldPassword)) {
+            $passHash = ($userPass->encodePassword($user, $request->request->get('newPassword')));
+            $user->setPassword($passHash);
+        }
         $user->setPrenom($request->request->get('prenom'));
 
         $groupe->addUser($user);
