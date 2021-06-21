@@ -47,6 +47,7 @@ class CalendrierController extends AbstractController
         }
 
         $moisUtiliserFormatLettre = $this->traductionMois($this->moisUtiliser);
+        $moisUtiliserFormatLettre2 = $this->traductionMois($this->moisUtiliser + 1);
 
         // Premier jour du mois actuel
         $debut = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser. '-1');
@@ -58,6 +59,16 @@ class CalendrierController extends AbstractController
         $prochain = $prochain->modify( '+1 day' ); 
         $interval = new DateInterval('P1D');
         $periode = new DatePeriod($debut, $interval, $prochain);
+
+        $debut2 = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser + 1 . '-1');
+        // Nombre de jours contenu dans le mois suivant
+        $nbjour2 = $debut2->format("t");
+        // Dernier jour du mois actuel
+        $prochain2 = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser + 1 . '-' .$nbjour);
+        // Création de l'interval du $debut a $prochain
+        $prochain2 = $prochain2->modify( '+1 day' ); 
+        $interval2 = new DateInterval('P1D');
+        $periode2 = new DatePeriod($debut2, $interval2, $prochain2);
 
         // $listeVacances = $repoVacances -> findAll();
         // foreach ($listeVacances as $vacance) {
@@ -73,10 +84,13 @@ class CalendrierController extends AbstractController
 
             // Jour et mois a afficher
             'listeDays'=>$this->createListDays($periode, $repoGroupe),
+            'listeDays2'=>$this->createListDays2($periode2, $repoGroupe),
             'listeAnnee'=>$this->createListeGenererAnnee(),
             'listeMois'=>$this->createlisteGenererMois(),
             'moisUtiliser'=>$this->moisUtiliser,
+            'moisSuivant' => $this->moisUtiliser + 1,
             'moisUtiliserFormatLettre'=>$moisUtiliserFormatLettre,
+            'moisUtiliserFormatLettre2'=>$moisUtiliserFormatLettre2,
             'anneeUtiliser'=>$this->anneeUtiliser,
 
             // Groupe d'utilisateur
@@ -185,7 +199,103 @@ class CalendrierController extends AbstractController
         return $listDays;
     }
 
+/**
+     * createListDays
+     *
+     * @return array
+     */
+    private function createListDays2(DatePeriod $periode, GroupeRepository $repoGroupe): array
+    {
+        foreach ($periode as $date) {
+            $jourAfficher2 = $date->format("N");
+            $numJours = (int)$date->format("d");
 
+            $jourUtiliser2 = new DateTime($numJours . '-' . $this->moisUtiliser + 1 . '-' . $this->anneeUtiliser);
+            $jourAujourdhui = new DateTime($this->jourActuel . '-' . $this->moisActuel . '-' . $this->anneeActuel);
+
+            if ($jourAujourdhui == $jourUtiliser2) {
+                $siAujourdhui = true;
+            } else {
+                $siAujourdhui = false;
+            }
+           
+            $siSamedi = false;
+            $siDimanche = false;
+            if ($this->traductionJour($jourAfficher2) == "Samedi") {
+                $siSamedi = true;
+            } else if ($this->traductionJour($jourAfficher2) == "Dimanche") {
+                $siDimanche = true;
+            }
+
+            $siFerier = false;
+            foreach ($this->createListeFerier($this->anneeUtiliser) as $jourFerier) {
+            
+                if ($jourFerier->format('d/m/Y') == $jourUtiliser2->format('d/m/Y')) {
+                    $siFerier = true;
+                } else {
+                    $siFerier = false;
+                }
+
+            }
+            
+            $listDetailUser = [];
+            $listeGroupe = $repoGroupe->findAll();
+            foreach ($listeGroupe as $groupe) {
+                $groupeUser = $groupe->getUsers();
+                $nomGroupe = $groupe->getNomGroupe();
+                $couleurGroupe = $groupe->getCouleur();
+
+                foreach ($groupeUser as $user) {
+                    $prenomUser = $user->getPrenom();
+                    $nomUser = $user->getNom();
+                    $userVacances = $user->getVacances();
+                    
+                    $listDetailVacances = [];
+                    foreach ($userVacances as $vacance) {
+                        
+                        $dateDebutVacances = $vacance->getDateDebut();
+                        $dateFinVacances = $vacance->getDateFin();
+                        if (($dateDebutVacances <= $jourUtiliser2) && ($dateFinVacances >= $jourUtiliser2)) {
+                            $enVacances = true;
+                        } else {
+                            $enVacances = false;
+                        }
+
+                        $listDetailVacances[]= array(
+                            'dateDebut' => $dateDebutVacances,
+                            'dateFin' => $dateFinVacances,
+                            'enVacances' => $enVacances,
+                        );
+                    }
+                    
+
+                    $listDetailUser[$nomUser.'-'.$prenomUser] = array(
+                        'nomUser' => $nomUser,
+                        'prenomUser' => $prenomUser,
+                        'groupe' => $nomGroupe,
+                        'couleurGroupe' => $couleurGroupe,
+                        'vacances' => $listDetailVacances,
+                    );
+                } 
+            }
+
+            
+            $listDaysLigne = array(
+                'jourNumero' => $numJours,
+                'jourLettre' => $this->traductionJour($jourAfficher2),
+                'jourUtiliser' => $jourUtiliser2,
+                'jourActuel' => $jourAujourdhui,
+                'siAujourdhui' => $siAujourdhui,
+                'siSamedi' => $siSamedi,
+                'siDimanche' => $siDimanche,
+                'siFerier' => $siFerier,
+                'listDetail' => $listDetailUser,
+            );
+
+            $listDays2[$numJours] = $listDaysLigne;
+        }
+        return $listDays2;
+    }
     
     /**
      * createListeFerier
