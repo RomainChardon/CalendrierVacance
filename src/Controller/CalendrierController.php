@@ -130,72 +130,70 @@ class CalendrierController extends AbstractController
 
             $siFerier = false;
             foreach ($this->createListeFerier($this->anneeUtiliser) as $jourFerier) {
-            
                 if ($jourFerier->format('d/m/Y') == $jourUtiliser->format('d/m/Y')) {
                     $siFerier = true;
-                } else {
-                    $siFerier = false;
                 }
 
-            }
             
-            $listDetailUser = [];
-            $listeGroupe = $repoGroupe->findAll();
-            foreach ($listeGroupe as $groupe) {
-                $groupeUser = $groupe->getUsers();
-                $nomGroupe = $groupe->getNomGroupe();
-                $couleurGroupe = $groupe->getCouleur();
+                
+                $listDetailUser = [];
+                $listeGroupe = $repoGroupe->findAll();
+                foreach ($listeGroupe as $groupe) {
+                    $groupeUser = $groupe->getUsers();
+                    $nomGroupe = $groupe->getNomGroupe();
+                    $couleurGroupe = $groupe->getCouleur();
 
-                foreach ($groupeUser as $user) {
-                    $prenomUser = $user->getPrenom();
-                    $nomUser = $user->getNom();
-                    $userVacances = $user->getVacances();
-                    
-                    $listDetailVacances = [];
-                    foreach ($userVacances as $vacance) {
+                    foreach ($groupeUser as $user) {
+                        $prenomUser = $user->getPrenom();
+                        $nomUser = $user->getNom();
+                        $userVacances = $user->getVacances();
                         
-                        $dateDebutVacances = $vacance->getDateDebut();
-                        $dateFinVacances = $vacance->getDateFin();
-                        if (($dateDebutVacances <= $jourUtiliser) && ($dateFinVacances >= $jourUtiliser)) {
-                            $enVacances = true;
-                        } else {
-                            $enVacances = false;
+                        $listDetailVacances = [];
+                        foreach ($userVacances as $vacance) {
+                            
+                            $dateDebutVacances = $vacance->getDateDebut();
+                            $dateFinVacances = $vacance->getDateFin();
+                            if (($dateDebutVacances <= $jourUtiliser) && ($dateFinVacances >= $jourUtiliser)) {
+                                $enVacances = true;
+                            } else {
+                                $enVacances = false;
+                            }
+
+                            $listDetailVacances[]= array(
+                                'dateDebut' => $dateDebutVacances,
+                                'dateFin' => $dateFinVacances,
+                                'enVacances' => $enVacances,
+                            );
                         }
+                        
 
-                        $listDetailVacances[]= array(
-                            'dateDebut' => $dateDebutVacances,
-                            'dateFin' => $dateFinVacances,
-                            'enVacances' => $enVacances,
+                        $listDetailUser[$nomUser.'-'.$prenomUser] = array(
+                            'nomUser' => $nomUser,
+                            'prenomUser' => $prenomUser,
+                            'groupe' => $nomGroupe,
+                            'couleurGroupe' => $couleurGroupe,
+                            'vacances' => $listDetailVacances,
                         );
-                    }
-                    
+                    } 
+                }
 
-                    $listDetailUser[$nomUser.'-'.$prenomUser] = array(
-                        'nomUser' => $nomUser,
-                        'prenomUser' => $prenomUser,
-                        'groupe' => $nomGroupe,
-                        'couleurGroupe' => $couleurGroupe,
-                        'vacances' => $listDetailVacances,
-                    );
-                } 
-            }
+                
+                $listDaysLigne = array(
+                    'jourNumero' => $numJours,
+                    'jourLettre' => $this->traductionJour($jourAfficher),
+                    'jourUtiliser' => $jourUtiliser,
+                    'jourActuel' => $jourAujourdhui,
+                    'siAujourdhui' => $siAujourdhui,
+                    'siSamedi' => $siSamedi,
+                    'siDimanche' => $siDimanche,
+                    'siFerier' => $siFerier,
+                    'listDetail' => $listDetailUser,
+                );
 
-            
-            $listDaysLigne = array(
-                'jourNumero' => $numJours,
-                'jourLettre' => $this->traductionJour($jourAfficher),
-                'jourUtiliser' => $jourUtiliser,
-                'jourActuel' => $jourAujourdhui,
-                'siAujourdhui' => $siAujourdhui,
-                'siSamedi' => $siSamedi,
-                'siDimanche' => $siDimanche,
-                'siFerier' => $siFerier,
-                'listDetail' => $listDetailUser,
-            );
-
-            $listDays[$numJours] = $listDaysLigne;
-            
+                $listDays[$numJours] = $listDaysLigne;
+            } 
         }
+        dump($listDays);
         return $listDays;
     }
 
@@ -309,12 +307,11 @@ class CalendrierController extends AbstractController
             new DateTime('4/1/'.$annee), #fête du travail
             new DateTime('5/8/'.$annee), #1945
             new DateTime('7/14/'.$annee), #fête national
-            new DateTime('6/15/'.$annee), #Ascension
+            new DateTime('8/15/'.$annee), #Ascension
             new DateTime('11/1/'.$annee), #Toussaint
             new DateTime('11/11/'.$annee), #Armistice
             new DateTime('12/25/'.$annee), #Noel
         );
-
         return $listeFerier;
     }
 

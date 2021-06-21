@@ -11,7 +11,18 @@
         <div class="flex flex-col px-5 py-5 w-32 shadow-2xl mx-auto rounded-r-2xl bg-white">
             <p class="mb-3">Sélèctionnez le groupe à afficher :</p> <br>
             {% for groupes in tousLesGroupes %}
-                <a href="{{ path('calendrier') }}" class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1"> {{groupes.nomGroupe}} </a>
+                <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" onclick="afficherGroupe()">{{groupes.nomGroupe}}</button>
+                <script>
+                    function afficherGroupe() {
+                        var groupe = document.getElementsByClassName("{{groupes.nomGroupe}}");
+
+                        if (groupe.style.visibility === "visible") {
+                            groupe.style.visibility === "hidden";
+                        } else {
+                            groupe.style.visibility === "visible";
+                        }
+                    }
+                </script>
             {% endfor %}
         </div>
     </div>
@@ -53,17 +64,19 @@
                 <th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre }} </th> <th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
                 {% for unGroupe in tousLesGroupes %}
                     {% for user in unGroupe.getUsers %}
-                        <th class="p-1 px-2 border-r border-gray-200" style="background-color:{{ unGroupe.couleur }}" >{{ user.nom }} {{ user.prenom}}</th>
+                        <th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; visibility: visible;" >{{ user.nom }} {{ user.prenom}}</th>
                     {% endfor %}
                 {% endfor %}
             </tr>
             
             {% for days in listeDays %}
-                <tr {% if ( days.siAujourdhui ) %} style="background-color: #b2f94e" {% endif %}  class="p-2 border-b border-gray-100
-                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}">
+                <tr class="p-2 border-b border-gray-100
+                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %} 
+                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
+                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
                     <td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td><td class="p-0.5 border-r border-gray-200"> {{ days.jourLettre}}</td>
                     {% for detail in days.listDetail %}
-                        <td class="p-0.5 border-r border-gray-200" style="background-color: {{ detail.couleurGroupe }}30; text-align: center;">
+                        <td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; visibility: visible;">
                             {% for vacance in detail %}
                                 {% for i in vacance %}
                                     {% if i.enVacances %}
@@ -84,16 +97,18 @@
                 <th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre2 }} </th> <th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
                 {% for unGroupe in tousLesGroupes %}
                     {% for user in unGroupe.getUsers %}
-                        <th class="p-1 px-2 border-r border-gray-200" style="background-color:{{ unGroupe.couleur }}" >{{ user.nom }} {{ user.prenom}}</th>
+                        <th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; visibility: visible;" >{{ user.nom }} {{ user.prenom}}</th>
                     {% endfor %}
                 {% endfor %}
             </tr>
         {% for days in listeDays2 %}
-            <tr {% if ( days.siAujourdhui ) %} style="background-color: #b2f94e" {% endif %}  class="p-2 border-b border-gray-100
-            {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}">
+            <tr class="p-2 border-b border-gray-100
+                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %} 
+                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
+                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
             <td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td><td class="p-0.5 border-r border-gray-200"> {{ days.jourLettre}}</td>
             {% for detail in days.listDetail %}
-                <td class="p-0.5 border-r border-gray-200" style="background-color: {{ detail.couleurGroupe }}30; text-align: center;">
+                <td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; visibility: visible;">
                     {% for vacance in detail %}
                         {% for i in vacance %}
                             {% if i.enVacances %}
