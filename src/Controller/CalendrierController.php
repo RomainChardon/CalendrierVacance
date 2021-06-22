@@ -153,6 +153,10 @@ class CalendrierController extends AbstractController
                             
                             $dateDebutVacances = $vacance->getDateDebut();
                             $dateFinVacances = $vacance->getDateFin();
+                            $autoriser = $vacance->getAutoriser();
+                            $attente = $vacance->getAttente();
+                            $id = $vacance->getId();
+
                             if (($dateDebutVacances <= $jourUtiliser) && ($dateFinVacances >= $jourUtiliser)) {
                                 $enVacances = true;
                             } else {
@@ -160,8 +164,11 @@ class CalendrierController extends AbstractController
                             }
 
                             $listDetailVacances[]= array(
+                                'id' => $id,
                                 'dateDebut' => $dateDebutVacances,
                                 'dateFin' => $dateFinVacances,
+                                'autoriser' => $autoriser,
+                                'attente' => $attente,
                                 'enVacances' => $enVacances,
                             );
                         }
@@ -252,6 +259,9 @@ class CalendrierController extends AbstractController
                         
                         $dateDebutVacances = $vacance->getDateDebut();
                         $dateFinVacances = $vacance->getDateFin();
+                        $autoriser = $vacance->getAutoriser();
+                        $attente = $vacance->getAttente();
+                        $id = $vacance->getId();
                         if (($dateDebutVacances <= $jourUtiliser2) && ($dateFinVacances >= $jourUtiliser2)) {
                             $enVacances = true;
                         } else {
@@ -261,6 +271,9 @@ class CalendrierController extends AbstractController
                         $listDetailVacances[]= array(
                             'dateDebut' => $dateDebutVacances,
                             'dateFin' => $dateFinVacances,
+                            'autoriser' => $autoriser,
+                            'id' => $id,
+                            'attente' => $attente,
                             'enVacances' => $enVacances,
                         );
                     }

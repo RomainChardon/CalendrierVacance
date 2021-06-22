@@ -80,8 +80,7 @@ class Controller extends AbstractController
         return $this->render('modifier.html.twig', [
             'vacanceID' => $vacances,
         ]);
-        
-        return $this->redirectToRoute("index");    
+           
     }
 
     #[Route('/modifierVacance/{id}/modif', name: 'modifier_vacance')]
@@ -104,6 +103,16 @@ class Controller extends AbstractController
         return $this->redirectToRoute("index");
     }
 
+    #[Route('/demandeVacance/{id}/demande', name: 'demande_vacance')]
+    public function demandeVacance(Vacances $vacances, EntityManagerInterface $manager): Response
+    {
+        return $this->render('demandeVacance.html.twig', [
+            'vacanceID' => $vacances,
+            ''
+        ]);
+           
+    }
+
     #[Route('/autoriseVacance/{id}/modif', name: 'autorise_vacance')]
     public function autoriseVacances( Vacances $vacances, Request $request, EntityManagerInterface $manager): Response
     {
@@ -111,7 +120,7 @@ class Controller extends AbstractController
         $vacances->setAutoriser('1');
 
         $manager->flush();
-        return $this->redirectToRoute("index");    
+        return $this->redirectToRoute("calendrier");    
     }
 
     #[Route('/nonAutoriseVacance/{id}/modif', name: 'nonAutorise_vacance')]
@@ -122,6 +131,6 @@ class Controller extends AbstractController
         $vacances->setAutoriser('0');
 
         $manager->flush();
-        return $this->redirectToRoute("index");    
+        return $this->redirectToRoute("calendrier");    
     }
 }

@@ -65,13 +65,24 @@
                     <td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td><td class="p-0.5 border-r border-gray-200"> {{ days.jourLettre}}</td>
                     {% for detail in days.listDetail %}
                         <td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
+                        
                             {% for vacance in detail %}
                                 {% for i in vacance %}
+                                <form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
                                     {% if i.enVacances %}
-                                        X
+                                        {% if i.attente == true %}
+                                            <button><i class="fas fa-clock"></i></button>
+                                        {% elseif i.autoriser == true %}
+                                            <button><i class="fas fa-check"></i></button>
+                                        {% else %}
+                                            <button><i class="fas fa-times"></i></button>
+                                        {% endif %}
                                     {% endif %}
+                                   </form> 
                                 {% endfor %}
-                            {% endfor %}             
+                            {% endfor %}   
+                        
+                                  
                         </td>
             {% endfor %}  
                 </tr>
@@ -99,9 +110,17 @@
                 <td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
                     {% for vacance in detail %}
                         {% for i in vacance %}
-                            {% if i.enVacances %}
-                                X
-                            {% endif %}
+                            <form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
+                                    {% if i.enVacances %}
+                                        {% if i.attente == true %}
+                                            <button><i class="fas fa-clock"></i></button>
+                                        {% elseif i.autoriser == true %}
+                                            <button><i class="fas fa-check"></i></button>
+                                        {% else %}
+                                            <button><i class="fas fa-times"></i></button>
+                                        {% endif %}
+                                    {% endif %}
+                                   </form> 
                         {% endfor %}
                     {% endfor %}             
                 </td>
