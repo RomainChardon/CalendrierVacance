@@ -7,3 +7,13 @@
             </div>
             </div>
 {% endfor %}
+
+{% for message in app.flashes('succes') %}
+            <div class="bg-gray-100 flex justify-center  align-top ">
+            <div class="fixed">
+                <div class="text-center w-56 m-6 p-6 bg-green-500 rounded-md ">
+                    {{ message }}
+                </div>
+            </div>
+            </div>
+{% endfor %}

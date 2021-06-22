@@ -54,7 +54,7 @@ class Controller extends AbstractController
         $entityManager->flush();
 
         $this->addFlash(
-            'msg',
+            'succes',
             'Vacances ajouté !!'
         );
 
@@ -97,7 +97,7 @@ class Controller extends AbstractController
         $manager->flush();
 
         $this->addFlash(
-            'msg',
+            'succes',
             'Vacances modifié !!'
         );
 

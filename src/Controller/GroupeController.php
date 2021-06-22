@@ -33,7 +33,7 @@ class GroupeController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash(
-            'msg',
+            'succes',
             'Groupe ajouté !!'
         );
 

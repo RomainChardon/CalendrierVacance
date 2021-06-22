@@ -56,7 +56,7 @@ class UtilisateurController extends AbstractController
         $entityManager->flush();
 
         $this->addFlash(
-            'msg',
+            'succes',
             'Utilisateur ajouté !!'
         );
 
@@ -122,33 +122,38 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/modifierUser/{id}/modif', name: 'modifier_user')]
-    public function modif_user(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $userPass, UserPasswordValidator $userPasswordValidator ): Response
+    public function modif_user(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $userPass): Response
     {
-        $groupe = $repoGroupe->find($request->request->get('groupe'));
         $oldPassword = $request->request->get('oldPassword');
+
+        if ($oldPassword != null) {
+            if ($userPass->isPasswordValid($user, $oldPassword)) {
+                $newPassword = ($userPass->encodePassword($user, $request->request->get('newPassword')));
+                $user->setPassword($newPassword);
+
+                $this->addFlash(
+                    'succes',
+                    'Mot de passe modifié !!'
+                );
+            } else {
+                $this->addFlash(
+                    'msg',
+                    "Votre mot de passe actuel n'est pas bon !!"
+                );
+            }
+        } 
         
         if ($request->request->get('username') != null) {
             $user->setUsername($request->request->get('username'));
-        }
-        
-        if ($oldPassword == $request->request->get('newPassword')) {
-            $passHash = ($userPass->encodePassword($user, $request->request->get('newPassword')));
-            $user->setPassword($passHash);
 
             $this->addFlash(
-                'msg',
-                'Mot de passe modifié !!'
+                'succes',
+                "Utilisateur modifié !!"
             );
         }
 
-        $groupe->addUser($user);
-        $manager->flush();
+        $manager->flush($user);
 
-        $this->addFlash(
-            'msg',
-            'Utilisateur modifié !!'
-        );
-
-        return $this->redirectToRoute("home");
+        return $this->redirectToRoute("calendrier");
     }
 }
