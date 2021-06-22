@@ -9,16 +9,7 @@
         <div class="flex flex-col px-5 py-5 w-32 shadow-2xl mx-auto rounded-r-2xl bg-white">
             <p class="mb-3">Sélèctionnez le groupe à afficher :</p> <br>
             {% for groupes in tousLesGroupes %}
-                <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" onclick="afficherGroupe()">{{groupes.nomGroupe}}</button>
-                <script>
-                    function afficherGroupe() {
-                        if (document.getElementsByClassName("{{groupes.nomGroupe}}").style.visibility === "visible" ) {
-                                document.getElementsByClassName("{{groupes.nomGroupe}}").style.visibility = "hidden"
-                            } else {
-                                document.getElementsByClassName("{{groupes.nomGroupe}}").style.visibility = "visible"
-                            }
-                        }
-                </script>
+                <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" onclick="afficherGroupe({{groupes.nomGroupe}})">{{groupes.nomGroupe}}</button>
             {% endfor %}
         </div>
     </div>
@@ -120,4 +111,21 @@
         </table>
     </div>
 </div>
+
+<script>
+    function afficherGroupe(groupe) {
+        var leGroupe = groupe; 
+        var class = document.getElementsByClassName(leGroupe);
+
+        for (let i = 0; i < class.length; i++) {
+            if (class[i].style.visibility === "visible" ) {
+                class[i].style.visibility = "hidden";
+            } else {
+                class[i].style.visibility = "visible";
+            }
+        }
+    }
+</script>
 {% endblock %}
+
+
