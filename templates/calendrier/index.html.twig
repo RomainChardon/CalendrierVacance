@@ -12,14 +12,12 @@
                 <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" onclick="afficherGroupe()">{{groupes.nomGroupe}}</button>
                 <script>
                     function afficherGroupe() {
-                        var groupe = document.getElementsByClassName("{{groupes.nomGroupe}}");
-
-                        if (groupe.style.visibility === "visible") {
-                            groupe.style.visibility === "hidden";
-                        } else {
-                            groupe.style.visibility === "visible";
+                        if (document.getElementsByClassName("{{groupes.nomGroupe}}").style.visibility === "visible" ) {
+                                document.getElementsByClassName("{{groupes.nomGroupe}}").style.visibility = "hidden"
+                            } else {
+                                document.getElementsByClassName("{{groupes.nomGroupe}}").style.visibility = "visible"
+                            }
                         }
-                    }
                 </script>
             {% endfor %}
         </div>

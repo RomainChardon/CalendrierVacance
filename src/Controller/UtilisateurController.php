@@ -63,6 +63,14 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute("utilisateur");
     }
 
+    #[Route('/supprimerUtilisateur/{id}/confirmation', name:'suppr_user')]
+    public function supprUtilisateur(User $user,EntityManagerInterface $manager): Response
+    {
+        return $this->render('/utilisateur/confSupprUser.html.twig', [
+            'utilisateurID' => $user
+        ]);
+    }
+
     #[Route('/supprimerUtilisateur/{id}/delete', name:'remove_user')]
     public function removeUtilisateur(User $user,EntityManagerInterface $manager): Response
     {
@@ -83,8 +91,7 @@ class UtilisateurController extends AbstractController
             'utilisateurID' => $user,
             "tousLesGroupes" => $repoGroupe->findAll()
         ]);
-        
-        return $this->redirectToRoute("home");    
+ 
     }
 
     #[Route('/modifierUtilisateur/{id}/modif', name: 'modifier_utilisateur')]
@@ -111,22 +118,28 @@ class UtilisateurController extends AbstractController
         return $this->render('/utilisateur/modifierUser.html.twig', [
             'utilisateurID' => $user,
             "tousLesGroupes" => $repoGroupe->findAll()
-        ]);
-        
-        return $this->redirectToRoute("home");    
+        ]); 
     }
 
     #[Route('/modifierUser/{id}/modif', name: 'modifier_user')]
     public function modif_user(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $userPass, UserPasswordValidator $userPasswordValidator ): Response
     {
         $groupe = $repoGroupe->find($request->request->get('groupe'));
-        $user->setUsername($request->request->get('username'));
         $oldPassword = $request->request->get('oldPassword');
-        if ($userPasswordValidator->validate($oldPassword)) {
+        
+        if ($request->request->get('username') != null) {
+            $user->setUsername($request->request->get('username'));
+        }
+        
+        if ($oldPassword == $request->request->get('newPassword')) {
             $passHash = ($userPass->encodePassword($user, $request->request->get('newPassword')));
             $user->setPassword($passHash);
+
+            $this->addFlash(
+                'msg',
+                'Mot de passe modifié !!'
+            );
         }
-        $user->setPrenom($request->request->get('prenom'));
 
         $groupe->addUser($user);
         $manager->flush();

@@ -34,9 +34,8 @@
                 <tr>
                     <th class="p-2 px-4 border-r border-blue-200">ID groupe</th>
                     <th class="p-2 px-4 border-r border-blue-200">Nom du groupe</th>
-                    <th class="p-2 px-4 border-r border-blue-200">Administrateur</th>
                     <th class="p-2 px-4 border-r border-blue-200">Couleur</th>
-                    <th class="p-2 px-4 border-r border-blue-200">Option</th>
+                    <th class="p-2 px-4 ">Option</th>
                 </tr>
             </thead>
 
@@ -48,7 +47,7 @@
                         <td class="p-2 border-r border-blue-200">
                             <input type="color" value="{{ unGroupe.couleur }}" disabled>
                         </td>
-                        <td class="p-2 border-r border-blue-200"> 
+                        <td class="p-2 "> 
                             <form action="{{ path('remove_groupe',{'id':unGroupe.id}) }}" method="POST">
                                 <button type="submit" class="border border-red-400 bg-red-50 shadow-md rounded p-1 w-full hover:bg-red-400 transition duration-200">supprimer</button>
                             </form>
