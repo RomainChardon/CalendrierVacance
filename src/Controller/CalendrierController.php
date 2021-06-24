@@ -153,6 +153,10 @@ class CalendrierController extends AbstractController
                             
                             $dateDebutVacances = $vacance->getDateDebut();
                             $dateFinVacances = $vacance->getDateFin();
+
+                        $attente = $vacance->getAttente();
+                        $autoriser = $vacance->getAutoriser();
+                        $id = $vacance->getId();
                             if (($dateDebutVacances <= $jourUtiliser) && ($dateFinVacances >= $jourUtiliser)) {
                                 $enVacances = true;
                             } else {
@@ -163,6 +167,9 @@ class CalendrierController extends AbstractController
                                 'dateDebut' => $dateDebutVacances,
                                 'dateFin' => $dateFinVacances,
                                 'enVacances' => $enVacances,
+                                'attente' => $attente,
+                                'autoriser' => $autoriser,
+                                'id' => $id,
                             );
                         }
                         
@@ -252,6 +259,10 @@ class CalendrierController extends AbstractController
                         
                         $dateDebutVacances = $vacance->getDateDebut();
                         $dateFinVacances = $vacance->getDateFin();
+                        $attente = $vacance->getAttente();
+                        $autoriser = $vacance->getAutoriser();
+                        $id = $vacance->getId();
+
                         if (($dateDebutVacances <= $jourUtiliser2) && ($dateFinVacances >= $jourUtiliser2)) {
                             $enVacances = true;
                         } else {
@@ -262,6 +273,9 @@ class CalendrierController extends AbstractController
                             'dateDebut' => $dateDebutVacances,
                             'dateFin' => $dateFinVacances,
                             'enVacances' => $enVacances,
+                            'attente' => $attente,
+                            'autoriser' => $autoriser,
+                            'id' => $id,
                         );
                     }
                     

@@ -124,4 +124,12 @@ class Controller extends AbstractController
         $manager->flush();
         return $this->redirectToRoute("index");    
     }
+
+    #[Route('/etat_vacance/{id}/confirmation', name:'etat_vacance')]
+    public function afficherEtat(Vacances $vacances,EntityManagerInterface $manager): Response
+    {
+        return $this->render('/utilisateur/confSupprUser.html.twig', [
+            'vacanceID' => $vacances
+        ]);
+    }
 }

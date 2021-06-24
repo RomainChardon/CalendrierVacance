@@ -68,7 +68,13 @@
                             {% for vacance in detail %}
                                 {% for i in vacance %}
                                     {% if i.enVacances %}
-                                        X
+                                    {% if i.attente == true %}
+                                    <a href=""><i class="fas fa-clock"></i></a>
+                                {% elseif i.autoriser == true %}
+                                    <a href=""><i class="fas fa-check-circle"></i></a>
+                                {% else %}
+                                    <a href=""><i class="fas fa-times-circle"></i></a>
+                                {% endif %}
                                     {% endif %}
                                 {% endfor %}
                             {% endfor %}             
@@ -100,7 +106,13 @@
                     {% for vacance in detail %}
                         {% for i in vacance %}
                             {% if i.enVacances %}
-                                X
+                                {% if i.attente == true %}
+                                    <a href=""><i class="fas fa-clock"></i></a>
+                                {% elseif i.autoriser == true %}
+                                    <a href=""><i class="fas fa-check-circle"></i></a>
+                                {% else %}
+                                    <a href=""><i class="fas fa-times-circle"></i></a>
+                                {% endif %}
                             {% endif %}
                         {% endfor %}
                     {% endfor %}             
