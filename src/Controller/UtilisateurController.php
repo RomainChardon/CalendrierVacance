@@ -109,7 +109,7 @@ class UtilisateurController extends AbstractController
             'Utilisateur modifié !!'
         );
 
-        return $this->redirectToRoute("home");
+        return $this->redirectToRoute("utilisateur");
     }
 
      #[Route('/user/{id}/modif', name: 'modif_user')]
