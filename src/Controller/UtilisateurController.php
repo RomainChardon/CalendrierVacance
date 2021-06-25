@@ -154,6 +154,6 @@ class UtilisateurController extends AbstractController
 
         $manager->flush($user);
 
-        return $this->redirectToRoute("calendrier");
+        return $this->redirectToRoute("/");
     }
 }
