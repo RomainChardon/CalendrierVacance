@@ -1,0 +1,30 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Hello UtilisateurController!{% endblock %}
+
+{% block body %}
+{% include "include/retour.html.twig" %}
+{% include "include/notif.html.twig" %}
+
+<div class="min-h-screen flex flex-col justify-center bg-gray-100">
+    <div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
+        <div class="text-2xl m-3 font-extrabold text-center">
+        </div>
+        <div class="mt-5">
+        {% for user in vacanceID.users %}
+            <h3 class="text-center">Vacance de <span class="font-bold">{{ user.nom }} {{ user.prenom }}</span>, du <span class="font-bold">{{vacanceID.dateDebut|date('d/m/Y')}}</span> au <span class="font-bold">{{vacanceID.dateFin|date('d/m/Y')}}</span>.</h3>
+        {% endfor %}
+            
+                <div class="container w-full mt-9 mb-5 flex justify-center">
+                    <form action="{{ path('autorise_vacance', {'id':vacanceID.id}) }}" method="POST">
+                        <input type="submit" name="accept" value="Accepter" class="border border-green-400 bg-green-50 shadow-md rounded p-1.5 px-6 mr-3 hover:bg-green-400 transition duration-200">
+                    </form>
+                    <form action="{{ path('nonAutorise_vacance', {'id':vacanceID.id}) }}" method="POST">
+                        <input type="submit" value="Refuser" class="border border-red-400 bg-red-50 shadow-md rounded p-1.5 px-6 mr-3 hover:bg-red-400 transition duration-200">
+                    </form>
+                </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

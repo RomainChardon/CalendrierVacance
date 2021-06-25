@@ -108,7 +108,6 @@ class Controller extends AbstractController
     {
         return $this->render('demandeVacance.html.twig', [
             'vacanceID' => $vacances,
-            ''
         ]);
            
     }
@@ -132,5 +131,13 @@ class Controller extends AbstractController
 
         $manager->flush();
         return $this->redirectToRoute("calendrier");    
+    }
+
+    #[Route('/etat_vacance/{id}/confirmation', name:'etat_vacance')]
+    public function afficherEtat(Vacances $vacances,EntityManagerInterface $manager): Response
+    {
+        return $this->render('/etatVacance.html.twig', [
+            'vacanceID' => $vacances
+        ]);
     }
 }

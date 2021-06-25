@@ -170,6 +170,9 @@ class CalendrierController extends AbstractController
                                 'autoriser' => $autoriser,
                                 'attente' => $attente,
                                 'enVacances' => $enVacances,
+                                'attente' => $attente,
+                                'autoriser' => $autoriser,
+                                'id' => $id,
                             );
                         }
                         
@@ -259,9 +262,10 @@ class CalendrierController extends AbstractController
                         
                         $dateDebutVacances = $vacance->getDateDebut();
                         $dateFinVacances = $vacance->getDateFin();
-                        $autoriser = $vacance->getAutoriser();
                         $attente = $vacance->getAttente();
+                        $autoriser = $vacance->getAutoriser();
                         $id = $vacance->getId();
+
                         if (($dateDebutVacances <= $jourUtiliser2) && ($dateFinVacances >= $jourUtiliser2)) {
                             $enVacances = true;
                         } else {
@@ -275,6 +279,9 @@ class CalendrierController extends AbstractController
                             'id' => $id,
                             'attente' => $attente,
                             'enVacances' => $enVacances,
+                            'attente' => $attente,
+                            'autoriser' => $autoriser,
+                            'id' => $id,
                         );
                     }
                     

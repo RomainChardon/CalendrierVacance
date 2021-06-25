@@ -4,19 +4,18 @@
 
 {% block body %}
 {% include "include/notif.html.twig" %}
-<div class=" fixed flex justify-start items-center h-screen ">
-    <div class="fixed h-3/6 ">
-        <div class="flex flex-col px-5 py-5 w-32 shadow-2xl mx-auto rounded-r-2xl bg-white">
-            <p class="mb-3">Sélèctionnez le groupe à afficher ou à cacher :</p> <br>
-            {% for groupes in tousLesGroupes %}
-                <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" style="background-color: {{ groupes.couleur }};" onclick="afficherGroupe('{{groupes.nomGroupe}}')">{{groupes.nomGroupe}}</button>
-            {% endfor %}
+
+
+<div class="h-20">
+    <div class="flex flex-row mt-2 ml-5 justify-start">
+        <div class="">
+                <p class="">Sélèctionnez le groupe à afficher ou à cacher :</p>
+                {% for groupes in tousLesGroupes %}
+                    <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" style="background-color: {{ groupes.couleur }};" onclick="afficherGroupe('{{groupes.nomGroupe}}')">{{groupes.nomGroupe}}</button>
+                {% endfor %}
         </div>
     </div>
-</div>
-
-<div class="h-8">
-    <div class="flex flex-row mt-2 justify-end">
+    <div class="flex flex-row mr-5 -mt-12 justify-end">
         <form action="{{ path('index') }}" method="POST">
             <button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-plane-departure"></i></button></form>
         {% if is_granted('ROLE_ADMIN') %}
