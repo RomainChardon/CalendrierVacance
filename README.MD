@@ -1,9 +1,5 @@
 # Tableau de visualisation et de suivi de vacances.
 
-### code ###
-    efesfse
-**gras**
-
 **Objectif :** Visualiser par équipe qui est absent ou non dans une période donnée.
 
 Projet réaliser lors du stage de BTS SIO 1er année, danns l'établissement Adeo Informatique.
