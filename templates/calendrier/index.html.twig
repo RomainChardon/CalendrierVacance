@@ -70,7 +70,7 @@
                                 <form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
                                     {% if i.enVacances %}
                                         {% if i.attente == true %}
-                                            <button><i class="fas fa-clock"></i></button>
+                                            <button><i class="far fa-clock"></i></button>
                                         {% elseif i.autoriser == true %}
                                             <button><i class="fas fa-check"></i></button>
                                         {% else %}
@@ -112,7 +112,7 @@
                             <form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
                                     {% if i.enVacances %}
                                         {% if i.attente == true %}
-                                            <button><i class="fas fa-clock"></i></button>
+                                            <button><i class="far fa-clock"></i></button>
                                         {% elseif i.autoriser == true %}
                                             <button><i class="fas fa-check"></i></button>
                                         {% else %}
