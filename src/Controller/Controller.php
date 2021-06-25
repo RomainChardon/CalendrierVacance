@@ -111,7 +111,7 @@ class Controller extends AbstractController
         $vacances->setAutoriser('1');
 
         $manager->flush();
-        return $this->redirectToRoute("index");    
+        return $this->redirectToRoute("calendrier");    
     }
 
     #[Route('/nonAutoriseVacance/{id}/modif', name: 'nonAutorise_vacance')]
@@ -122,6 +122,14 @@ class Controller extends AbstractController
         $vacances->setAutoriser('0');
 
         $manager->flush();
-        return $this->redirectToRoute("index");    
+        return $this->redirectToRoute("calendrier");    
+    }
+
+    #[Route('/etat_vacance/{id}/confirmation', name:'etat_vacance')]
+    public function afficherEtat(Vacances $vacances,EntityManagerInterface $manager): Response
+    {
+        return $this->render('/etatVacance.html.twig', [
+            'vacanceID' => $vacances
+        ]);
     }
 }
