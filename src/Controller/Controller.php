@@ -49,6 +49,10 @@ class Controller extends AbstractController
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
 
+        if ( $request->request->get('maladie') == 'true') {
+            $vacances->setMaladie('1');
+        }
+
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);
         $entityManager->flush();
