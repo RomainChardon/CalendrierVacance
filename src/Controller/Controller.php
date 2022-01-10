@@ -49,13 +49,15 @@ class Controller extends AbstractController
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
       
-        $diff = $dateDebut->diff($dateFin);
-        $nbConges = $utilisateur->getNbConges() - $diff->d;
-
-        $utilisateur->setNbConges($nbConges);
-      
         if ( $request->request->get('maladie') == 'true') {
             $vacances->setMaladie('1');
+        } elseif ($request->request->get('congesSansSoldes')) {
+            // Ne fait rien
+        } else {
+            $diff = $dateDebut->diff($dateFin);
+            $nbConges = $utilisateur->getNbConges() - $diff->d;
+
+            $utilisateur->setNbConges($nbConges);
         }
 
         $utilisateur->addVacance($vacances);
