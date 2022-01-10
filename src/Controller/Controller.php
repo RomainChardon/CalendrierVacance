@@ -39,26 +39,53 @@ class Controller extends AbstractController
         $vacances = new Vacances();
 
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));
-        $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
-        $heureDebut = new DateTimeImmutable('0:0:0');
-        $heureFin = new DateTimeImmutable('0:0:0');
+        $h0 = new DateTimeImmutable('0:0:0');
+        $h12 = new DateTimeImmutable('12:0:0');
+        if ($request->request->get('demiJournee') == null) {
+            $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
+            $heureDebut = $h0;
+            $heureFin = $h0;
+
+            if ( $request->request->get('maladie') == 'true') {
+                $vacances->setMaladie('1');
+            } elseif ($request->request->get('congesSansSoldes')) {
+                // Ne fait rien
+            } else {
+                $diff = $dateDebut->diff($dateFin);
+                $nbConges = $utilisateur->getNbConges() - $diff->d;
+    
+                $utilisateur->setNbConges($nbConges);
+            }
+        } else {
+            
+            $demiJournee = $request->request->get('demiJournee');
+            $dateFin = $dateDebut;
+            if ($demiJournee == "matin") {
+                $heureDebut = $h0;
+                $heureFin = $h12;
+            } elseif ($demiJournee == "aprem") {
+                $heureDebut = $h12;
+                $heureFin = $h0;
+            }
+
+            if ( $request->request->get('maladie') == 'true') {
+                $vacances->setMaladie('1');
+            } elseif ($request->request->get('congesSansSoldes')) {
+                // Ne fait rien
+            } else {
+                $nbConges = $utilisateur->getNbConges() - 0.5;
+    
+                $utilisateur->setNbConges($nbConges);
+            }
+        }
         $vacances->setDateDebut($dateDebut);
         $vacances->setDateFin($dateFin);
         $vacances->setHeureDebut($heureDebut);
         $vacances->setHeureFin($heureFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
-      
-        if ( $request->request->get('maladie') == 'true') {
-            $vacances->setMaladie('1');
-        } elseif ($request->request->get('congesSansSoldes')) {
-            // Ne fait rien
-        } else {
-            $diff = $dateDebut->diff($dateFin);
-            $nbConges = $utilisateur->getNbConges() - $diff->d;
 
-            $utilisateur->setNbConges($nbConges);
-        }
+        
 
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);
