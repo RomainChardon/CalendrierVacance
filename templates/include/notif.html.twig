@@ -1,19 +1,20 @@
+<script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@2.8.2/dist/alpine.min.js"></script>
 {% for message in app.flashes('msg') %}
-            <div class="bg-gray-100 flex justify-center  align-top ">
-            <div class="fixed">
-                <div class="text-center w-56 m-6 p-6 bg-red-500 rounded-md ">
-                    {{ message }}
-                </div>
-            </div>
-            </div>
+	<div x-data="{show: true}" x-init="setTimeout(() => show = false, 5000)" x-show="show" class="bg-gray-100 flex justify-center  align-top ">
+		<div class="fixed">
+			<div class="text-center w-56 m-6 p-6 bg-red-500 rounded-md ">
+				{{ message }}
+			</div>
+		</div>
+	</div>
 {% endfor %}
 
 {% for message in app.flashes('succes') %}
-            <div class="bg-gray-100 flex justify-center  align-top ">
-            <div class="fixed">
-                <div class="text-center w-56 m-6 p-6 bg-green-500 rounded-md ">
-                    {{ message }}
-                </div>
-            </div>
-            </div>
+	<div x-data="{show: true}" x-init="setTimeout(() => show = false, 5000)" x-show="show" class="bg-gray-100 flex justify-center  align-top ">
+		<div class="fixed">
+			<div class="text-center w-56 m-6 p-6 bg-green-500 rounded-md ">
+				{{ message }}
+			</div>
+		</div>
+	</div>
 {% endfor %}

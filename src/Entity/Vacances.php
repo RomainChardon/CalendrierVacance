@@ -49,6 +49,10 @@ class Vacances
      */
     private $attente;
 
+        /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $maladie;
     /**
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="Vacances")
      */
@@ -137,6 +141,17 @@ class Vacances
         return $this;
     }
 
+    public function getMaladie(): ?bool
+    {
+        return $this->maladie;
+    }
+
+    public function setMaladie(bool $maladie): self
+    {
+        $this->maladie = $maladie;
+
+        return $this;
+    }
     /**
      * @return Collection|User[]
      */
