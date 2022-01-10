@@ -70,13 +70,10 @@ class CalendrierController extends AbstractController
         $interval2 = new DateInterval('P1D');
         $periode2 = new DatePeriod($debut2, $interval2, $prochain2);
 
-        // $listeVacances = $repoVacances -> findAll();
-        // foreach ($listeVacances as $vacance) {
-        //    var_dump( $vacance->getDateDebut());
-        // }
-
-
         return $this->render('/calendrier/index.html.twig', [
+            // Congés user
+            'nbConges' => $this->getUser()->getNbConges(),
+
             // Date actuel
             'anneeActuel' => $this->anneeActuel,
             'moisActuel' => $this->moisActuel,

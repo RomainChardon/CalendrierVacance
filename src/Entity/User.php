@@ -56,6 +56,11 @@ class User implements UserInterface
      */
     private $Groupe;
 
+    /**
+     * @ORM\Column(type="float", nullable=true)
+     */
+    private $nbConges;
+
     public function __construct()
     {
         $this->Vacances = new ArrayCollection();
@@ -193,6 +198,18 @@ class User implements UserInterface
     public function setGroupe(?Groupe $Groupe): self
     {
         $this->Groupe = $Groupe;
+
+        return $this;
+    }
+
+    public function getNbConges(): ?float
+    {
+        return $this->nbConges;
+    }
+
+    public function setNbConges(?float $nbConges): self
+    {
+        $this->nbConges = $nbConges;
 
         return $this;
     }

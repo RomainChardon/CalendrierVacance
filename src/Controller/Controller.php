@@ -21,7 +21,7 @@ use phpDocumentor\Reflection\PseudoTypes\True_;
 #[Route('/vacances')]
 class Controller extends AbstractController
 {
-
+   
     #[Route('/vacances', name: 'index')]
     public function index(UserRepository $repoUser, VacancesRepository $repoVacances): Response
     {
@@ -48,7 +48,12 @@ class Controller extends AbstractController
         $vacances->setHeureFin($heureFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
+      
+        $diff = $dateDebut->diff($dateFin);
+        $nbConges = $utilisateur->getNbConges() - $diff->d;
 
+        $utilisateur->setNbConges($nbConges);
+      
         if ( $request->request->get('maladie') == 'true') {
             $vacances->setMaladie('1');
         }
