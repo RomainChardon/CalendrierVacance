@@ -49,6 +49,10 @@ class Controller extends AbstractController
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
 
+        $diff = $dateDebut->diff($dateFin);
+        $nbConges = $utilisateur->getNbConges() - $diff->d;
+
+        $utilisateur->setNbConges($nbConges);
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);
         $entityManager->flush();
