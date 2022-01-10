@@ -75,8 +75,10 @@ class CalendrierController extends AbstractController
         //    var_dump( $vacance->getDateDebut());
         // }
 
-
         return $this->render('/calendrier/index.html.twig', [
+            // Congés user
+            'nbConges' => $this->getUser()->getNbConges(),
+
             // Date actuel
             'anneeActuel' => $this->anneeActuel,
             'moisActuel' => $this->moisActuel,

@@ -154,6 +154,23 @@ class UtilisateurController extends AbstractController
 
         $manager->flush($user);
 
-        return $this->redirectToRoute("/");
+        return $this->redirectToRoute("calendrier");
+    }
+
+    #[Route('/modifierUtilisateur/{id}/Congés', name: 'modifierCongés_utilisateur')]
+    public function modifConges_utilisateur(User $user, Request $request, EntityManagerInterface $manager): Response
+    {
+        $nbCongesOLD = $user->getNbConges();
+        $nbCongesNEW = $nbCongesOLD + $request->request->get('nbConges');
+
+        $user->setNbConges($nbCongesNEW);
+        $this->addFlash(
+            'succes',
+            'Congés ajouté !!'
+        );
+
+        $manager->flush($user);
+
+        return $this->redirectToRoute("calendrier");
     }
 }

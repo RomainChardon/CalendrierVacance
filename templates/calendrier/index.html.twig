@@ -6,16 +6,29 @@
 {% include "include/notif.html.twig" %}
 
 
-<div class="h-20">
-    <div class="flex flex-row mt-2 ml-5 justify-start">
+<div class="h-20 border border-gray-100 flex justify-between">
+    <div class="flex flex-row">
         <div class="">
-                <p class="">Sélèctionnez le groupe à afficher ou à cacher :</p>
+                <p class="">Sélectionnez le groupe à afficher ou à cacher :</p>
                 {% for groupes in tousLesGroupes %}
                     <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" style="background-color: {{ groupes.couleur }};" onclick="afficherGroupe('{{groupes.nomGroupe}}')">{{groupes.nomGroupe}}</button>
                 {% endfor %}
         </div>
     </div>
-    <div class="flex flex-row mr-5 -mt-12 justify-end">
+    <div class="flex flex-row w-2/6 justify-around">
+        <div class="">
+            <p>Ajouté des jours de congés :</p>
+            <form action="{{ path('modifierCongés_utilisateur', {'id':app.user.id}) }}" method="post">
+                <input type="number" name="nbConges" id="nbConges" step="0.5" class="border border-gray-400 shadow-md rounded w-32 mr-2 p-1">
+                <input type="submit" value="Entrer" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 hover:bg-gray-400 transition duration-200">
+            </form>
+        </div>
+        <div class="">
+            <p>Vos jours de congés :</p>
+            <p class="border border-gray-400 shadow-md rounded w-full mr-2 p-1">{{ nbConges }}</p>
+        </div>
+    </div>
+    <div class="flex flex-row">
         <form action="{{ path('index') }}" method="POST">
             <button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-plane-departure"></i></button></form>
         {% if is_granted('ROLE_ADMIN') %}
@@ -23,7 +36,7 @@
             <form action="{{ path('utilisateur') }}" method="POST"><button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-users"></i></button></form>
         {% endif %}
         <form action="{{ path('modif_user',{'id':app.user.id}) }}" method="POST"><button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-user-edit"></i></button></form>
-        <a href="{{ path('app_logout') }}" class="border border-red-400 bg-red-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-red-400 transition duration-200"><i class="fas fa-sign-out-alt"></i></a>
+        <a href="{{ path('app_logout') }}" class="border border-red-400 bg-red-50 shadow-md rounded p-1 px-5 mr-4 mb-10 hover:bg-red-400 transition duration-200"><i class="fas fa-sign-out-alt"></i></a>
     </div>
 </div>
 
