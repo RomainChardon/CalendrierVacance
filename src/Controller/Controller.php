@@ -21,7 +21,7 @@ use phpDocumentor\Reflection\PseudoTypes\True_;
 #[Route('/vacances')]
 class Controller extends AbstractController
 {
-
+   
     #[Route('/vacances', name: 'index')]
     public function index(UserRepository $repoUser, VacancesRepository $repoVacances): Response
     {
