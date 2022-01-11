@@ -43,7 +43,7 @@ class UtilisateurController extends AbstractController
 
         $utilisateur->setNom($request->request->get('nom'));
         $utilisateur->setPrenom($request->request->get('prenom'));
-        $utilisateur->setUsername($request->request->get('nom') .'.'. $request->request->get('prenom'));
+        $utilisateur->setUsername(strtolower(substr($request->request->get('prenom'),0,1) . ($request->request->get('nom'))));
         $utilisateur->setPassword($passHash);
         $utilisateur->setGroupe($groupe);
         
