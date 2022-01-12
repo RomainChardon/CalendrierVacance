@@ -47,7 +47,12 @@ class CalendrierController extends AbstractController
         }
 
         $moisUtiliserFormatLettre = $this->traductionMois($this->moisUtiliser);
-        $moisUtiliserFormatLettre2 = $this->traductionMois($this->moisUtiliser + 1);
+        if ($this->moisUtiliser + 1 >= 13) {
+            $moisUtiliserFormatLettre2 = $this->traductionMois(1);
+        } else {
+            $moisUtiliserFormatLettre2 = $this->traductionMois($this->moisUtiliser + 1);
+        }
+        
 
         // Premier jour du mois actuel
         $debut = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser. '-1');
@@ -60,15 +65,30 @@ class CalendrierController extends AbstractController
         $interval = new DateInterval('P1D');
         $periode = new DatePeriod($debut, $interval, $prochain);
 
-        $debut2 = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser + 1 . '-1');
-        // Nombre de jours contenu dans le mois suivant
-        $nbjour2 = $debut2->format("t");
-        // Dernier jour du mois actuel
-        $prochain2 = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser + 1 . '-' .$nbjour);
+        if ($this->moisUtiliser + 1 >= 13 ) {
+            $debut2 = new DateTime($this->anneeUtiliser + 1 . '-' .  1 . '-1');
+            // Nombre de jours contenu dans le mois suivant
+            $nbjour2 = $debut2->format("t");
+            // Dernier jour du mois actuel
+            $prochain2 = new DateTime($this->anneeUtiliser + 1 . '-' . 1 . '-' .$nbjour);
+        } else {
+            $debut2 = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser + 1 . '-1');
+            // Nombre de jours contenu dans le mois suivant
+            $nbjour2 = $debut2->format("t");
+            // Dernier jour du mois actuel
+            $prochain2 = new DateTime($this->anneeUtiliser . '-' . $this->moisUtiliser + 1 . '-' .$nbjour);
+        }
+        
         // Création de l'interval du $debut a $prochain
         $prochain2 = $prochain2->modify( '+1 day' ); 
         $interval2 = new DateInterval('P1D');
         $periode2 = new DatePeriod($debut2, $interval2, $prochain2);
+
+        if ($this->anneeUtiliser + 1 >= 13) {
+            $anneeSuivante = $this->anneeUtiliser+1; 
+        } else {
+            $anneeSuivante = $this->anneeUtiliser;
+        }
 
         return $this->render('/calendrier/index.html.twig', [
             // Congés user
@@ -89,6 +109,8 @@ class CalendrierController extends AbstractController
             'moisUtiliserFormatLettre'=>$moisUtiliserFormatLettre,
             'moisUtiliserFormatLettre2'=>$moisUtiliserFormatLettre2,
             'anneeUtiliser'=>$this->anneeUtiliser,
+            'anneeSuivante' => $anneeSuivante,
+            
 
             // Groupe d'utilisateur
             'tousLesGroupes' => $repoGroupe->findAll()
@@ -218,7 +240,12 @@ class CalendrierController extends AbstractController
             $jourAfficher2 = $date->format("N");
             $numJours = (int)$date->format("d");
 
-            $jourUtiliser2 = new DateTime($numJours . '-' . $this->moisUtiliser + 1 . '-' . $this->anneeUtiliser);
+            if ($this->moisUtiliser + 1 >= 13 ) {
+                $jourUtiliser2 = new DateTime($numJours . '-' . 1 . '-' . $this->anneeUtiliser + 1);
+            } else {
+                $jourUtiliser2 = new DateTime($numJours . '-' . $this->moisUtiliser + 1 . '-' . $this->anneeUtiliser);
+            }
+            
             $jourAujourdhui = new DateTime($this->jourActuel . '-' . $this->moisActuel . '-' . $this->anneeActuel);
 
             if ($jourAujourdhui == $jourUtiliser2) {
