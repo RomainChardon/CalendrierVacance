@@ -26,7 +26,10 @@ class CalendrierControllerTest extends WebTestCase
             'password' => 'toto'
         ]);
         $client->submit($form);
-        $this->assertResponseRedirects('/vacance/calendrier');
-        $client->followRedirect();
+        // $client->followRedirect();
+        // $this->assertResponseRedirects('/vacance/calendrier');
+
+        dd($client->getRequest()->getUri());
+        
     }
 }
