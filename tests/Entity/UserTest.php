@@ -1,20 +1,23 @@
-<?php 
+<?php
+
+namespace App\Tests\Entity;
+
 use App\Entity\User;
-use App\Entity\Vacances;
-use PHPUnit\Framework\TestCase;
-/** @test */
-class UserTest extends TestCase
+use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+
+class UserTest extends KernelTestCase
 {
-    public function test_default_role_user()
+    public function testValidUser(): void
     {
-        $user = new User();
-
-        $rolesUser = $user->getRoles();
-
-        $checkRoleUser = array_search("ROLE_USER",$rolesUser);
-        $checkRoleAdmin = array_search("ROLE_ADMIN",$rolesUser);
-
-        $this->assertIsNotBool($checkRoleUser);
-        $this->assertFalse($checkRoleAdmin);
+        $user = (new User())
+            ->setUsername('rchardon')
+            ->setRoles([])
+            ->setPassword("toto")
+            ->setNom("Chardon")
+            ->setPrenom("Romain")
+            ->setNbConges(0);
+        self::bootKernel();
+        $error = self::$container->get('validator')->validate($user);
+        $this->assertCount(0, $error);
     }
 }
