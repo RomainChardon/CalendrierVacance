@@ -2,21 +2,25 @@
 
 namespace App\Controller;
 
-use App\Entity\Utilisateur;
-use App\Entity\Vacances;
-use App\Repository\UserRepository;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
-use App\Repository\VacancesRepository;
 use DateTime;
 use DateTimeImmutable;
+use App\Entity\Vacances;
+use App\Entity\Utilisateur;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\Entity;
-use phpDocumentor\Reflection\PseudoTypes\False_;
+use App\Repository\UserRepository;
+use App\Repository\VacancesRepository;
+use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use phpDocumentor\Reflection\PseudoTypes\True_;
+use Symfony\Component\Routing\Annotation\Route;
+use phpDocumentor\Reflection\PseudoTypes\False_;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+
 
 #[Route('/vacances')]
 class Controller extends AbstractController
@@ -43,29 +47,30 @@ class Controller extends AbstractController
         $h12 = new DateTimeImmutable('12:0:0');
         if ($request->request->get('demiJournee') == null) {
             $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
-            $heureDebut = $h0;
-            $heureFin = $h0;
 
             if ( $request->request->get('maladie') == 'true') {
                 $vacances->setMaladie('1');
             } elseif ($request->request->get('congesSansSoldes')) {
-                // Ne fait rien
+                $vacances->setSansSoldes('1');
+                
             } else {
                 $diff = $dateDebut->diff($dateFin);
                 $nbConges = $utilisateur->getNbConges() - $diff->d;
     
                 $utilisateur->setNbConges($nbConges);
             }
+
+
         } else {
             
             $demiJournee = $request->request->get('demiJournee');
             $dateFin = $dateDebut;
             if ($demiJournee == "matin") {
-                $heureDebut = $h0;
-                $heureFin = $h12;
+                $horraire = "Matin";
+                $vacances->setDemiJournee($horraire);
             } elseif ($demiJournee == "aprem") {
-                $heureDebut = $h12;
-                $heureFin = $h0;
+                $horraire = "Aprés-Midi";
+                $vacances->setDemiJournee($horraire);
             }
 
             if ( $request->request->get('maladie') == 'true') {
@@ -80,8 +85,6 @@ class Controller extends AbstractController
         }
         $vacances->setDateDebut($dateDebut);
         $vacances->setDateFin($dateFin);
-        $vacances->setHeureDebut($heureDebut);
-        $vacances->setHeureFin($heureFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
 
@@ -144,6 +147,7 @@ class Controller extends AbstractController
     #[Route('/demandeVacance/{id}/demande', name: 'demande_vacance')]
     public function demandeVacance(Vacances $vacances, EntityManagerInterface $manager): Response
     {
+
         return $this->render('demandeVacance.html.twig', [
             'vacanceID' => $vacances,
         ]);
@@ -151,12 +155,41 @@ class Controller extends AbstractController
     }
 
     #[Route('/autoriseVacance/{id}/modif', name: 'autorise_vacance')]
-    public function autoriseVacances( Vacances $vacances, Request $request, EntityManagerInterface $manager): Response
+    public function autoriseVacances( UserRepository $userRepo, Vacances $vacances, Request $request, EntityManagerInterface $manager,MailerInterface $mailer): Response
     {
+        $utilisateur = $userRepo->find($this->getUser());
         $vacances->setAttente('0');
         $vacances->setAutoriser('1');
+        $dateDébut = $vacances->getDateDebut();
+        $dateFin = $vacances->getDateFin();
+        $dateDébut = $dateDébut->format('d/m/Y');
+        $dateFin = $dateFin->format('d/m/Y');
+        $maladie = $vacances->getMaladie();
+        $sansSoldes = $vacances->getSansSoldes();
+
+
+        $email = (new Email())
+        ->from('enzo.mangiante.adeo@gmail.com')
+        ->to($utilisateur->getMail())
+        //->cc('cc@example.com')
+        //->bcc('bcc@example.com')
+        //->replyTo('fabien@example.com')
+        //->priority(Email::PRIORITY_HIGH)
+        ->subject("Confirmation d'autorisation de vos congés");
+
+        if ($maladie == "1") {
+            $email->html("<p> Votre arrêt du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+        } elseif ($sansSoldes == "1") {
+            $email->html("<p> Vos congés sans soldes du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+        } else {
+            $email->html("<p> Vos Vacances du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+        }
+
+        $mailer->send($email);
 
         $manager->flush();
+
+       
         return $this->redirectToRoute("calendrier");    
     }
 

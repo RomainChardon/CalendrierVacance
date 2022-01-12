@@ -61,6 +61,11 @@ class User implements UserInterface
      */
     private $nbConges;
 
+    /**
+     * @ORM\Column(type="string", length=255)
+     */
+    private $mail;
+
     public function __construct()
     {
         $this->Vacances = new ArrayCollection();
@@ -210,6 +215,18 @@ class User implements UserInterface
     public function setNbConges(?float $nbConges): self
     {
         $this->nbConges = $nbConges;
+
+        return $this;
+    }
+
+    public function getMail(): ?string
+    {
+        return $this->mail;
+    }
+
+    public function setMail(string $mail): self
+    {
+        $this->mail = $mail;
 
         return $this;
     }

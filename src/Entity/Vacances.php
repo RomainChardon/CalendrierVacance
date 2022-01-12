@@ -35,16 +35,6 @@ class Vacances
     private $autoriser;
 
     /**
-     * @ORM\Column(type="datetime")
-     */
-    private $heure_debut;
-
-    /**
-     * @ORM\Column(type="datetime")
-     */
-    private $heure_fin;
-
-    /**
      * @ORM\Column(type="boolean")
      */
     private $attente;
@@ -57,6 +47,16 @@ class Vacances
      * @ORM\ManyToMany(targetEntity=User::class, mappedBy="Vacances")
      */
     private $users;
+
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $demiJournee;
+
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $sansSoldes;
 
     public function __construct()
     {
@@ -101,30 +101,6 @@ class Vacances
     public function setAutoriser(bool $autoriser): self
     {
         $this->autoriser = $autoriser;
-
-        return $this;
-    }
-
-    public function getHeureDebut(): ?\DateTimeInterface
-    {
-        return $this->heure_debut;
-    }
-
-    public function setHeureDebut(\DateTimeInterface $heure_debut): self
-    {
-        $this->heure_debut = $heure_debut;
-
-        return $this;
-    }
-
-    public function getHeureFin(): ?\DateTimeInterface
-    {
-        return $this->heure_fin;
-    }
-
-    public function setHeureFin(\DateTimeInterface $heure_fin): self
-    {
-        $this->heure_fin = $heure_fin;
 
         return $this;
     }
@@ -175,6 +151,30 @@ class Vacances
         if ($this->users->removeElement($user)) {
             $user->removeVacance($this);
         }
+
+        return $this;
+    }
+
+    public function getDemiJournee(): ?string
+    {
+        return $this->demiJournee;
+    }
+
+    public function setDemiJournee(?string $demiJournee): self
+    {
+        $this->demiJournee = $demiJournee;
+
+        return $this;
+    }
+
+    public function getSansSoldes(): ?bool
+    {
+        return $this->sansSoldes;
+    }
+
+    public function setSansSoldes(?bool $sansSoldes): self
+    {
+        $this->sansSoldes = $sansSoldes;
 
         return $this;
     }

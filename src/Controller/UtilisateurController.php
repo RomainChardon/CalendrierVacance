@@ -46,6 +46,8 @@ class UtilisateurController extends AbstractController
         $utilisateur->setUsername(strtolower(substr($request->request->get('prenom'),0,1) . ($request->request->get('nom'))));
         $utilisateur->setPassword($passHash);
         $utilisateur->setGroupe($groupe);
+        $utilisateur->setMail($request->request->get('mail'));
+
         
         if ( $request->request->get('admin') == 'true') {
             $role[]= 'ROLE_ADMIN';
