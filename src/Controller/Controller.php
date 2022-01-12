@@ -178,7 +178,7 @@ class Controller extends AbstractController
         ->subject("Confirmation d'autorisation de vos congés");
 
         if ($maladie == "1") {
-            $email->html("<p> Votre arrêt du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+            $email->html("<p> Votre arrêt maladie du $dateDébut au $dateFin sont autorisé par la direction. </p>");
         } elseif ($sansSoldes == "1") {
             $email->html("<p> Vos congés sans soldes du $dateDébut au $dateFin sont autorisé par la direction. </p>");
         } else {
