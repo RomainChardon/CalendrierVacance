@@ -14,17 +14,6 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class CalendrierControllerTest extends WebTestCase
 {
 
-    use CreateUser;
-
-    private EntityManagerInterface $manager;
-    private UserPasswordEncoderInterface $encoder;
-
-    public function __construct(EntityManagerInterface $manager, UserPasswordEncoderInterface $encoder)
-    {
-        $this->manager = $manager;
-        $this->encoder = $encoder;
-    }
-
     public function testPageCalendier(): void
     {
         $client = static::createClient();
