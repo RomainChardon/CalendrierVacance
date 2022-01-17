@@ -4,153 +4,213 @@
 {% endblock %}
 
 {% block body %}
-{% include "include/notif.html.twig" %}
+	{% include "include/notif.html.twig" %}
+
+	<div class="h-20 border border-gray-100 flex justify-between">
+		<div class="flex flex-row">
+			<div class="">
+				<p class="">Sélectionnez le groupe à afficher ou à cacher :</p>
+				{% for groupes in tousLesGroupes %}
+					<button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" style="background-color: {{ groupes.couleur }};" onclick="afficherGroupe('{{groupes.nomGroupe}}')">{{groupes.nomGroupe}}</button>
+				{% endfor %}
+			</div>
+		</div>
+		<div class="flex flex-row">
+			<form action="{{ path('index') }}" method="POST">
+				<button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200">
+					<i class="fas fa-plane-departure"></i>
+				</button>
+			</form>
+			{% if is_granted('ROLE_ADMIN') %}
+				<form action="{{ path('groupe') }}" method="POST">
+					<button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200">
+						<i class="fas fa-users-cog"></i>
+					</button>
+				</form>
+				<form action="{{ path('utilisateur') }}" method="POST">
+					<button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200">
+						<i class="fas fa-users"></i>
+					</button>
+				</form>
+			{% endif %}
+			<form action="{{ path('modif_user',{'id':app.user.id}) }}" method="POST">
+				<button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200">
+					<i class="fas fa-user-edit"></i>
+				</button>
+			</form>
+			<a href="{{ path('app_logout') }}" class="border border-red-400 bg-red-50 shadow-md rounded p-1 px-5 mr-4 mb-10 hover:bg-red-400 transition duration-200">
+				<i class="fas fa-sign-out-alt"></i>
+			</a>
+		</div>
+	</div>
 
 
-<div class="h-20 border border-gray-100 flex justify-between">
-    <div class="flex flex-row">
-        <div class="">
-                <p class="">Sélectionnez le groupe à afficher ou à cacher :</p>
-                {% for groupes in tousLesGroupes %}
-                    <button class="border border-gray-400 shadow-md rounded mb-2 hover:bg-gray-400 p-1" style="background-color: {{ groupes.couleur }};" onclick="afficherGroupe('{{groupes.nomGroupe}}')">{{groupes.nomGroupe}}</button>
-                {% endfor %}
-        </div>
-    </div>
-    <div class="flex flex-row w-2/6 justify-around">
-        <div class="">
-            <p>Ajouté des jours de congés :</p>
-            <form action="{{ path('modifierCongés_utilisateur', {'id':app.user.id}) }}" method="post">
-                <input type="number" name="nbConges" id="nbConges" step="0.5" class="border border-gray-400 shadow-md rounded w-32 mr-2 p-1">
-                <input type="submit" value="Entrer" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 hover:bg-gray-400 transition duration-200">
-            </form>
-        </div>
-        <div class="">
-            <p>Vos jours de congés :</p>
-            <p class="border border-gray-400 shadow-md rounded w-full mr-2 p-1">{{ nbConges }}</p>
-        </div>
-    </div>
-    <div class="flex flex-row">
-        <form action="{{ path('index') }}" method="POST">
-            <button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-plane-departure"></i></button></form>
-        {% if is_granted('ROLE_ADMIN') %}
-            <form action="{{ path('groupe') }}" method="POST"><button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-users-cog"></i></button></form>
-            <form action="{{ path('utilisateur') }}" method="POST"><button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-users"></i></button></form>
-        {% endif %}
-        <form action="{{ path('modif_user',{'id':app.user.id}) }}" method="POST"><button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200"><i class="fas fa-user-edit"></i></button></form>
-        <a href="{{ path('app_logout') }}" class="border border-red-400 bg-red-50 shadow-md rounded p-1 px-5 mr-4 mb-10 hover:bg-red-400 transition duration-200"><i class="fas fa-sign-out-alt"></i></a>
-    </div>
-</div>
+	<div class="flex flex-col justify-center text-sm">
+		<div class="px-10 w-auto p-4 shadow-2xl mx-auto rounded-2xl bg-white">
+			<div class="mb-5 text-base">
+				<form action="{{ path('calendrier') }}" method="get">
+					<select name="moisSelectionner" id="moisSelectionner" class="border border-gray-400 shadow-md rounded p-1.5">
+						{% for mois in listeMois %}
+							<option value="{{ loop.index }}" {% if loop.index == moisUtiliser %} selected {% endif %}>{{ mois }}</option>
+						{% endfor %}
+					</select>
+					<select name="anneeSelectionner" id="anneeSelectionner" class="border border-gray-400 shadow-md rounded p-1.5">
+						{% for annee in listeAnnee %}
+							<option value="{{annee}}" {% if annee == anneeUtiliser %} selected {% endif %}>{{annee}}</option>
+						{% endfor %}
+					</select>
+					<button type="submit" name="valide" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 hover:bg-gray-400 transition duration-200">
+						<i class="fas fa-search"></i>
+					</button>
+				</div>
+
+				<table class="table table-hover w-50 text-center ">
+					<tr class="p-2 border-b border-gray-100">
+						<th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre }}
+						</th>
+						<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
+						{% for unGroupe in tousLesGroupes %}
+							{% for user in unGroupe.getUsers %}
+								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
+									{{ user.prenom}}
+									{% if is_granted('ROLE_ADMIN') %}
+										<p>
+											<span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">Congés :
+												{{ user.nbConges }}j</span>
+										</p>
+									{% endif %}
+									{% if user.prenom == app.user.prenom and app.user.prenom != is_granted('ROLE_ADMIN')  %}
+										<p>
+											<span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">Congés :
+												{{ nbConges }}j</span>
+										</p>
+									{% endif %}
+								</th>
+
+							{% endfor %}
+						{% endfor %}
+					</tr>
+
+					{% for days in listeDays %}
+						<tr class="p-2 border-b border-gray-100
+																																																																																																																																																																																																																																																																	                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
+																																																																																																																																																																																																																																																																	                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
+																																																																																																																																																																																																																																																																	                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
+							<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
+							<td class="p-0.5 border-r border-gray-200">
+								{{ days.jourLettre}}</td>
+							{% for detail in days.listDetail %}
+								<td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
+
+									{% for vacance in detail %}
+										{% for i in vacance %}
+											<form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
+												{% if i.enVacances %}
+													{% if i.attente == true %}
+														<button>
+															<i class="far fa-clock"></i>
+														</button>
+													{% elseif i.autoriser == true %}
+														<button>
+															<i class="fas fa-check"></i>
+														</button>
+													{% else %}
+														<button>
+															<i class="fas fa-times"></i>
+														</button>
+													{% endif %}
+													{% if i.maladie == true %}
+														<button>
+															<i class="fas fa-first-aid"></i>
+														</button>
+													{% endif %}
+													{% if i.sansSoldes == true %}
+														<button>
+															<i class="fab fa-creative-commons-nc-eu"></i>
+														</button>
+													{% endif %}
+												{% endif %}
+											</form>
+										{% endfor %}
+									{% endfor %}
 
 
-<div class="flex flex-col justify-center text-sm">
-    <div class="px-10 w-auto p-4 shadow-2xl mx-auto rounded-2xl bg-white">
-        <div class="mb-5 text-base">
-            <form action="{{ path('calendrier') }}" method="get">
-                <select name="moisSelectionner" id="moisSelectionner" class="border border-gray-400 shadow-md rounded p-1.5">
-                    {% for mois in listeMois %}
-                        <option value="{{ loop.index }}" {% if loop.index == moisUtiliser %} selected {% endif %}>{{ mois }}</option>
-                    {% endfor %}
-                </select>
-                <select name="anneeSelectionner" id="anneeSelectionner" class="border border-gray-400 shadow-md rounded p-1.5">
-                    {% for annee in listeAnnee %}
-                        <option value="{{annee}}" {% if annee == anneeUtiliser %} selected {% endif %}>{{annee}}</option>
-                    {% endfor %}
-                </select>
-                <button type="submit" name="valide" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 hover:bg-gray-400 transition duration-200"><i class="fas fa-search"></i></button>
-                
-        </div>  
+								</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</tr>
+			</table>
+		</div>
+		<div class="px-10 w-auto p-4 shadow-2xl mx-auto rounded-2xl bg-white mt-12">
 
-        <table class="table table-hover w-50 text-center ">
-            <tr class="p-2 border-b border-gray-100">
-                <th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre }} </th> <th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
-                {% for unGroupe in tousLesGroupes %}
-                    {% for user in unGroupe.getUsers %}
-                        <th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;" >{{ user.nom }} {{ user.prenom}}</th>
-                    {% endfor %}
-                {% endfor %}
-            </tr>
-            
-            {% for days in listeDays %}
-                <tr class="p-2 border-b border-gray-100
-                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %} 
-                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
-                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
-                    <td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td><td class="p-0.5 border-r border-gray-200"> {{ days.jourLettre}}</td>
-                    {% for detail in days.listDetail %}
-                        <td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
-                        
-                            {% for vacance in detail %}
-                                {% for i in vacance %}
-                                <form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
-                                    {% if i.enVacances %}
-                                        {% if i.attente == true %}
-                                            <button><i class="far fa-clock"></i></button>
-                                        {% elseif i.autoriser == true %}
-                                            <button><i class="fas fa-check"></i></button>
-                                        {% else %}
-                                            <button><i class="fas fa-times"></i></button>
-                                        {% endif %}
-                                    {% endif %}
-                                   </form> 
-                                {% endfor %}
-                            {% endfor %}   
-                        
-                                  
-                        </td>
-            {% endfor %}  
-                </tr>
-            {% endfor %}
-                </table>
-    </div>  
-    <div class="px-10 w-auto p-4 shadow-2xl mx-auto rounded-2xl bg-white mt-12">
-
-        <table class="table table-hover w-50 text-center mt-12">
-            <tr class="p-2 border-b border-gray-100">
-                <th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre2 }} </th> <th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
-                {% for unGroupe in tousLesGroupes %}
-                    {% for user in unGroupe.getUsers %}
-                        <th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;" >{{ user.nom }} {{ user.prenom}}</th>
-                    {% endfor %}
-                {% endfor %}
-            </tr>
-        {% for days in listeDays2 %}
-            <tr class="p-2 border-b border-gray-100
-                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %} 
-                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
-                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
-            <td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td><td class="p-0.5 border-r border-gray-200"> {{ days.jourLettre}}</td>
-            {% for detail in days.listDetail %}
-                <td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
-                    {% for vacance in detail %}
-                        {% for i in vacance %}
-                            <form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
-                                    {% if i.enVacances %}
-                                        {% if i.attente == true %}
-                                            <button><i class="far fa-clock"></i></button>
-                                        {% elseif i.autoriser == true %}
-                                            <button><i class="fas fa-check"></i></button>
-                                        {% else %}
-                                            <button><i class="fas fa-times"></i></button>
-                                        {% endif %}
-                                    {% endif %}
-                                   </form> 
-                        {% endfor %}
-                    {% endfor %}             
-                </td>
-            {% endfor %}  
-        </tr>
-        {% endfor %}
-        </table>
-    </div>
-</div>
+			<table class="table table-hover w-50 text-center mt-12">
+				<tr class="p-2 border-b border-gray-100">
+					<th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre2 }}
+					</th>
+					<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
+					{% for unGroupe in tousLesGroupes %}
+						{% for user in unGroupe.getUsers %}
+							<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
+								{{ user.prenom}}</th>
+						{% endfor %}
+					{% endfor %}
+				</tr>
+				{% for days in listeDays2 %}
+					<tr class="p-2 border-b border-gray-100
+																																																																																																																																																																																																																																																												                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
+																																																																																																																																																																																																																																																												                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
+																																																																																																																																																																																																																																																												                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
+						<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
+						<td class="p-0.5 border-r border-gray-200">
+							{{ days.jourLettre}}</td>
+						{% for detail in days.listDetail %}
+							<td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
+								{% for vacance in detail %}
+									{% for i in vacance %}
+										<form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
+											{% if i.enVacances %}
+												{% if i.attente == true %}
+													<button>
+														<i class="far fa-clock"></i>
+													</button>
+												{% elseif i.autoriser == true %}
+													<button>
+														<i class="fas fa-check"></i>
+													</button>
+												{% else %}
+													<button>
+														<i class="fas fa-times"></i>
+													</button>
+												{% endif %}
+												{% if i.maladie == true %}
+													<button>
+														<i class="fas fa-first-aid"></i>
+													</button>
+												{% endif %}
+												{% if i.sansSoldes == true %}
+													<button>
+														<i class="fab fa-creative-commons-nc-eu"></i>
+													</button>
+												{% endif %}
+											{% endif %}
+										</form>
+									{% endfor %}
+								{% endfor %}
+							</td>
+						{% endfor %}
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
 
 
+{% endblock %}
+{% block javascripts %}
+	<script>
 
-	{% endblock %}
-	{% block javascripts %}
-		<script>
-
-			function afficherGroupe(groupeChoice) {
+		function afficherGroupe(groupeChoice) {
 let leGroupe = groupeChoice;
 let proute = document.getElementsByClassName(leGroupe);
 
@@ -162,5 +222,5 @@ proute[i].style.display = "";
 }
 }
 }
-		</script>
-	{% endblock %}
+	</script>
+{% endblock %}
