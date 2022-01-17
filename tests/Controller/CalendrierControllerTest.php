@@ -4,6 +4,7 @@ namespace App\Tests\Controller;
 
 use App\Entity\Groupe;
 use App\Entity\User;
+use App\Tests\UserTrait;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Tools\SchemaTool;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
@@ -15,6 +16,8 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class CalendrierControllerTest extends WebTestCase
 {
 
+    use UserTrait;
+
     public function testPageCalendier(): void
     {
         $client = static::createClient();
@@ -24,36 +27,9 @@ class CalendrierControllerTest extends WebTestCase
 
     public function testConnexion(): void
     {
-        $client = static::createClient();
-        $doctrine = $client->getContainer()->get('doctrine');
+        $user = $this->createUser();
+        $client = $this->login($user);
 
-        static $metadata = null;
-
-        if ($metadata === null) {
-            $metadata = $doctrine->getManager()->getMetadataFactory()->getAllMetadata();
-        }
-
-        $schemaTool = new SchemaTool($doctrine->getManager());
-        $schemaTool->dropDatabase();
-
-        if (!empty($metadata)) {
-            $schemaTool->createSchema($metadata);
-        }
-        
-
-        $user = (new User())
-            ->setUsername('rchardon')
-            ->setRoles(['ROLE_ADMIN'])
-            ->setPassword('$argon2id$v=19$m=65536,t=4,p=1$p7qP/12IPAz543KO1yymmQ$VESelxr6bDGigUeOpbIGc7ydFJHUcVpCogModOZD4t8')
-            ->setNom('Chadon')
-            ->setPrenom('Romain')
-            ->setMail('rchardon@gmail.com');
-            //->setGroupe(new Groupe('dev', "#FFF"));
-
-        $doctrine->getManager()->persist($user);
-        $doctrine->getManager()->flush();
-        
-        
         $session = $client->getContainer()->get('session');
         $token = new UsernamePasswordToken($user, null, 'main', $user->getRoles());
         $session->set('_security_main', serialize($token));
