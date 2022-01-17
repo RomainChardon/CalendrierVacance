@@ -47,6 +47,11 @@ class UtilisateurController extends AbstractController
         $utilisateur->setPassword($passHash);
         $utilisateur->setGroupe($groupe);
         $utilisateur->setMail($request->request->get('mail'));
+        $utilisateur->setNbConges(0);
+
+        if (($utilisateur->getGroupe()->getNomGroupe()) == "Cadre"){
+            $utilisateur->setNbConges(10);
+        }
 
         
         if ( $request->request->get('admin') == 'true') {
@@ -99,9 +104,17 @@ class UtilisateurController extends AbstractController
     #[Route('/modifierUtilisateur/{id}/modif', name: 'modifier_utilisateur')]
     public function modif_utilisateur(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager): Response
     {
+        $nbCongesOLD = $user->getNbConges();
+        // if ($nbCongesOLD + $request->request->get('nbConges') == ""){
+        //     $user->setNbConges($nbCongesOLD);
+        // }
+        $nbCongesNEW = ($nbCongesOLD + (float)$request->request->get('nbConges'));
         $groupe = $repoGroupe->find($request->request->get('groupe'));
         $user->setNom($request->request->get('nom'));
+        $user->setMail($request->request->get('mail'));  
         $user->setPrenom($request->request->get('prenom'));
+        $user->setNbConges($nbCongesNEW);
+
 
         $groupe->addUser($user);
         $manager->flush();
@@ -114,7 +127,7 @@ class UtilisateurController extends AbstractController
         return $this->redirectToRoute("utilisateur");
     }
 
-     #[Route('/user/{id}/modif', name: 'modif_user')]
+    #[Route('/user/{id}/modif', name: 'modif_user')]
     public function afficherUser(User $user, GroupeRepository $repoGroupe, EntityManagerInterface $manager): Response
     {
         return $this->render('/utilisateur/modifierUser.html.twig', [
@@ -153,23 +166,6 @@ class UtilisateurController extends AbstractController
                 "Utilisateur modifié !!"
             );
         }
-
-        $manager->flush($user);
-
-        return $this->redirectToRoute("calendrier");
-    }
-
-    #[Route('/modifierUtilisateur/{id}/Congés', name: 'modifierCongés_utilisateur')]
-    public function modifConges_utilisateur(User $user, Request $request, EntityManagerInterface $manager): Response
-    {
-        $nbCongesOLD = $user->getNbConges();
-        $nbCongesNEW = $nbCongesOLD + $request->request->get('nbConges');
-
-        $user->setNbConges($nbCongesNEW);
-        $this->addFlash(
-            'succes',
-            'Congés ajouté !!'
-        );
 
         $manager->flush($user);
 

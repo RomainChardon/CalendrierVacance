@@ -16,6 +16,7 @@ trait CreateUser
             ->setNom("Chardon")
             ->setPrenom("Romain")
             ->setNbConges(0)
+            ->setMail("enzo.mangiante.sio2020@gmail.com")
             ->setPassword($encoder->encodePassword($user, 'toto'));
 
         $manager->persist($user);

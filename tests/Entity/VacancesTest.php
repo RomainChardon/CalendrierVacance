@@ -10,8 +10,8 @@ class VacancesTest extends KernelTestCase
     public function testValidVacances(): void
     {
         $vacances = (new Vacances())
-            ->setDateDebut("12/01/2022")
-            ->setDateFin("13/01/2022")
+            ->setDateDebut(new \DateTime('now'))
+            ->setDateFin(new \DateTime('now'))
             ->setAutoriser(true);
         self::bootKernel();
         $error = self::$container->get('validator')->validate($vacances);
