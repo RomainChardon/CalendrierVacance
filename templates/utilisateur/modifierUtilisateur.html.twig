@@ -1,43 +1,51 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Hello UtilisateurController!{% endblock %}
+{% block title %}Hello UtilisateurController!
+{% endblock %}
 
 {% block body %}
-{% include "include/retour.html.twig" %}
-{% include "include/notif.html.twig" %}
+	{% include "include/retour.html.twig" %}
+	{% include "include/notif.html.twig" %}
 
-<div class="min-h-screen flex flex-col justify-center bg-gray-100">
-    <div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
-        <div class="text-2xl m-3 font-extrabold text-center">
-            <h1 class="">Modifier utilisateur</h1>
-        </div>
-        <div class="mt-5">
-            <form action="{{ path('modifier_utilisateur', {'id':utilisateurID.id}) }}" method="POST">
-                <div class="container mb-4">
-                    <select name="groupe" id="user" class="border border-blue-400 shadow-md rounded mt-1 h-9 w-full p-1.5" required>
-                    {% for unGroupe in tousLesGroupes %}
-                        <option value="{{ unGroupe.id }}">
-                            {{ unGroupe.nomGroupe }}
-                        </option>
-                    {% endfor %}
-                    </select>
-                </div>
+	<div class="min-h-screen flex flex-col justify-center bg-gray-100">
+		<div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
+			<div class="text-2xl m-3 font-extrabold text-center">
+				<h1 class="">Modifier utilisateur</h1>
+			</div>
+			<div class="mt-5">
+				<form action="{{ path('modifier_utilisateur', {'id':utilisateurID.id}) }}" method="POST">
+					<div class="container mb-4">
+						<select name="groupe" id="user" class="border border-blue-400 shadow-md rounded mt-1 h-9 w-full p-1.5" required>
+							{% for unGroupe in tousLesGroupes %}
+								<option value="{{ unGroupe.id }}">
+									{{ unGroupe.nomGroupe }}
+								</option>
+							{% endfor %}
+						</select>
+					</div>
 
-                <div class="">
-                    <label for="nom" class="input-group-text" id="addon-wrapping">nom :</label>
-                    <input type="text" name="nom" id="nom" placeholder="{{ utilisateurID.nom }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" required>
-                </div>
-                <div class="mt-5">
-                    <label for="nom" class="">prenom :</label>
-                    <input type="text" name="prenom" id="prenom" placeholder="{{ utilisateurID.prenom }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5" required>
-                </div>
+					<div class="">
+						<label for="nom" class="input-group-text" id="addon-wrapping">Nom :</label>
+						<input type="text" name="nom" id="nom" value="{{ utilisateurID.nom }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
+					</div>
+					<div class="mt-5">
+						<label for="nom" class="">Prénom :</label>
+						<input type="text" name="prenom" id="prenom" value="{{ utilisateurID.prenom }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
+					</div>
+					<div class="mt-5">
+						<label for="nom" class="">Mail :</label>
+						<input type="text" name="mail" id="mail" value="{{ utilisateurID.mail}}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
+					</div>
+					<div class="mt-5">
+						<p>Ajouté des jours de congés :</p>
+						<input type="number" name="nbConges" id="nbConges" step="0.5" placeholder="{{ utilisateurID.nbConges }}" class="border border-blue-400 shadow-md rounded  p-1.5">
+					</div>
 
-                <div class="container w-full mt-9 mb-5 flex justify-end">
-                    <input type="submit" value="Modifier" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 px-6 hover:bg-blue-400 transition duration-200">
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-
+					<div class="container w-full mt-9 mb-5 flex justify-end">
+						<input type="submit" value="Modifier" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 px-6 hover:bg-blue-400 transition duration-200">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 {% endblock %}
