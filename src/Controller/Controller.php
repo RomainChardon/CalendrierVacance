@@ -52,7 +52,6 @@ class Controller extends AbstractController
                 $vacances->setMaladie('1');
             } elseif ($request->request->get('congesSansSoldes')) {
                 $vacances->setSansSoldes('1');
-                
             } else {
                 $diff = $dateDebut->diff($dateFin);
                 $nbConges = $utilisateur->getNbConges() - $diff->d;
@@ -60,6 +59,9 @@ class Controller extends AbstractController
                 $utilisateur->setNbConges($nbConges);
             }
 
+            if($request->request->get('rtt') == true){
+                $vacances->setRtt('1');
+              }
 
         } else {
             
@@ -82,13 +84,29 @@ class Controller extends AbstractController
     
                 $utilisateur->setNbConges($nbConges);
             }
+            if($request->request->get('rtt') == true){
+                $vacances->setRtt('1');
+              }
         }
+
+        if ($utilisateur->getNbConges() < 0){
+            $this->addFlash(
+                'msg',
+                "Une erreur c'est produite."
+            );
+        return $this->redirectToRoute("index");
+        }
+
         $vacances->setDateDebut($dateDebut);
         $vacances->setDateFin($dateFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
 
-        
+        // Autre méthode d'actualisation de congés
+        // $interval = $dateDebut->diff($dateFin);
+        // $interval = intval($interval->format('%a'));
+        // $nbCongesActual = $utilisateur->getNbConges();
+        // $utilisateur->setNbConges($nbCongesActual - $interval);
 
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);

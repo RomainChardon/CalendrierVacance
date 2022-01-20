@@ -46,6 +46,17 @@
 						<label for="admin">Congés sans soldes :</label>
 						<input type="checkbox" name="congesSansSoldes" id="congesSansSoldes" value="true" class="border border-blue-400 shadow-md rounded my-1.5 p-1">
 					</div>
+
+					{% if app.user.groupe.nomGroupe == "Cadre" %}
+						<div class="mt-3">
+							<label for="admin">RTT :</label>
+							<input type="checkbox" name="rtt" id="rtt" value="true" class="border border-blue-400 shadow-md rounded my-1.5 p-1">
+						</div>
+					{% endif %}
+					<div class="mt-3">
+						<label for="admin">Vos congés actuelle :
+							{{ app.user.nbConges }}j</label>
+					</div>
 					<div class="container w-full mt-4 flex justify-end">
 						<input type="submit" value="Ajouter" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 w-full px-5 hover:bg-blue-400 transition duration-200 ">
 					</div>
@@ -63,6 +74,7 @@
 						<th class="p-2 px-4 border-r border-blue-200">Accordé</th>
 						<th class="p-2 px-4 border-r border-blue-200">Maladie</th>
 						<th class="p-2 px-4 border-r border-blue-200">Congé sans soldes</th>
+						<th class="p-2 px-4 border-r border-blue-200">RTT</th>
 						<th class="p-2 px-4 ">Option</th>
 					</tr>
 				</thead>
@@ -113,6 +125,13 @@
 								{% if uneVacance.sansSoldes == '1' %}
 									<span>Oui</span>
 								{% elseif uneVacance.sansSoldes == '0' or uneVacance.sansSoldes == null %}
+									<span>Non</span>
+								{% endif %}
+							</td>
+							<td class="p-2 border-r border-blue-200">
+								{% if uneVacance.rtt == '1' %}
+									<span>Oui</span>
+								{% elseif uneVacance.rtt == '0' or uneVacance.rtt == null %}
 									<span>Non</span>
 								{% endif %}
 							</td>

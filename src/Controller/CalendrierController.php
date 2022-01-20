@@ -177,6 +177,7 @@ class CalendrierController extends AbstractController
                             $id = $vacance->getId();
                             $maladie =$vacance->getMaladie();
                             $sansSoldes = $vacance->getSansSoldes();
+                            $rtt = $vacance->getRtt();
 
                             if (($dateDebutVacances <= $jourUtiliser) && ($dateFinVacances >= $jourUtiliser)) {
                                 $enVacances = true;
@@ -195,7 +196,8 @@ class CalendrierController extends AbstractController
                                 'autoriser' => $autoriser,
                                 'id' => $id,
                                 'maladie'=> $maladie,
-                                'sansSoldes' => $sansSoldes
+                                'sansSoldes' => $sansSoldes,
+                                'rtt' => $rtt
                             );
                         }
                         
@@ -294,6 +296,8 @@ class CalendrierController extends AbstractController
                         $autoriser = $vacance->getAutoriser();
                         $id = $vacance->getId();
                         $maladie = $vacance->getMaladie();
+                        $sansSoldes = $vacance->getSansSoldes();
+                        $rtt = $vacance->getRtt();
 
                         if (($dateDebutVacances <= $jourUtiliser2) && ($dateFinVacances >= $jourUtiliser2)) {
                             $enVacances = true;
@@ -312,6 +316,8 @@ class CalendrierController extends AbstractController
                             'autoriser' => $autoriser,
                             'id' => $id,
                             'maladie' => $maladie,
+                            'sansSoldes' => $sansSoldes,
+                            'rtt' => $rtt
                         );
 
                     }

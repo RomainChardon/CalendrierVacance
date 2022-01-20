@@ -42,4 +42,12 @@ class CalendrierControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
         
     }
+
+    public function testInscription() : void 
+    {
+        $user = $this->createUser();
+        $client = $this->login($user);
+        $client->request('GET', '/vacances/calendrier');
+
+    }
 }
