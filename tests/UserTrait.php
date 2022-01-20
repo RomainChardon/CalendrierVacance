@@ -3,6 +3,7 @@
 namespace App\Tests;
 
 use App\Entity\User;
+use App\Entity\Groupe;
 use Doctrine\ORM\Tools\SchemaTool;
 
 trait UserTrait
@@ -32,6 +33,14 @@ trait UserTrait
         return $client;
     }
 
+    public function createGroupe()
+    {
+        $groupe = (new Groupe())
+            ->setNomGroupe('Dev')
+            ->setCouleur('#FFF');
+            
+        return $groupe;
+    }
     public function createUser() 
     {
         $user = (new User())
@@ -41,8 +50,9 @@ trait UserTrait
             ->setNom('Chadon')
             ->setPrenom('Romain')
             ->setMail('rchardon@gmail.com');
-            //->setGroupe(new Groupe('dev', "#FFF"));
+            // ->setGroupe($groupe);
 
         return $user;
     }
+
 }

@@ -1,4 +1,7 @@
 {
+    "composer/package-versions-deprecated": {
+        "version": "1.11.99.2"
+    },
     "doctrine/annotations": {
         "version": "1.13",
         "recipe": {
@@ -413,6 +416,9 @@
     "symfony/options-resolver": {
         "version": "v5.4.0"
     },
+    "symfony/password-hasher": {
+        "version": "v6.0.2"
+    },
     "symfony/phpunit-bridge": {
         "version": "6.0",
         "recipe": {
@@ -422,10 +428,10 @@
             "ref": "97cb3dc7b0f39c7cfc4b7553504c9d7b7795de96"
         },
         "files": [
-            ".env.test",
-            "bin/phpunit",
-            "phpunit.xml.dist",
-            "tests/bootstrap.php"
+            "./.env.test",
+            "./bin/phpunit",
+            "./phpunit.xml.dist",
+            "./tests/bootstrap.php"
         ]
     },
     "symfony/polyfill-intl-grapheme": {

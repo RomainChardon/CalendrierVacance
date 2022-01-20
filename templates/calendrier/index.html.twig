@@ -68,6 +68,7 @@
 					<tr class="p-2 border-b border-gray-100">
 						<th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre }}
 						</th>
+
 						<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
 						{% for unGroupe in tousLesGroupes %}
 							{% for user in unGroupe.getUsers %}
@@ -90,18 +91,12 @@
 							{% endfor %}
 						{% endfor %}
 					</tr>
-
 					{% for days in listeDays %}
-						<tr class="p-2 border-b border-gray-100
-																																																																																																																																																																																																																																																																	                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
-																																																																																																																																																																																																																																																																	                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
-																																																																																																																																																																																																																																																																	                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
+						<tr class="p-2 border-b border-gray-100{% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}{% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}{% if ( days.siFerier ) %} bg-green-500 {% endif %}">
 							<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
-							<td class="p-0.5 border-r border-gray-200">
-								{{ days.jourLettre}}</td>
+							<td class="p-0.5 border-r border-gray-200">{{ days.jourLettre}}</td>
 							{% for detail in days.listDetail %}
 								<td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
-
 									{% for vacance in detail %}
 										{% for i in vacance %}
 											<form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
@@ -129,88 +124,95 @@
 															<i class="fab fa-creative-commons-nc-eu"></i>
 														</button>
 													{% endif %}
+													{% if i.rtt == true %}
+														<button>
+															<i class="fas fa-user-tie"></i>
+														</button>
+													{% endif %}
 												{% endif %}
 											</form>
 										{% endfor %}
 									{% endfor %}
-
-
 								</td>
 							{% endfor %}
 						</tr>
 					{% endfor %}
-				</tr>
-			</table>
-		</div>
-		<div class="px-10 w-auto p-4 shadow-2xl mx-auto rounded-2xl bg-white mt-12">
+				</table>
+			</div>
+			<div class="px-10 w-auto p-4 shadow-2xl mx-auto rounded-2xl bg-white mt-12">
 
-			<table class="table table-hover w-50 text-center mt-12">
-				<tr class="p-2 border-b border-gray-100">
-					<th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre2 }}
-					</th>
-					<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
-					{% for unGroupe in tousLesGroupes %}
-						{% for user in unGroupe.getUsers %}
-							<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
-								{{ user.prenom}}</th>
-						{% endfor %}
-					{% endfor %}
-				</tr>
-				{% for days in listeDays2 %}
-					<tr class="p-2 border-b border-gray-100
-																																																																																																																																																																																																																																																												                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
-																																																																																																																																																																																																																																																												                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
-																																																																																																																																																																																																																																																												                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
-						<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
-						<td class="p-0.5 border-r border-gray-200">
-							{{ days.jourLettre}}</td>
-						{% for detail in days.listDetail %}
-							<td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
-								{% for vacance in detail %}
-									{% for i in vacance %}
-										<form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
-											{% if i.enVacances %}
-												{% if i.attente == true %}
-													<button>
-														<i class="far fa-clock"></i>
-													</button>
-												{% elseif i.autoriser == true %}
-													<button>
-														<i class="fas fa-check"></i>
-													</button>
-												{% else %}
-													<button>
-														<i class="fas fa-times"></i>
-													</button>
-												{% endif %}
-												{% if i.maladie == true %}
-													<button>
-														<i class="fas fa-first-aid"></i>
-													</button>
-												{% endif %}
-												{% if i.sansSoldes == true %}
-													<button>
-														<i class="fab fa-creative-commons-nc-eu"></i>
-													</button>
-												{% endif %}
-											{% endif %}
-										</form>
-									{% endfor %}
-								{% endfor %}
-							</td>
+				<table class="table table-hover w-50 text-center mt-12">
+					<tr class="p-2 border-b border-gray-100">
+						<th class="p-1 px-2 border-r border-gray-200">{{ moisUtiliserFormatLettre2 }}
+						</th>
+						<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
+						{% for unGroupe in tousLesGroupes %}
+							{% for user in unGroupe.getUsers %}
+								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
+									{{ user.prenom}}</th>
+							{% endfor %}
 						{% endfor %}
 					</tr>
-				{% endfor %}
-			</table>
+					{% for days in listeDays2 %}
+						<tr class="p-2 border-b border-gray-100
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
+							<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
+							<td class="p-0.5 border-r border-gray-200">
+								{{ days.jourLettre}}</td>
+							{% for detail in days.listDetail %}
+								<td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
+									{% for vacance in detail %}
+										{% for i in vacance %}
+											<form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
+												{% if i.enVacances %}
+													{% if i.attente == true %}
+														<button>
+															<i class="far fa-clock"></i>
+														</button>
+													{% elseif i.autoriser == true %}
+														<button>
+															<i class="fas fa-check"></i>
+														</button>
+													{% else %}
+														<button>
+															<i class="fas fa-times"></i>
+														</button>
+													{% endif %}
+													{% if i.maladie == true %}
+														<button>
+															<i class="fas fa-first-aid"></i>
+														</button>
+													{% endif %}
+													{% if i.sansSoldes == true %}
+														<button>
+															<i class="fab fa-creative-commons-nc-eu"></i>
+														</button>
+													{% endif %}
+													{% if i.rtt == true %}
+														<button>
+															<i class="fas fa-user-tie"></i>
+														</button>
+													{% endif %}
+												{% endif %}
+											</form>
+										{% endfor %}
+									{% endfor %}
+								</td>
+							{% endfor %}
+						</tr>
+					{% endfor %}
+				</table>
+			</div>
 		</div>
-	</div>
 
 
-{% endblock %}
-{% block javascripts %}
-	<script>
+	{% endblock %}
+	{% block javascripts %}
+		<script>
 
-		function afficherGroupe(groupeChoice) {
+			function afficherGroupe(groupeChoice) {
 let leGroupe = groupeChoice;
 let proute = document.getElementsByClassName(leGroupe);
 
@@ -222,5 +224,5 @@ proute[i].style.display = "";
 }
 }
 }
-	</script>
-{% endblock %}
+		</script>
+	{% endblock %}

@@ -58,6 +58,11 @@ class Vacances
      */
     private $sansSoldes;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $RTT;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -175,6 +180,18 @@ class Vacances
     public function setSansSoldes(?bool $sansSoldes): self
     {
         $this->sansSoldes = $sansSoldes;
+
+        return $this;
+    }
+
+    public function getRTT(): ?bool
+    {
+        return $this->RTT;
+    }
+
+    public function setRTT(bool $RTT): self
+    {
+        $this->RTT = $RTT;
 
         return $this;
     }
