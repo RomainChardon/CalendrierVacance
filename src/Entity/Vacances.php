@@ -63,6 +63,11 @@ class Vacances
      */
     private $RTT;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $annuler;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -192,6 +197,18 @@ class Vacances
     public function setRTT(bool $RTT): self
     {
         $this->RTT = $RTT;
+
+        return $this;
+    }
+
+    public function getAnnuler(): ?bool
+    {
+        return $this->annuler;
+    }
+
+    public function setAnnuler(bool $annuler): self
+    {
+        $this->annuler = $annuler;
 
         return $this;
     }

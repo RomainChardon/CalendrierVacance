@@ -5,7 +5,12 @@
 
 {% block body %}
 	{% include "include/notif.html.twig" %}
+	<style>
 
+		.pycto {
+			margin-left: 10px;
+		}
+	</style>
 	<div class="h-20 border border-gray-100 flex justify-between">
 		<div class="flex flex-row">
 			<div class="">
@@ -103,30 +108,44 @@
 												{% if i.enVacances %}
 													{% if i.attente == true %}
 														<button>
-															<i class="far fa-clock"></i>
+															<i class="far fa-clock pycto"></i>
 														</button>
 													{% elseif i.autoriser == true %}
 														<button>
-															<i class="fas fa-check"></i>
+															<i class="fas fa-check pycto"></i>
+														</button>
+													{% elseif i.annuler == '1' %}
+														<button>
+															<i class="fas fa-ban"></i>
 														</button>
 													{% else %}
 														<button>
-															<i class="fas fa-times"></i>
+															<i class="fas fa-times pycto"></i>
 														</button>
 													{% endif %}
 													{% if i.maladie == true %}
 														<button>
-															<i class="fas fa-first-aid"></i>
+															<i class="fas fa-first-aid pycto"></i>
 														</button>
 													{% endif %}
 													{% if i.sansSoldes == true %}
 														<button>
-															<i class="fab fa-creative-commons-nc-eu"></i>
+															<i class="fab fa-creative-commons-nc-eu pycto"></i>
 														</button>
 													{% endif %}
 													{% if i.rtt == true %}
 														<button>
-															<i class="fas fa-user-tie"></i>
+															<i class="fas fa-user-tie pycto"></i>
+														</button>
+													{% endif %}
+													{% if i.demiJournee == 'Matin' %}
+														<button>
+															<i class="fas fa-sun pycto"></i>
+														</button>
+													{% endif %}
+													{% if i.demiJournee == 'Aprés-Midi' %}
+														<button>
+															<i class="fas fa-moon pycto"></i>
 														</button>
 													{% endif %}
 												{% endif %}
@@ -155,9 +174,9 @@
 					</tr>
 					{% for days in listeDays2 %}
 						<tr class="p-2 border-b border-gray-100
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
+																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																															                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
 							<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
 							<td class="p-0.5 border-r border-gray-200">
 								{{ days.jourLettre}}</td>
@@ -169,30 +188,44 @@
 												{% if i.enVacances %}
 													{% if i.attente == true %}
 														<button>
-															<i class="far fa-clock"></i>
+															<i class="far fa-clock pycto"></i>
 														</button>
 													{% elseif i.autoriser == true %}
 														<button>
-															<i class="fas fa-check"></i>
+															<i class="fas fa-check pycto"></i>
+														</button>
+													{% elseif i.annuler == '1' %}
+														<button>
+															<i class="fas fa-ban"></i>
 														</button>
 													{% else %}
 														<button>
-															<i class="fas fa-times"></i>
+															<i class="fas fa-times pycto"></i>
 														</button>
 													{% endif %}
 													{% if i.maladie == true %}
 														<button>
-															<i class="fas fa-first-aid"></i>
+															<i class="fas fa-first-aid pycto"></i>
 														</button>
 													{% endif %}
 													{% if i.sansSoldes == true %}
 														<button>
-															<i class="fab fa-creative-commons-nc-eu"></i>
+															<i class="fab fa-creative-commons-nc-eu pycto"></i>
 														</button>
 													{% endif %}
 													{% if i.rtt == true %}
 														<button>
-															<i class="fas fa-user-tie"></i>
+															<i class="fas fa-user-tie pycto"></i>
+														</button>
+													{% endif %}
+													{% if i.demiJournee == 'Matin' %}
+														<button>
+															<i class="fas fa-sun pycto"></i>
+														</button>
+													{% endif %}
+													{% if i.demiJournee == 'Aprés-Midi' %}
+														<button>
+															<i class="fas fa-moon pycto"></i>
 														</button>
 													{% endif %}
 												{% endif %}
