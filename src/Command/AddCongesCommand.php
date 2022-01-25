@@ -37,7 +37,7 @@ class AddCongesCommand extends Command
         $io->progressStart(count($users));
         foreach ($users as $user) {
             $nbConges = $user->getNbConges();
-            $nbConges +=  2.3;
+            $nbConges +=  2.08;
             $user->setNbConges($nbConges);
             $io->progressAdvance();
             $this->em->persist($user);

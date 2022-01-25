@@ -178,6 +178,11 @@ class CalendrierController extends AbstractController
                             $maladie =$vacance->getMaladie();
                             $sansSoldes = $vacance->getSansSoldes();
                             $rtt = $vacance->getRtt();
+                            $demiJournee = $vacance->getDemiJournee();
+                            $annuler = $vacance->getAnnuler();
+                            $dateAnnulation = $vacance->getDateAnnulation();
+                            $dateDemande = $vacance->getDateDemande();
+
 
                             if (($dateDebutVacances <= $jourUtiliser) && ($dateFinVacances >= $jourUtiliser)) {
                                 $enVacances = true;
@@ -197,7 +202,12 @@ class CalendrierController extends AbstractController
                                 'id' => $id,
                                 'maladie'=> $maladie,
                                 'sansSoldes' => $sansSoldes,
-                                'rtt' => $rtt
+                                'rtt' => $rtt,
+                                'demiJournee' => $demiJournee,
+                                'annuler' => $annuler,
+                                'dateDemande' => $dateDemande,
+                                'dateAnnulation' => $dateAnnulation,
+
                             );
                         }
                         
@@ -298,6 +308,12 @@ class CalendrierController extends AbstractController
                         $maladie = $vacance->getMaladie();
                         $sansSoldes = $vacance->getSansSoldes();
                         $rtt = $vacance->getRtt();
+                        $demiJournee = $vacance->getDemiJournee();
+                        $annuler = $vacance->getAnnuler();
+                        $dateAnnulation = $vacance->getDateAnnulation();
+                        $dateDemande = $vacance->getDateDemande();
+                        
+
 
                         if (($dateDebutVacances <= $jourUtiliser2) && ($dateFinVacances >= $jourUtiliser2)) {
                             $enVacances = true;
@@ -317,7 +333,11 @@ class CalendrierController extends AbstractController
                             'id' => $id,
                             'maladie' => $maladie,
                             'sansSoldes' => $sansSoldes,
-                            'rtt' => $rtt
+                            'rtt' => $rtt,
+                            'demiJournee' => $demiJournee,
+                            'annuler' => $annuler,
+                            'dateDemande' => $dateDemande,
+                            'dateAnnulation' => $dateAnnulation,
                         );
 
                     }

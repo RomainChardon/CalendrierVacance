@@ -66,6 +66,11 @@ class User implements UserInterface
      */
     private $mail;
 
+    /**
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $cadre;
+
     public function __construct()
     {
         $this->Vacances = new ArrayCollection();
@@ -227,6 +232,18 @@ class User implements UserInterface
     public function setMail(string $mail): self
     {
         $this->mail = $mail;
+
+        return $this;
+    }
+
+    public function getCadre(): ?bool
+    {
+        return $this->cadre;
+    }
+
+    public function setCadre(?bool $cadre): self
+    {
+        $this->cadre = $cadre;
 
         return $this;
     }

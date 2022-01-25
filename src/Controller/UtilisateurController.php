@@ -13,6 +13,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPasswordValidator;
 use Symfony\Component\Security\Http\Authenticator\Passport\UserPassportInterface;
 
@@ -30,7 +32,7 @@ class UtilisateurController extends AbstractController
     }
 
     #[Route('/create_utilisateur', name: 'create_utilisateur')]
-    public function create_utilisateur(Request $request, GroupeRepository $repoGroupe, UserPasswordEncoderInterface $userPass): Response
+    public function create_utilisateur(Request $request, GroupeRepository $repoGroupe, UserPasswordEncoderInterface $userPass, MailerInterface $mailer): Response
     {
 
         $entityManager = $this->getDoctrine()->getManager();
@@ -48,23 +50,46 @@ class UtilisateurController extends AbstractController
         $utilisateur->setGroupe($groupe);
         $utilisateur->setMail($request->request->get('mail'));
         $utilisateur->setNbConges(0);
-
-        if (($utilisateur->getGroupe()->getNomGroupe()) == "Cadre"){
-            $utilisateur->setNbConges(10);
-        }
-
         
         if ( $request->request->get('admin') == 'true') {
             $role[]= 'ROLE_ADMIN';
             $utilisateur->setRoles($role);
         }
         
+        if ( $request->request->get('cadre') == 'true') {
+            $cadre= '1';
+            $utilisateur->setCadre($cadre);
+            $utilisateur->setNbConges(10);
+
+        }
+
         $entityManager->persist($utilisateur);
         $entityManager->flush();
 
+        $username = $utilisateur->getUsername();
+        $mail = $utilisateur->getMail();
+        $groupe = $utilisateur->getGroupe()->getNomGroupe();
+
+        $email = (new Email())
+        ->from('enzo.mangiante.adeo@gmail.com')
+        ->to($utilisateur->getMail())
+        //->cc('cc@example.com')
+        //->bcc('bcc@example.com')
+        //->replyTo('fabien@example.com')
+        //->priority(Email::PRIORITY_HIGH)
+        ->subject("Confirmation d'inscription")
+        ->html("Inscription sur l'application de vacances, voici un récapitulatif des vos informations :
+            <br> Votre nom d'utilisateur : $username
+            <br> Votre mail : $mail
+            <br> Assigné au groupe : $groupe
+            <br> Lien vers la documentation utilisateur : ");
+
+        $mailer->send($email);
+
+
         $this->addFlash(
             'succes',
-            'Utilisateur ajouté !!'
+            'Utilisateur ajouté et Mail envoyé!!'
         );
 
         return $this->redirectToRoute("utilisateur");

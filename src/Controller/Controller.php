@@ -36,32 +36,46 @@ class Controller extends AbstractController
     }
 
     #[Route('/createVacance', name: 'create_vacances')]
-    public function create_vacances(Request $request, UserRepository $repoUser): Response
+    public function create_vacances(Request $request, UserRepository $repoUser,MailerInterface $mailer): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $repoUser->find($this->getUser());
         $vacances = new Vacances();
 
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));
-        $h0 = new DateTimeImmutable('0:0:0');
-        $h12 = new DateTimeImmutable('12:0:0');
+
+        $ajd = new DateTimeImmutable('now');
+        $diffAjd = $dateDebut->diff($ajd);
+        $diffAjd = intval($diffAjd->format('%a'));
+
+
         if ($request->request->get('demiJournee') == null) {
             $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
+            $diff = $dateDebut->diff($dateFin);
+            $diff = intval($diff->format('%a'));
 
-            if ( $request->request->get('maladie') == 'true') {
+            if ( $request->request->get('maladie') == 'true') 
+            {
                 $vacances->setMaladie('1');
-            } elseif ($request->request->get('congesSansSoldes')) {
+            } 
+            elseif ($request->request->get('congesSansSoldes')) 
+            {
                 $vacances->setSansSoldes('1');
-            } else {
-                $diff = $dateDebut->diff($dateFin);
-                $nbConges = $utilisateur->getNbConges() - $diff->d;
-    
+            } 
+            else 
+            {
+                $nbConges = $utilisateur->getNbConges() - $diff;  
+                $utilisateur->setNbConges($nbConges);
+            }
+            if ($diff == 0) 
+            {
+                $nbConges = $utilisateur->getNbConges() - 1;  
                 $utilisateur->setNbConges($nbConges);
             }
 
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
-              }
+            }
 
         } else {
             
@@ -86,14 +100,7 @@ class Controller extends AbstractController
             }
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
-              }
-        }
-
-        if ($utilisateur->getNbConges() < 0){
-            $this->addFlash(
-                'msg',
-                "Une erreur c'est produite."
-            );
+            }
         return $this->redirectToRoute("index");
         }
 
@@ -101,8 +108,11 @@ class Controller extends AbstractController
         $vacances->setDateFin($dateFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
+        $vacances->setDateDemande($ajd);
+
 
         // Autre méthode d'actualisation de congés
+        
         // $interval = $dateDebut->diff($dateFin);
         // $interval = intval($interval->format('%a'));
         // $nbCongesActual = $utilisateur->getNbConges();
@@ -111,11 +121,38 @@ class Controller extends AbstractController
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);
         $entityManager->flush();
+        if ($diffAjd <= 14){
+            $this->addFlash(
+                'msg',
+                "Vacances ajouté \n Rappel : Il est préférable d'annoncer ses congés 15j avant"
+            );
+        } else {
+            $this->addFlash(
+                'succes',
+                'Vacances ajouté !!'
+            );
+        }
 
-        $this->addFlash(
-            'succes',
-            'Vacances ajouté !!'
-        );
+        $dateDebut = $dateDebut->format('Y-m-d');
+        $dateFin = $dateFin->format('Y-m-d');
+        // Envoie de mail 
+
+        $email = (new Email())
+        ->from('enzo.mangiante.adeo@gmail.com')
+        ->to($utilisateur->getMail())
+        //->cc('cc@example.com')
+        //->bcc('bcc@example.com')
+        //->replyTo('fabien@example.com')
+        //->priority(Email::PRIORITY_HIGH)
+        ->subject("Confirmation de création de vacances");
+        if ($diffAjd <= 14){
+            $email->html("<p> Vos vacances du $dateDebut au $dateFin ont bien étaient enregistrées, elles vont être traitées par la direction ! La prochaine fois veuillez les demandées
+            au minimum 15j avant !</p>");
+        } else {
+            $email->html("<p> Vos vacances du $dateDebut au $dateFin ont bien étaient enregistrées, elles vont être traitées par la direction !");
+        }
+
+        $mailer->send($email);
 
         return $this->redirectToRoute("index");
     }
@@ -133,6 +170,21 @@ class Controller extends AbstractController
         return $this->redirectToRoute("index");
     }
 
+    #[Route('/annulerVacances/{id}/annuler', name:'annule_vacance')]
+    public function annulerVacances(Vacances $vacances,EntityManagerInterface $manager): Response
+    {
+        $dateAnnulation = new \DateTime('now');
+        $vacances->setDateAnnulation($dateAnnulation);
+        $vacances->setAnnuler("1");        
+        $manager->flush();
+
+        $this->addFlash(
+            'msg',
+            "Vacances annulées !!");
+
+        return $this->redirectToRoute("index");
+    }
+
     #[Route('/modifVacance/{id}/modif', name: 'modif_vacance')]
     public function afficherVacance(Vacances $vacances, EntityManagerInterface $manager): Response
     {
@@ -143,15 +195,39 @@ class Controller extends AbstractController
     }
 
     #[Route('/modifierVacance/{id}/modif', name: 'modifier_vacance')]
-    public function modif_vacance(Vacances $vacances, Request $request, EntityManagerInterface $manager): Response
+    public function modif_vacance(Vacances $vacances, Request $request, EntityManagerInterface $manager, UserRepository $userRepo): Response
     {
-        
+        $utilisateur = $userRepo->find($this->getUser());
+        $nbConges = $utilisateur->getNbConges();
+
+        //Recup des anciennes valeurs
+        $debutOLD = $vacances->getDateDebut();
+        $finOLD = $vacances->getDateFin();
+        $diffOLD = $debutOLD->diff($finOLD);
+        $diffOLD = intval($diffOLD->format('%a'));
+
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));
         $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
         
         $vacances->setDateDebut($dateDebut);
         $vacances->setDateFin($dateFin);
 
+        $diffNEW = $dateDebut->diff($dateFin);
+        $diffNEW = intval($diffNEW->format('%a'));
+
+        if($diffOLD > $diffNEW)
+        {
+            $diff = intval($diffOLD - $diffNEW);
+            $nbConges = $utilisateur->getNbConges() + $diff;
+            $utilisateur->setNbConges($nbConges); 
+        } elseif ($diffOLD < $diffNEW)
+        {
+            $diff = intval($diffNEW - $diffOLD);
+            $nbConges = $utilisateur->getNbConges() - $diff;
+            $utilisateur->setNbConges($nbConges); 
+        }
+
+        $manager->persist($utilisateur);
         $manager->flush();
 
         $this->addFlash(
@@ -171,6 +247,7 @@ class Controller extends AbstractController
         ]);
            
     }
+
 
     #[Route('/autoriseVacance/{id}/modif', name: 'autorise_vacance')]
     public function autoriseVacances( UserRepository $userRepo, Vacances $vacances, Request $request, EntityManagerInterface $manager,MailerInterface $mailer): Response
@@ -193,17 +270,22 @@ class Controller extends AbstractController
         //->bcc('bcc@example.com')
         //->replyTo('fabien@example.com')
         //->priority(Email::PRIORITY_HIGH)
-        ->subject("Confirmation d'autorisation de vos congés");
+        ->subject("Confirmation d'accords de vos congés");
 
         if ($maladie == "1") {
-            $email->html("<p> Votre arrêt maladie du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+            $email->html("<p> Votre arrêt maladie du $dateDébut au $dateFin sont sont accordées. </p>");
         } elseif ($sansSoldes == "1") {
-            $email->html("<p> Vos congés sans soldes du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+            $email->html("<p> Vos congés sans soldes du $dateDébut au $dateFin sont sont accordées. </p>");
         } else {
-            $email->html("<p> Vos Vacances du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+            $email->html("<p> Vos Vacances du $dateDébut au $dateFin sont accordées. </p>");
         }
 
         $mailer->send($email);
+
+        $this->addFlash(
+            'succes',
+            'Mail envoyé!'
+        );
 
         $manager->flush();
 
