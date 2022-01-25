@@ -68,6 +68,16 @@ class Vacances
      */
     private $annuler;
 
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateDemande;
+
+    /**
+     * @ORM\Column(type="datetime", nullable=true)
+     */
+    private $dateAnnulation;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -209,6 +219,30 @@ class Vacances
     public function setAnnuler(bool $annuler): self
     {
         $this->annuler = $annuler;
+
+        return $this;
+    }
+
+    public function getDateDemande(): ?\DateTimeInterface
+    {
+        return $this->dateDemande;
+    }
+
+    public function setDateDemande(?\DateTimeInterface $dateDemande): self
+    {
+        $this->dateDemande = $dateDemande;
+
+        return $this;
+    }
+
+    public function getDateAnnulation(): ?\DateTimeInterface
+    {
+        return $this->dateAnnulation;
+    }
+
+    public function setDateAnnulation(?\DateTimeInterface $dateAnnulation): self
+    {
+        $this->dateAnnulation = $dateAnnulation;
 
         return $this;
     }

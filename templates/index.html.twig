@@ -69,6 +69,7 @@
 						<th class="p-2 px-4 border-r border-blue-200">Prénom</th>
 						<th class="p-2 px-4 border-r border-blue-200">Début</th>
 						<th class="p-2 px-4 border-r border-blue-200">Fin</th>
+						<th class="p-2 px-4 border-r border-blue-200">Date Demande</th>
 						<th class="p-2 px-4 border-r border-blue-200">Demi-journée</th>
 						<th class="p-2 px-4 border-r border-blue-200">En attente</th>
 						<th class="p-2 px-4 border-r border-blue-200">Accordé</th>
@@ -99,6 +100,9 @@
 								{{ uneVacance.dateFin|date("d/m/Y") }}
 							</td>
 							<td class="p-2 border-r border-blue-200">
+								{{ uneVacance.dateDemande|date("d/m/Y H:i") }}
+							</td>
+							<td class="p-2 border-r border-blue-200">
 								{{ uneVacance.demiJournee }}
 							</td>
 							<td class="p-2 border-r border-blue-200">
@@ -117,7 +121,8 @@
 							</td>
 							<td class="p-2 border-r border-blue-200">
 								{% if uneVacance.annuler == '1' %}
-									<span>Oui</span>
+									<span>Oui le
+										{{ uneVacance.dateAnnulation|date("d/m/Y H:i") }}</span>
 								{% elseif uneVacance.annuler == '0' or uneVacance.annuler == null %}
 									<span>Non</span>
 								{% endif %}

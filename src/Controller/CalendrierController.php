@@ -180,6 +180,8 @@ class CalendrierController extends AbstractController
                             $rtt = $vacance->getRtt();
                             $demiJournee = $vacance->getDemiJournee();
                             $annuler = $vacance->getAnnuler();
+                            $dateAnnulation = $vacance->getDateAnnulation();
+                            $dateDemande = $vacance->getDateDemande();
 
 
                             if (($dateDebutVacances <= $jourUtiliser) && ($dateFinVacances >= $jourUtiliser)) {
@@ -203,6 +205,8 @@ class CalendrierController extends AbstractController
                                 'rtt' => $rtt,
                                 'demiJournee' => $demiJournee,
                                 'annuler' => $annuler,
+                                'dateDemande' => $dateDemande,
+                                'dateAnnulation' => $dateAnnulation,
 
                             );
                         }
@@ -306,6 +310,8 @@ class CalendrierController extends AbstractController
                         $rtt = $vacance->getRtt();
                         $demiJournee = $vacance->getDemiJournee();
                         $annuler = $vacance->getAnnuler();
+                        $dateAnnulation = $vacance->getDateAnnulation();
+                        $dateDemande = $vacance->getDateDemande();
                         
 
 
@@ -330,6 +336,8 @@ class CalendrierController extends AbstractController
                             'rtt' => $rtt,
                             'demiJournee' => $demiJournee,
                             'annuler' => $annuler,
+                            'dateDemande' => $dateDemande,
+                            'dateAnnulation' => $dateAnnulation,
                         );
 
                     }

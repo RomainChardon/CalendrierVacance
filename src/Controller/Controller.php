@@ -43,8 +43,7 @@ class Controller extends AbstractController
         $vacances = new Vacances();
 
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));
-        $h0 = new DateTimeImmutable('0:0:0');
-        $h12 = new DateTimeImmutable('12:0:0');
+
         $ajd = new DateTimeImmutable('now');
         $diffAjd = $dateDebut->diff($ajd);
         $diffAjd = intval($diffAjd->format('%a'));
@@ -52,21 +51,31 @@ class Controller extends AbstractController
 
         if ($request->request->get('demiJournee') == null) {
             $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
+            $diff = $dateDebut->diff($dateFin);
+            $diff = intval($diff->format('%a'));
 
-            if ( $request->request->get('maladie') == 'true') {
+            if ( $request->request->get('maladie') == 'true') 
+            {
                 $vacances->setMaladie('1');
-            } elseif ($request->request->get('congesSansSoldes')) {
+            } 
+            elseif ($request->request->get('congesSansSoldes')) 
+            {
                 $vacances->setSansSoldes('1');
-            } else {
-                $diff = $dateDebut->diff($dateFin);
-                $diff = intval($diff->format('%a'));
+            } 
+            else 
+            {
                 $nbConges = $utilisateur->getNbConges() - $diff;  
+                $utilisateur->setNbConges($nbConges);
+            }
+            if ($diff == 0) 
+            {
+                $nbConges = $utilisateur->getNbConges() - 1;  
                 $utilisateur->setNbConges($nbConges);
             }
 
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
-              }
+            }
 
         } else {
             
@@ -91,7 +100,7 @@ class Controller extends AbstractController
             }
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
-              }
+            }
         return $this->redirectToRoute("index");
         }
 
@@ -99,6 +108,8 @@ class Controller extends AbstractController
         $vacances->setDateFin($dateFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
+        $vacances->setDateDemande($ajd);
+
 
         // Autre méthode d'actualisation de congés
         
@@ -133,8 +144,13 @@ class Controller extends AbstractController
         //->bcc('bcc@example.com')
         //->replyTo('fabien@example.com')
         //->priority(Email::PRIORITY_HIGH)
-        ->subject("Confirmation de création de vacances")
-        ->html("<p> Vos vacances du $dateDebut au $dateFin ont bien étaient enregistrées, elles vont être traitées par la direction !</p>");
+        ->subject("Confirmation de création de vacances");
+        if ($diffAjd <= 14){
+            $email->html("<p> Vos vacances du $dateDebut au $dateFin ont bien étaient enregistrées, elles vont être traitées par la direction ! La prochaine fois veuillez les demandées
+            au minimum 15j avant !</p>");
+        } else {
+            $email->html("<p> Vos vacances du $dateDebut au $dateFin ont bien étaient enregistrées, elles vont être traitées par la direction !");
+        }
 
         $mailer->send($email);
 
@@ -157,6 +173,8 @@ class Controller extends AbstractController
     #[Route('/annulerVacances/{id}/annuler', name:'annule_vacance')]
     public function annulerVacances(Vacances $vacances,EntityManagerInterface $manager): Response
     {
+        $dateAnnulation = new \DateTime('now');
+        $vacances->setDateAnnulation($dateAnnulation);
         $vacances->setAnnuler("1");        
         $manager->flush();
 
