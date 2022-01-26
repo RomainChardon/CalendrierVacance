@@ -70,7 +70,8 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $desactiver;
-  
+
+    /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $cadre;
@@ -248,6 +249,9 @@ class User implements UserInterface
     public function setDesactiver(bool $desactiver): self
     {
         $this->desactiver = $desactiver;
+
+        return $this;
+    }
 
     public function getCadre(): ?bool
     {

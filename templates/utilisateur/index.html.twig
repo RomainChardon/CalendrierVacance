@@ -94,7 +94,9 @@ document.getElementById("modalSuppr").style.visibility = "hidden"
 
 							<td class="p-2 border-r border-blue-200">
 								{% if unUtilisateur.desactiver == true %}
-								
+									<form action="{{ path('reativer_user',{'id':unUtilisateur.id}) }}" method="POST">
+										<button type="submit" class="border border-red-400 bg-red-50 shadow-md rounded p-1 w-full hover:bg-red-400 transition duration-200">réativer</button>
+									</form>
 								{% elseif app.user.username != unUtilisateur.username %}
 									<form action="{{ path('suppr_user',{'id':unUtilisateur.id}) }}" method="POST">
 										<button type="submit" class="border border-red-400 bg-red-50 shadow-md rounded p-1 w-full hover:bg-red-400 transition duration-200">désactiver</button>

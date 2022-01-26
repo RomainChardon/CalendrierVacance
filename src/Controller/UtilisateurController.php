@@ -7,6 +7,7 @@ use App\Entity\User;
 use App\Entity\Vacances;
 use App\Repository\GroupeRepository;
 use App\Repository\UserRepository;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -120,6 +121,21 @@ class UtilisateurController extends AbstractController
         $this->addFlash(
             'msg',
             "Utilisateur désactiver !!");
+
+        return $this->redirectToRoute("utilisateur");
+    }
+
+    #[Route('/reativer_user/{id}/delete', name:'reativer_user')]
+    public function reativer_user(User $user, EntityManagerInterface $manager): Response
+    {
+        $user->setDesactiver(false);
+
+        $manager->persist($user);
+        $manager->flush();
+
+        $this->addFlash(
+            'msg',
+            "Utilisateur réativer !!");
 
         return $this->redirectToRoute("utilisateur");
     }
