@@ -70,6 +70,10 @@ class User implements UserInterface
      * @ORM\Column(type="boolean")
      */
     private $desactiver;
+  
+     * @ORM\Column(type="boolean", nullable=true)
+     */
+    private $cadre;
 
     public function __construct()
     {
@@ -244,6 +248,15 @@ class User implements UserInterface
     public function setDesactiver(bool $desactiver): self
     {
         $this->desactiver = $desactiver;
+
+    public function getCadre(): ?bool
+    {
+        return $this->cadre;
+    }
+
+    public function setCadre(?bool $cadre): self
+    {
+        $this->cadre = $cadre;
 
         return $this;
     }
