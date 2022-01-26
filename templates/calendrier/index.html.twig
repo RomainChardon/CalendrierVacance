@@ -71,8 +71,8 @@
 
 						<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
 						{% for unGroupe in tousLesGroupes %}
-							{% for user in unGroupe.getUsers %}
-								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
+							{% for user in unGroupe.getUsers %}								
+								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}} desactiver{{user.desactiver}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
 									{{ user.prenom}}
 									{% if is_granted('ROLE_ADMIN') %}
 										<p>
@@ -87,16 +87,15 @@
 										</p>
 									{% endif %}
 								</th>
-
 							{% endfor %}
 						{% endfor %}
 					</tr>
-					{% for days in listeDays %}
+					{% for days in listeDays %}   	
 						<tr class="p-2 border-b border-gray-100{% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}{% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}{% if ( days.siFerier ) %} bg-green-500 {% endif %}">
 							<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
 							<td class="p-0.5 border-r border-gray-200">{{ days.jourLettre}}</td>
 							{% for detail in days.listDetail %}
-								<td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
+								<td class="p-0.5 border-r border-gray-200 {{detail.groupe}} desactiver{{detail.desactiver}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
 									{% for vacance in detail %}
 										{% for i in vacance %}
 											<form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
@@ -148,21 +147,22 @@
 						<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
 						{% for unGroupe in tousLesGroupes %}
 							{% for user in unGroupe.getUsers %}
-								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
+								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}} desactiver{{user.desactiver}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
 									{{ user.prenom}}</th>
+							
 							{% endfor %}
 						{% endfor %}
 					</tr>
 					{% for days in listeDays2 %}
 						<tr class="p-2 border-b border-gray-100
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
-																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																																							                    {% if ( days.siFerier ) %} bg-green-500 {% endif %}">
+							{% if ( days.siAujourdhui ) %} bg-yellow-400 {% endif %}
+							{% if (( days.siSamedi ) or ( days.siDimanche )) %} bg-gray-300 {% endif %}
+							{% if ( days.siFerier ) %} bg-green-500 {% endif %}">
 							<td class="p-0.5 border-r border-gray-200">{{days.jourNumero}}</td>
 							<td class="p-0.5 border-r border-gray-200">
 								{{ days.jourLettre}}</td>
 							{% for detail in days.listDetail %}
-								<td class="p-0.5 border-r border-gray-200 {{detail.groupe}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
+								<td class="p-0.5 border-r border-gray-200 {{detail.groupe}} desactiver{{detail.desactiver}}" style="background-color: {{ detail.couleurGroupe }}30; text-align: center; display: relative;">
 									{% for vacance in detail %}
 										{% for i in vacance %}
 											<form {% if is_granted('ROLE_ADMIN') %} action="{{ path('demande_vacance',{'id':i.id}) }}" {% endif %} method="POST">
@@ -210,19 +210,30 @@
 
 	{% endblock %}
 	{% block javascripts %}
-		<script>
+<script>
+desac();
 
-			function afficherGroupe(groupeChoice) {
-let leGroupe = groupeChoice;
-let proute = document.getElementsByClassName(leGroupe);
+function desac() {
+	let desactiver = document.getElementsByClassName('desactiver1');
 
-for (let i = 0; i < proute.length; i++) {
-if (proute[i].style.display === "") {
-proute[i].style.display = "none";
-} else {
-proute[i].style.display = "";
+	for (let i = 0; i < desactiver.length; i++) {
+		desactiver[i].style.display = "none";
+	}
+	
 }
-}
-}
-		</script>
+
+
+function afficherGroupe(groupeChoice) {
+	let leGroupe = groupeChoice;
+	let proute = document.getElementsByClassName(leGroupe);
+
+	for (let i = 0; i < proute.length; i++) {
+		if (proute[i].style.display === "") {
+			proute[i].style.display = "none";
+		} else {
+			proute[i].style.display = "";
+			}
+		}
+	}
+</script>
 	{% endblock %}

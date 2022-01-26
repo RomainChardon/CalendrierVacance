@@ -48,6 +48,7 @@ class UtilisateurController extends AbstractController
         $utilisateur->setGroupe($groupe);
         $utilisateur->setMail($request->request->get('mail'));
         $utilisateur->setNbConges(0);
+        $utilisateur->setDesactiver(false);
 
         if (($utilisateur->getGroupe()->getNomGroupe()) == "Cadre"){
             $utilisateur->setNbConges(10);
@@ -81,12 +82,14 @@ class UtilisateurController extends AbstractController
     #[Route('/supprimerUtilisateur/{id}/delete', name:'remove_user')]
     public function removeUtilisateur(User $user,EntityManagerInterface $manager): Response
     {
-        $manager->remove($user);
+        $user->setDesactiver(true);
+
+        $manager->persist($user);
         $manager->flush();
 
         $this->addFlash(
             'msg',
-            "Utilisateur supprimé !!");
+            "Utilisateur désactiver !!");
 
         return $this->redirectToRoute("utilisateur");
     }
