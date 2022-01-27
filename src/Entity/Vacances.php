@@ -78,6 +78,11 @@ class Vacances
      */
     private $dateAnnulation;
 
+    /**
+     * @ORM\Column(type="text", nullable=true)
+     */
+    private $textAnnuler;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -243,6 +248,18 @@ class Vacances
     public function setDateAnnulation(?\DateTimeInterface $dateAnnulation): self
     {
         $this->dateAnnulation = $dateAnnulation;
+
+        return $this;
+    }
+
+    public function getTextAnnuler(): ?string
+    {
+        return $this->textAnnuler;
+    }
+
+    public function setTextAnnuler(?string $textAnnuler): self
+    {
+        $this->textAnnuler = $textAnnuler;
 
         return $this;
     }
