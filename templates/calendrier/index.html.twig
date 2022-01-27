@@ -109,17 +109,22 @@
 														<button>
 															<i class="far fa-clock pycto"></i>
 														</button>
-													{% elseif i.autoriser == true %}
+													{% elseif i.autoriser == true and i.annuler == false %}
 														<button>
 															<i class="fas fa-check pycto"></i>
 														</button>
-													{% elseif i.annuler == '1' %}
+													{% elseif i.annuler == true %}
 														<button>
-															<i class="fas fa-ban"></i>
+															<i class="fas fa-ban pycto"></i>
 														</button>
 													{% else %}
 														<button>
 															<i class="fas fa-times pycto"></i>
+														</button>
+													{% endif %}
+													{% if i.annuler == '0' and i.autoriser == true %}
+														<button>
+															<i class="fas fa-ban pycto" style="color: #A9ACA8"></i>
 														</button>
 													{% endif %}
 													{% if i.maladie == true %}
