@@ -217,16 +217,18 @@ class Controller extends AbstractController
 
         $vacances->setAnnuler("0"); 
         
-        if ($vacances->getAnnuler() == "0") {
-            $this->addFlash(
-                'msg',
-                "Votre demande d'annulation à déjà était enregistrée");
-        } else {
+        if ($vacances->getAnnuler() == false and $vacances->getAnnuler() == null) {
             $manager->flush();
-
+            dd($vacances->getAnnuler());
             $this->addFlash(
                 'succes',
                 "Votre demande à était enregistrée !!");
+        } elseif ($vacances->getAnnuler() == "0" and $vacances->getAnnuler() != null) 
+        {
+            $this->addFlash(
+                'msg',
+                "Votre demande d'annulation à déjà était enregistrée");
+
         }
 
 
