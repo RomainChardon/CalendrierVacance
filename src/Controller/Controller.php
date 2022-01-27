@@ -170,17 +170,65 @@ class Controller extends AbstractController
         return $this->redirectToRoute("index");
     }
 
-    #[Route('/annulerVacances/{id}/annuler', name:'annule_vacance')]
-    public function annulerVacances(Vacances $vacances,EntityManagerInterface $manager): Response
+    #[Route('/annulerVacances/{id}/delete', name:'refuserAnnuler_vacance')]
+    public function refuserAnnuler(Vacances $vacances,EntityManagerInterface $manager): Response
     {
-        $dateAnnulation = new \DateTime('now');
-        $vacances->setDateAnnulation($dateAnnulation);
-        $vacances->setAnnuler("1");        
+        $manager->remove($vacances);
         $manager->flush();
 
         $this->addFlash(
             'msg',
-            "Vacances annulées !!");
+            "Demande refusé !!");
+
+        return $this->redirectToRoute("index");
+    }
+
+    #[Route('/annulerVacances/{id}/validation', name:'validAnnuler_vacance')]
+    public function validAnnulerVacances(Vacances $vacances,EntityManagerInterface $manager): Response
+    {
+        $dateAnnulation = new \DateTime('now');
+        $vacances->setDateAnnulation($dateAnnulation);
+        $vacances->setAnnuler("1");      
+        $manager->flush();
+
+        $this->addFlash(
+            'msg',
+            "Cette vacances à bien était annulée");
+
+        return $this->redirectToRoute("index");
+    }
+
+    #[Route('/annulerVacances/{id}/annuler', name:'annule_vacance')]
+    public function annulerVacances(Vacances $vacances,EntityManagerInterface $manager, UserRepository $repoUser): Response
+    {
+        $utilisateur = $repoUser->find($this->getUser());
+        $dateDebut = $vacances->getDateDebut();
+        $dateFin = $vacances->getDateFin();
+        $diff = $dateDebut->diff($dateFin);
+        $diff = intval($diff->format('%a'));
+        
+        // Géré le cas ou la vacances est pour une seule journée
+        if ($diff == 0) {
+            $diff += 1;
+        }
+
+        $nbConges = $utilisateur->getNbConges() + $diff;  
+        $utilisateur->setNbConges($nbConges);
+
+        $vacances->setAnnuler("0"); 
+        
+        if ($vacances->getAnnuler() == "0") {
+            $this->addFlash(
+                'msg',
+                "Votre demande d'annulation à déjà était enregistrée");
+        } else {
+            $manager->flush();
+
+            $this->addFlash(
+                'succes',
+                "Votre demande à était enregistrée !!");
+        }
+
 
         return $this->redirectToRoute("index");
     }

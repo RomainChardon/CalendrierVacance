@@ -81,7 +81,7 @@
 					</tr>
 				</thead>
 				<tbody class="text-center">
-					{% for uneVacance in toutesLesVacances %}
+					{% for uneVacance in toutesLesVacances  | reverse %}
 						<tr class="p-2 border-b border-blue-400">
 							<td class="p-2 border-r border-blue-200">
 								{% for utilisateur in uneVacance.getUsers %}
@@ -149,7 +149,7 @@
 								{% endif %}
 							</td>
 							{% if uneVacance.autoriser == '0' and (uneVacance.annuler == '0' or uneVacance.annuler == null) %}
-								<td class="p-2 border-r border-blue-200">
+								<td class="p-2">
 									<form action="{{ path('remove_vacance',{'id':uneVacance.id}) }}" method="POST">
 										<button type="submit" class="border border-red-400 bg-red-50 shadow-md rounded p-1 w-full hover:bg-red-400 transition duration-200 ">supprimer</button>
 									</form>
@@ -160,15 +160,23 @@
 									</form>
 								</td>
 							{% endif %}
+							{% if (uneVacance.autoriser == "1" and uneVacance.annuler == false) %}
+								<td class="p-2 ">
+									<form action="{{ path('annule_vacance',{'id':uneVacance.id}) }}" method="POST">
+										<button type="submit" class="border border-yellow-400 bg-yellow-50 shadow-md rounded p-1 w-full hover:bg-yellow-400 transition duration-200">Annuler</button>
+									</form>
+								</td>
+							{% endif %}
 						{% endfor %}
-					</tbody>
+					</tr>
 				</tbody>
-			</table>
-		</div>
+			</tbody>
+		</table>
 	</div>
+</div>
 
-	<script>
-		function AffichageDemiJournee() {
+<script>
+	function AffichageDemiJournee() {
 var boutonIF = document.getElementById("siDemiJournee");
 var bouton = document.getElementById("demiJournee");
 var dateFin = document.getElementById("dateFin");
@@ -182,5 +190,4 @@ dateFin.style.display = 'block';
 }
 return true;
 }
-	</script>
-{% endblock %}
+</script>{% endblock %}
