@@ -85,10 +85,16 @@
 												{{ user.nbConges }}j</span>
 										</p>
 									{% endif %}
-									{% if user.prenom == app.user.prenom and app.user.prenom != is_granted('ROLE_ADMIN')  %}
+									{% if user.prenom == app.user.prenom and (app.user.prenom != is_granted('ROLE_ADMIN'))  %}
 										<p>
 											<span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">Congés :
 												{{ nbConges }}j</span>
+										</p>
+									{% endif %}
+									{% if  app.user.cadre == "1" and app.user.groupe == user.groupe and is_granted('ROLE_ADMIN') is null %}
+										<p>
+											<span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">Congés :
+												{{ user.nbConges }}j</span>
 										</p>
 									{% endif %}
 								</th>
@@ -109,7 +115,7 @@
 														<button>
 															<i class="far fa-clock pycto"></i>
 														</button>
-													{% elseif i.autoriser == true and i.annuler == false %}
+													{% elseif i.autoriser == true and i.annuler is null %}
 														<button>
 															<i class="fas fa-check pycto"></i>
 														</button>
@@ -117,14 +123,13 @@
 														<button>
 															<i class="fas fa-ban pycto"></i>
 														</button>
+													{% elseif i.annuler == '0' and i.autoriser == true %}
+														<button>
+															<i class="fas fa-ban pycto" style="color: #A9ACA8"></i>
+														</button>
 													{% else %}
 														<button>
 															<i class="fas fa-times pycto"></i>
-														</button>
-													{% endif %}
-													{% if i.annuler == '0' and i.autoriser == true %}
-														<button>
-															<i class="fas fa-ban pycto" style="color: #A9ACA8"></i>
 														</button>
 													{% endif %}
 													{% if i.maladie == true %}
