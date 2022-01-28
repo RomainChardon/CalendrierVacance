@@ -67,6 +67,11 @@ class User implements UserInterface
     private $mail;
 
     /**
+     * @ORM\Column(type="boolean")
+     */
+    private $desactiver;
+
+    /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $cadre;
@@ -232,6 +237,18 @@ class User implements UserInterface
     public function setMail(string $mail): self
     {
         $this->mail = $mail;
+
+        return $this;
+    }
+
+    public function getDesactiver(): ?bool
+    {
+        return $this->desactiver;
+    }
+
+    public function setDesactiver(bool $desactiver): self
+    {
+        $this->desactiver = $desactiver;
 
         return $this;
     }
