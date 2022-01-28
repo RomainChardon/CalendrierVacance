@@ -123,7 +123,7 @@ class Controller extends AbstractController
     #[Route('/removeVacances/{id}/delete', name:'remove_vacance')]
     public function removeVacances(Vacances $vacances,EntityManagerInterface $manager): Response
     {
-        $manager->remove($vacances);
+        $manager->remove($vacances);  
         $manager->flush();
 
         $this->addFlash(
