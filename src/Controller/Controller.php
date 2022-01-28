@@ -29,7 +29,9 @@ class Controller extends AbstractController
     #[Route('/vacances', name: 'index')]
     public function index(UserRepository $repoUser, VacancesRepository $repoVacances): Response
     {
+        $jourActuel = new DateTime('now');
         return $this->render('/index.html.twig', [
+            'jourActuel' => $jourActuel,
             'tousLesUtilisateurs' => $repoUser->findAll(),
             'toutesLesVacances' => $this->getUser()->getVacances(),
         ]);
@@ -121,15 +123,115 @@ class Controller extends AbstractController
     }
 
     #[Route('/removeVacances/{id}/delete', name:'remove_vacance')]
-    public function removeVacances(Vacances $vacances,EntityManagerInterface $manager): Response
+    public function removeVacances(Vacances $vacances,EntityManagerInterface $manager,UserRepository $repoUser): Response
     {
-        $manager->remove($vacances);  
+        $utilisateur = $repoUser->find($this->getUser()); 
+
+        $dateAjd = new \DateTime("now");
+        $dateDebut = $vacances->getDateDebut();
+        $dateFin = $vacances->getDateFin();
+
+        $diff = $dateDebut->diff($dateFin);
+        $diffAjd = $dateAjd->diff($dateDebut);
+
+        $diffAjd = intval($diffAjd->format('%R%a'));
+        $diff = intval($diff->format('%a'));
+
+        // Géré le cas ou la vacances est pour une seule journée
+        if ($diff == 0) {
+            $diff += 1;
+        }
+
+        if ($diffAjd >= 0) {
+            $nbConges = $utilisateur->getNbConges();
+            $utilisateur->setNbConges($nbConges + $diff);
+        }
+
+        $manager->remove($vacances);
         $manager->flush();
 
         $this->addFlash(
             'msg',
             "Vacances supprimé !!");
 
+        return $this->redirectToRoute("index");
+    }
+
+    #[Route('/annulerVacances/{id}/delete', name:'refuserAnnuler_vacance')]
+    public function refuserAnnuler(Vacances $vacances,EntityManagerInterface $manager): Response
+    {
+        $manager->remove($vacances);
+        $manager->flush();
+
+        $this->addFlash(
+            'msg',
+            "Demande refusé !!");
+
+        return $this->redirectToRoute("index");
+    }
+
+    // PARTIE ANNULER
+    
+    #[Route('/annulerVacance/{id}/demande', name: 'demande_annulation')]
+    public function textAnnulation(Vacances $vacances, EntityManagerInterface $manager): Response
+    {
+
+        return $this->render('textAnnuler.html.twig', [
+            'vacanceID' => $vacances,
+        ]);
+    }
+
+    #[Route('/annulerVacances/{id}/validation', name:'validAnnuler_vacance')]
+    public function validAnnulerVacances(Vacances $vacances,EntityManagerInterface $manager): Response
+    {
+        
+        $dateAnnulation = new \DateTime('now');
+        $vacances->setDateAnnulation($dateAnnulation);
+        $vacances->setAnnuler("1");      
+        $manager->flush();
+
+        
+        $this->addFlash(
+            'msg',
+            "Cette vacances à bien était annulée");
+
+        return $this->redirectToRoute("index");
+    }
+
+    #[Route('/annulerVacances/{id}/annuler', name:'annule_vacance')]
+    public function annulerVacances(Request $request, Vacances $vacances,EntityManagerInterface $manager, UserRepository $repoUser): Response
+    {
+        $utilisateur = $repoUser->find($this->getUser()); 
+        
+        if ($vacances->getAnnuler() != null) {
+            $this->addFlash(
+                'msg',
+                "Votre demande à déjà était enregistrée");
+        } else {
+        $dateDebut = $vacances->getDateDebut();
+        $dateFin = $vacances->getDateFin();
+        $diff = $dateDebut->diff($dateFin);
+        $diff = intval($diff->format('%a'));
+            
+        // Géré le cas ou la vacances est pour une seule journée
+        if ($diff == 0) {
+            $diff += 1;
+        }
+
+        $nbConges = $utilisateur->getNbConges() + $diff;  
+        $utilisateur->setNbConges($nbConges);
+
+        $vacances->setAnnuler("0");
+
+        // Texte d'explication
+        $textAnnuler = $request->request->get('explication');
+        $vacances->setTextAnnuler($textAnnuler);
+        $manager->flush();
+
+        $this->addFlash(
+            'succes',
+            "Votre demande à était enregistrée !!");
+        }
         return $this->redirectToRoute("index");
     }
 

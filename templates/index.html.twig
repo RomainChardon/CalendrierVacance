@@ -123,7 +123,9 @@
 								{% if uneVacance.annuler == '1' %}
 									<span>Oui le
 										{{ uneVacance.dateAnnulation|date("d/m/Y H:i") }}</span>
-								{% elseif uneVacance.annuler == '0' or uneVacance.annuler == null %}
+								{% elseif uneVacance.annuler == '0'%}
+									<span>En attente</span>
+								{% elseif uneVacance.annuler == null %}
 									<span>Non</span>
 								{% endif %}
 							</td>
@@ -148,7 +150,7 @@
 									<span>Non</span>
 								{% endif %}
 							</td>
-							{% if uneVacance.autoriser == '0' and (uneVacance.annuler == '0' or uneVacance.annuler == null) %}
+							{% if (uneVacance.DateDebut > jourActuel) and uneVacance.annuler != "0"%}
 								<td class="p-2">
 									<form action="{{ path('remove_vacance',{'id':uneVacance.id}) }}" method="POST">
 										<button type="submit" class="border border-red-400 bg-red-50 shadow-md rounded p-1 w-full hover:bg-red-400 transition duration-200 ">supprimer</button>
@@ -160,9 +162,9 @@
 									</form>
 								</td>
 							{% endif %}
-							{% if (uneVacance.autoriser == "1" and uneVacance.annuler == false) %}
+							{% if (uneVacance.autoriser == "1" and uneVacance.annuler is null) %}
 								<td class="p-2 ">
-									<form action="{{ path('annule_vacance',{'id':uneVacance.id}) }}" method="POST">
+									<form action="{{ path('demande_annulation',{'id':uneVacance.id}) }}" method="POST">
 										<button type="submit" class="border border-yellow-400 bg-yellow-50 shadow-md rounded p-1 w-full hover:bg-yellow-400 transition duration-200">Annuler</button>
 									</form>
 								</td>
@@ -174,7 +176,6 @@
 		</table>
 	</div>
 </div>
-
 <script>
 	function AffichageDemiJournee() {
 var boutonIF = document.getElementById("siDemiJournee");
