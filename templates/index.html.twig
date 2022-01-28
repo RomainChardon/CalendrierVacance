@@ -123,7 +123,9 @@
 								{% if uneVacance.annuler == '1' %}
 									<span>Oui le
 										{{ uneVacance.dateAnnulation|date("d/m/Y H:i") }}</span>
-								{% elseif uneVacance.annuler == '0' or uneVacance.annuler == null %}
+								{% elseif uneVacance.annuler == '0'%}
+									<span>En attente</span>
+								{% elseif uneVacance.annuler == null %}
 									<span>Non</span>
 								{% endif %}
 							</td>
@@ -160,7 +162,7 @@
 									</form>
 								</td>
 							{% endif %}
-							{% if (uneVacance.autoriser == "1" and uneVacance.annuler == false) %}
+							{% if (uneVacance.autoriser == "1" and uneVacance.annuler is null) %}
 								<td class="p-2 ">
 									<form action="{{ path('annule_vacance',{'id':uneVacance.id}) }}" method="POST">
 										<button type="submit" class="border border-yellow-400 bg-yellow-50 shadow-md rounded p-1 w-full hover:bg-yellow-400 transition duration-200">Annuler</button>
@@ -174,7 +176,6 @@
 		</table>
 	</div>
 </div>
-
 <script>
 	function AffichageDemiJournee() {
 var boutonIF = document.getElementById("siDemiJournee");

@@ -42,6 +42,13 @@
 								Elles sont accordées.
 							</span>
 						{% endif %}
+						{% if vacanceID.annuler == "0" %}
+							<br>
+							<span>
+								Cette vacance veut être annuler pour :
+								<strong>{{vacanceID.textAnnuler}}</strong>
+							</span>
+						{% endif %}
 					</h3>
 				{% endfor %}
 				{% if vacanceID.autoriser == false %}
