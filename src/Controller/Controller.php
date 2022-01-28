@@ -29,7 +29,9 @@ class Controller extends AbstractController
     #[Route('/vacances', name: 'index')]
     public function index(UserRepository $repoUser, VacancesRepository $repoVacances): Response
     {
+        $jourActuel = new DateTime('now');
         return $this->render('/index.html.twig', [
+            'jourActuel' => $jourActuel,
             'tousLesUtilisateurs' => $repoUser->findAll(),
             'toutesLesVacances' => $this->getUser()->getVacances(),
         ]);
@@ -158,8 +160,30 @@ class Controller extends AbstractController
     }
 
     #[Route('/removeVacances/{id}/delete', name:'remove_vacance')]
-    public function removeVacances(Vacances $vacances,EntityManagerInterface $manager): Response
+    public function removeVacances(Vacances $vacances,EntityManagerInterface $manager,UserRepository $repoUser): Response
     {
+        $utilisateur = $repoUser->find($this->getUser()); 
+
+        $dateAjd = new \DateTime("now");
+        $dateDebut = $vacances->getDateDebut();
+        $dateFin = $vacances->getDateFin();
+
+        $diff = $dateDebut->diff($dateFin);
+        $diffAjd = $dateAjd->diff($dateDebut);
+
+        $diffAjd = intval($diffAjd->format('%R%a'));
+        $diff = intval($diff->format('%a'));
+
+        // Géré le cas ou la vacances est pour une seule journée
+        if ($diff == 0) {
+            $diff += 1;
+        }
+
+        if ($diffAjd >= 0) {
+            $nbConges = $utilisateur->getNbConges();
+            $utilisateur->setNbConges($nbConges + $diff);
+        }
+
         $manager->remove($vacances);
         $manager->flush();
 

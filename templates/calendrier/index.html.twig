@@ -85,10 +85,16 @@
 												{{ user.nbConges }}j</span>
 										</p>
 									{% endif %}
-									{% if user.prenom == app.user.prenom and app.user.prenom != is_granted('ROLE_ADMIN')  %}
+									{% if user.prenom == app.user.prenom and (app.user.prenom != is_granted('ROLE_ADMIN'))  %}
 										<p>
 											<span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">Congés :
 												{{ nbConges }}j</span>
+										</p>
+									{% endif %}
+									{% if  app.user.cadre == "1" and app.user.groupe == user.groupe and is_granted('ROLE_ADMIN') is null %}
+										<p>
+											<span class="inline-flex items-center justify-center px-2 py-1 mr-2 text-xs font-bold leading-none text-red-100 bg-red-600 rounded-full">Congés :
+												{{ user.nbConges }}j</span>
 										</p>
 									{% endif %}
 								</th>

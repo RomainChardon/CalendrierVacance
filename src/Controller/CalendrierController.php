@@ -166,6 +166,7 @@ class CalendrierController extends AbstractController
                         $prenomUser = $user->getPrenom();
                         $nomUser = $user->getNom();
                         $userVacances = $user->getVacances();
+                        $cadre = $user->getCadre();
                         
                         $listDetailVacances = [];
                         foreach ($userVacances as $vacance) {
@@ -218,6 +219,7 @@ class CalendrierController extends AbstractController
                             'groupe' => $nomGroupe,
                             'couleurGroupe' => $couleurGroupe,
                             'vacances' => $listDetailVacances,
+                            'cadre' => $cadre,
                         );
                     } 
                 }

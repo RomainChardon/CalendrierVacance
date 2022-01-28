@@ -61,6 +61,12 @@
 						</form>
 
 					</div>
+				{% elseif vacanceID.annuler is null and vacanceID.autoriser == "1" %}
+					<div class="container w-full mt-9 mb-5 flex justify-center">
+						<form action="{{ path('validAnnuler_vacance', {'id':vacanceID.id}) }}" method="POST">
+							<input type="submit" name="annuler" value="Annuler cette vacance" class="border border-yellow-400 bg-yellow-50 shadow-md rounded p-1.5 px-6 mr-3 hover:bg-yellow-400 transition duration-200">
+						</form>
+					</div>
 				{% else %}
 					<div class="container w-full mt-9 mb-5 flex justify-center">
 						<form action="{{ path('validAnnuler_vacance', {'id':vacanceID.id}) }}" method="POST">
