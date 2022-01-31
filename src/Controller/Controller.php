@@ -37,6 +37,17 @@ class Controller extends AbstractController
         ]);
     }
 
+    #[Route('/recap', name: 'recap')]
+    public function recap(UserRepository $repoUser): Response
+    {
+        $utilisateur = $repoUser->find($this->getUser());
+        $nbConges = $utilisateur->getNbConges();
+        $jourRestant = 25 - $nbConges;
+        return $this->render('/recap.html.twig', [
+            'user' => $utilisateur,
+            'jourRestant' => $jourRestant,
+        ]);
+    }
     #[Route('/createVacance', name: 'create_vacances')]
     public function create_vacances(Request $request, UserRepository $repoUser): Response
     {
@@ -157,6 +168,8 @@ class Controller extends AbstractController
         return $this->redirectToRoute("index");
     }
 
+    // PARTIE ANNULER
+
     #[Route('/annulerVacances/{id}/delete', name:'refuserAnnuler_vacance')]
     public function refuserAnnuler(Vacances $vacances,EntityManagerInterface $manager): Response
     {
@@ -170,7 +183,6 @@ class Controller extends AbstractController
         return $this->redirectToRoute("index");
     }
 
-    // PARTIE ANNULER
     
     #[Route('/annulerVacance/{id}/demande', name: 'demande_annulation')]
     public function textAnnulation(Vacances $vacances, EntityManagerInterface $manager): Response
