@@ -56,8 +56,7 @@ class Controller extends AbstractController
         $vacances = new Vacances();
 
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));
-        $h0 = new DateTimeImmutable('0:0:0');
-        $h12 = new DateTimeImmutable('12:0:0');
+
         if ($request->request->get('demiJournee') == null) {
             $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
 
@@ -67,8 +66,15 @@ class Controller extends AbstractController
                 $vacances->setSansSoldes('1');
             } else {
                 $diff = $dateDebut->diff($dateFin);
-                $nbConges = $utilisateur->getNbConges() - $diff->d;
-    
+                $diff = intval($diff->format('%a'));
+
+                // Géré le cas ou la vacances est pour une seule journée
+                if ($diff == 0) {
+                    $diff += 1;
+                }    
+                $nbConges = $utilisateur->getNbConges() - $diff;
+
+
                 $utilisateur->setNbConges($nbConges);
             }
 
@@ -99,15 +105,7 @@ class Controller extends AbstractController
             }
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
-              }
-        }
-
-        if ($utilisateur->getNbConges() < 0){
-            $this->addFlash(
-                'msg',
-                "Une erreur c'est produite."
-            );
-        return $this->redirectToRoute("index");
+            }
         }
 
         $vacances->setDateDebut($dateDebut);
