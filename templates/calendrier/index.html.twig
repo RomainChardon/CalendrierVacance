@@ -11,7 +11,7 @@
 			margin-left: 10px;
 		}
 	</style>
-	<div class="h-20 border border-gray-100 flex justify-between">
+	<div class="h-20 flex justify-between">
 		<div class="flex flex-row">
 			<div class="">
 				<p class="">Sélectionnez le groupe à afficher ou à cacher :</p>
@@ -20,7 +20,7 @@
 				{% endfor %}
 			</div>
 		</div>
-		<div class="flex flex-row">
+		<div class="flex flex-row mt-2">
 			<form action="{{ path('index') }}" method="POST">
 				<button type="submit" class="border border-gray-400 bg-gray-50 shadow-md rounded p-1 px-5 mr-4 hover:bg-gray-400 transition duration-200">
 					<i class="fas fa-plane-departure"></i>
