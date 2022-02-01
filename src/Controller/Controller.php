@@ -49,7 +49,7 @@ class Controller extends AbstractController
         ]);
     }
     #[Route('/createVacance', name: 'create_vacances')]
-    public function create_vacances(Request $request, UserRepository $repoUser): Response
+    public function create_vacances(Request $request, UserRepository $repoUser,MailerInterface $mailer): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $repoUser->find($this->getUser());
@@ -108,25 +108,38 @@ class Controller extends AbstractController
             }
         }
 
+
         $vacances->setDateDebut($dateDebut);
         $vacances->setDateFin($dateFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
-
-        // Autre méthode d'actualisation de congés
-        // $interval = $dateDebut->diff($dateFin);
-        // $interval = intval($interval->format('%a'));
-        // $nbCongesActual = $utilisateur->getNbConges();
-        // $utilisateur->setNbConges($nbCongesActual - $interval);
-
+        
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);
         $entityManager->flush();
 
-        $this->addFlash(
-            'succes',
-            'Vacances ajouté !!'
-        );
+        $dateDebut = $dateDebut->format('d/m/Y');
+        $dateFin = $dateFin->format('d/m/Y');
+
+        $email = (new Email())
+        ->from('enzo.mangiante.adeo@gmail.com')
+        ->to($utilisateur->getMail())
+        ->subject("Confirmation d'autorisation de vos congés")
+        ->html("<p> Vos Vacances du $dateDebut au $dateFin sont enregistrées par la direction. </p>");
+
+        $mailer->send($email);
+
+        if ($diff < 15) {
+            $this->addFlash(
+                'msg',
+                'Vacances ajouté mais les poser 15j avant est le bienvenue !!'
+            );
+        } else {
+            $this->addFlash(
+                'succes',
+                'Vacances ajouté !!'
+            );
+        }
 
         return $this->redirectToRoute("index");
     }
