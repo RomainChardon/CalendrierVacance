@@ -1,20 +1,39 @@
 <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@2.8.2/dist/alpine.min.js"></script>
 {% for message in app.flashes('msg') %}
-	<div x-data="{show: true}" x-init="setTimeout(() => show = false, 5000)" x-show="show" class="bg-gray-100 flex justify-center  align-top ">
+	<div class="bg-gray-100 flex justify-center notifmsg align-top ">
 		<div class="fixed">
 			<div class="text-center w-56 m-6 p-6 bg-red-500 rounded-md ">
-				{{ message }}
+				<p>{{ message }}</p>
+			<button class="" onclick="fermer()">
+				X
+			</button>
+        </div>
 			</div>
 		</div>
 	</div>
 {% endfor %}
 
 {% for message in app.flashes('succes') %}
-	<div x-data="{show: true}" x-init="setTimeout(() => show = false, 5000)" x-show="show" class="bg-gray-100 flex justify-center  align-top ">
+	<div class="bg-green-100 flex justify-center notifmsg align-top ">
 		<div class="fixed">
 			<div class="text-center w-56 m-6 p-6 bg-green-500 rounded-md ">
-				{{ message }}
+				<p>{{ message }}</p>
+			<button class="" onclick="fermer()">
+				X
+			</button>
+        </div>
 			</div>
 		</div>
 	</div>
 {% endfor %}
+
+<script>
+	function fermer() {
+	let notif = document.getElementsByClassName('notifmsg');
+
+		for (let i = 0; i < notif.length; i++) {
+			notif[i].style.display = "none";
+		}
+	
+	}
+</script>
