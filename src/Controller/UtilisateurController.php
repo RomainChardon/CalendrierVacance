@@ -94,10 +94,10 @@ class UtilisateurController extends AbstractController
         $mailer->send($email);
 
 
-        $this->addFlash(
-            'succes',
-            'Utilisateur ajouté et Mail envoyé!!'
-        );
+        // $this->addFlash(
+        //     'succes',
+        //     'Utilisateur ajouté et Mail envoyé!!'
+        // );
 
         return $this->redirectToRoute("utilisateur");
     }
