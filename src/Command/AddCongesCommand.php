@@ -24,10 +24,7 @@ class AddCongesCommand extends Command
         $this->userRepository = $userRepository;
         $this->em = $em;
     }
-    protected function configure(): void
-    {
-        // ...
-    }
+    
 
     protected function execute(InputInterface $input, OutputInterface $output): int
     {   
