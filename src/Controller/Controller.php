@@ -108,7 +108,8 @@ class Controller extends AbstractController
             }
         }
 
-
+        $ajd = new DateTime("now");
+        $vacances->setDateDemande($ajd);
         $vacances->setDateDebut($dateDebut);
         $vacances->setDateFin($dateFin);
         $vacances->setAutoriser('0');
@@ -117,18 +118,41 @@ class Controller extends AbstractController
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);
         $entityManager->flush();
+        
 
         $dateDebut = $dateDebut->format('d/m/Y');
         $dateFin = $dateFin->format('d/m/Y');
 
+        //Evenèment au format ICS
+        $ics = "BEGIN:VCALENDAR\n";
+        $ics .= "VERSION:2.0\n";
+        $ics .= "PRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
+        $ics .= "BEGIN:VEVENT\n";
+        $ics .= "X-WR-TIMEZONE:Europe/Paris\n";
+        $ics .= "DTSTART:".date('Ydm',strtotime($dateDebut))."\n";
+        $ics .= "DTEND:".date('Ydm',strtotime($dateFin))."\n";
+        $ics .= "SUMMARY:"." Vos Vacances du $dateDebut au $dateFin\n";
+        $ics .= "LOCATION:"."\n";
+        $ics .= "DESCRIPTION:"."Vos Vacances du $dateDebut au $dateFin\n";
+        $ics .= "END:VEVENT\n";
+        $ics .= "END:VCALENDAR\n";
+
+        //Création du fichier
+        $fichier = 'maVacances.ics';
+        $f = fopen($fichier, 'w+');
+        fputs($f, $ics);
+
         $email = (new Email())
         ->from('enzo.mangiante.adeo@gmail.com')
         ->to($utilisateur->getMail())
-        ->subject("Confirmation d'autorisation de vos congés")
-        ->html("<p> Vos Vacances du $dateDebut au $dateFin sont enregistrées par la direction. </p>");
+        ->subject("Confirmation d'enregistrement de vos congés")
+        ->html("<p> Vos Vacances du $dateDebut au $dateFin sont enregistrées par la direction. </p>")
+        ->attachFromPath("public\maVacances.ics"); 
 
         $mailer->send($email);
 
+        unlink($f);
+        
         if ($diff < 15) {
             $this->addFlash(
                 'msg',
