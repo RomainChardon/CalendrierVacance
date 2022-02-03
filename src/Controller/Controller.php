@@ -3,21 +3,24 @@
 namespace App\Controller;
 
 use DateTime;
+use DateInterval;
 use DateTimeImmutable;
 use App\Entity\Vacances;
 use App\Entity\Utilisateur;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Entity;
+use Symfony\Component\Mime\Email;
 use App\Repository\UserRepository;
 use App\Repository\VacancesRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\HttpFoundation\Response;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 use Symfony\Component\Routing\Annotation\Route;
 use phpDocumentor\Reflection\PseudoTypes\False_;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
@@ -119,41 +122,55 @@ class Controller extends AbstractController
         $entityManager->persist($utilisateur);
         $entityManager->flush();
         
+        $diffAjd = $dateDebut->diff($ajd);
+        $diffAjd = intval($diffAjd->format('%a'));
+
+        $dateEnd = $dateFin->add(new DateInterval('P1D'));
+
+        // Create the ics file
+        $fs = new Filesystem();
+
+        //temporary folder, it has to be writable
+        $tmpFolder = $this->getParameter('kernel.project_dir') . '/tmp/';
+
+        //the name of your file to attach
+        $fileName = 'meeting.ics';
+
+$icsContent = "
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+DTSTART:".$dateDebut->format('Ymd')."
+DTEND:".$dateEnd->format('Ymd')."
+ORGANIZER;CN=Adeo Informatique:mailto:adeo-informatique@gmail.com
+UID:".rand(5, 1500)."
+DESCRIPTION:"." Vacances du ".$dateDebut->format('d/m/Y')." au ".$dateFin->format('d/m/Y')."
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Vacances
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR"
+;
+
+        //creation of the file on the server
+        $icfFile = $fs->dumpFile($tmpFolder.$fileName, $icsContent);
 
         $dateDebut = $dateDebut->format('d/m/Y');
         $dateFin = $dateFin->format('d/m/Y');
-
-        //Evenèment au format ICS
-        $ics = "BEGIN:VCALENDAR\n";
-        $ics .= "VERSION:2.0\n";
-        $ics .= "PRODID:-//hacksw/handcal//NONSGML v1.0//EN\n";
-        $ics .= "BEGIN:VEVENT\n";
-        $ics .= "X-WR-TIMEZONE:Europe/Paris\n";
-        $ics .= "DTSTART:".date('Ydm',strtotime($dateDebut))."\n";
-        $ics .= "DTEND:".date('Ydm',strtotime($dateFin))."\n";
-        $ics .= "SUMMARY:"." Vos Vacances du $dateDebut au $dateFin\n";
-        $ics .= "LOCATION:"."\n";
-        $ics .= "DESCRIPTION:"."Vos Vacances du $dateDebut au $dateFin\n";
-        $ics .= "END:VEVENT\n";
-        $ics .= "END:VCALENDAR\n";
-
-        //Création du fichier
-        $fichier = 'maVacances.ics';
-        $f = fopen($fichier, 'w+');
-        fputs($f, $ics);
 
         $email = (new Email())
         ->from('enzo.mangiante.adeo@gmail.com')
         ->to($utilisateur->getMail())
         ->subject("Confirmation d'enregistrement de vos congés")
         ->html("<p> Vos Vacances du $dateDebut au $dateFin sont enregistrées par la direction. </p>")
-        ->attachFromPath("public\maVacances.ics"); 
+        ->attachFromPath($tmpFolder.$fileName, null, 'text/calendar');
 
         $mailer->send($email);
 
-        unlink($f);
-        
-        if ($diff < 15) {
+        if ($diffAjd < 15) {
             $this->addFlash(
                 'msg',
                 'Vacances ajouté mais les poser 15j avant est le bienvenue !!'
