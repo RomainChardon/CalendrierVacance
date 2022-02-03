@@ -89,7 +89,7 @@ class UtilisateurController extends AbstractController
             <br> Votre nom d'utilisateur : $username
             <br> Votre mail : $mail
             <br> Assigné au groupe : $groupe
-            <br> Lien vers la documentation utilisateur : ");
+            <br> Lien vers la documentation utilisateur : https://ljl66-my.sharepoint.com/:w:/g/personal/romain_chardon_sio2020_lurcat_fr/EVd34xrWPqFJu8KKTtobrBsB0QLxQcRh3f56uoA5dMTWiw?e=EvKCgK");
 
         $mailer->send($email);
 
