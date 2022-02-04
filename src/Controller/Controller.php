@@ -404,4 +404,11 @@ END:VCALENDAR"
             'vacanceID' => $vacances
         ]);
     }
+
+    #[Route('/doc', name:'doc')]
+    public function doc(): Response
+    {
+        return $this->render('/doc.html.twig', [
+        ]);
+    }
 }
