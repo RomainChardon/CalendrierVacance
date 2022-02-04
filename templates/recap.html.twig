@@ -28,12 +28,13 @@
 				<strong>2,08j de congé/mois</strong>
 				pour un total de
 				<strong>25j par an</strong><br><br>
-				- Il vous reste
-				<strong>{{ jourRestant }}j sur les 25 jours accordées.</strong>.
+				- Il vous reste actuellement
+				<strong>{{ app.user.nbConges }}
+					jours de vos congés annuelles.</strong>
 				<br><br>
 				- Vous avez donc utilisé
-				<strong>{{ app.user.nbConges }}
-					jours de vos congés annuelles.</strong><br></p>
+				<strong>{{ jourRestant }}j sur les 25 jours accordées.</strong>
+			</p>
 		</div>
 	</div>
 {% endblock %}
