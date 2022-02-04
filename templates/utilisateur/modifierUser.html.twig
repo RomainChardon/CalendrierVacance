@@ -1,37 +1,43 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Modification utilisateur{% endblock %}
+{% block title %}Modification utilisateur
+{% endblock %}
 
 {% block body %}
-{% include "include/retour.html.twig" %}
-{% include "include/notif.html.twig" %}
+	{% include "include/retour.html.twig" %}
+	{% include "include/notif.html.twig" %}
 
-<div class="min-h-screen flex flex-col justify-center bg-gray-100">
-    <div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
-        <div class="text-2xl m-3 font-extrabold text-center">
-            <h1 class="">Modifier utilisateur</h1>
-        </div>
-        <div class="mt-5">
-            <form action="{{ path('modifier_user', {'id':utilisateurID.id}) }}" method="POST">
-                <div class="mt-5">
-                    <label for="nom" class="">Nom d'utilisateur:</label>
-                    <input type="text" name="username" id="Username" placeholder="{{ utilisateurID.username }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
-                </div>
-                <div class="mt-5">
-                    <label for="nom" class="">Ancien mot de passe :</label>
-                    <input type="password" name="oldPassword" id="oldPassword" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
-                </div>
-                <div class="mt-5">
-                    <label for="nom" class="">Mot de passe :</label>
-                    <input type="password" name="newPassword" id="newPassword" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
-                </div>
+	<div class="min-h-screen flex flex-col justify-center bg-gray-100">
+		<div class="px-10 w-96 p-4 shadow-2xl mx-auto rounded-2xl bg-white">
+			<div class="text-2xl m-3 font-extrabold text-center">
+				<h1 class="">Modifier utilisateur</h1>
+			</div>
+			<div class="mt-5">
+				<form action="{{ path('modifier_user', {'id':utilisateurID.id}) }}" method="POST">
+					<div class="mt-5">
+						<label for="nom" class="">Nom d'utilisateur:</label>
+						<input type="text" name="username" id="Username" placeholder="{{ utilisateurID.username }}" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
+					</div>
+					<div class="mt-5">
+						<label for="nom" class="">Ancien mot de passe :</label>
+						<input type="password" name="oldPassword" id="oldPassword" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
+					</div>
+					<div class="mt-5">
+						<label for="nom" class="">Mot de passe :</label>
+						<input type="password" name="newPassword" id="newPassword" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
+					</div>
 
-                <div class="container w-full mt-9 mb-5 flex justify-end">
-                    <input type="submit" value="Modifier" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 px-6 hover:bg-blue-400 transition duration-200">
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
+					<div class="mt-5">
+						<label for="mail" class="">Email :</label>
+						<input type="email" name="email" id="email" class="border border-blue-400 shadow-md rounded mt-1 w-full p-1.5">
+					</div>
+
+					<div class="container w-full mt-9 mb-5 flex justify-end">
+						<input type="submit" value="Modifier" class="border border-blue-400 bg-blue-50 shadow-md rounded p-1.5 px-6 hover:bg-blue-400 transition duration-200">
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
 
 {% endblock %}

@@ -263,7 +263,7 @@ END:VCALENDAR"
     }
 
     #[Route('/annulerVacances/{id}/annuler', name:'annule_vacance')]
-    public function annulerVacances(Request $request, Vacances $vacances,EntityManagerInterface $manager, UserRepository $repoUser): Response
+    public function annulerVacances(Request $request, Vacances $vacances,EntityManagerInterface $manager, UserRepository $repoUser,MailerInterface $mailer): Response
     {
         $utilisateur = $repoUser->find($this->getUser()); 
         
@@ -286,6 +286,15 @@ END:VCALENDAR"
         $utilisateur->setNbConges($nbConges);
 
         $vacances->setAnnuler("0");
+
+        $email = (new Email())
+        ->from('enzo.mangiante.adeo@gmail.com')
+        ->to($utilisateur->getMail())
+        ->subject("Confirmation d'enregistrement de vos congés")
+        ->html("<p> Votre demande d'annulation des vacances du $dateDebut au $dateFin à était enregistré. </p>");
+
+        $mailer->send($email);
+
 
         // Texte d'explication
         $textAnnuler = $request->request->get('explication');

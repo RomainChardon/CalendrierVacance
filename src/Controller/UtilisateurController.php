@@ -160,7 +160,6 @@ class UtilisateurController extends AbstractController
         $nbCongesNEW = ($nbCongesOLD + (float)$request->request->get('nbConges'));
         $groupe = $repoGroupe->find($request->request->get('groupe'));
         $user->setNom($request->request->get('nom'));
-        $user->setMail($request->request->get('mail'));  
         $user->setPrenom($request->request->get('prenom'));
         $user->setNbConges($nbCongesNEW);
 
@@ -189,6 +188,8 @@ class UtilisateurController extends AbstractController
     public function modif_user(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $userPass): Response
     {
         $oldPassword = $request->request->get('oldPassword');
+        $user->setMail($request->request->get('email'));  
+
 
         if ($oldPassword != null) {
             if ($userPass->isPasswordValid($user, $oldPassword)) {
