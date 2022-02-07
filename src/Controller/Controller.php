@@ -83,59 +83,16 @@ class Controller extends AbstractController
 
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
-              }
+            }
+            $dateEnd = $dateFin->add(new DateInterval('P1D'));
 
-        } else {
+            // Create the ics file
+            $fs = new Filesystem();
+            //temporary folder, it has to be writable
+            $tmpFolder = $this->getParameter('kernel.project_dir') . '/tmp/';
             
-            $demiJournee = $request->request->get('demiJournee');
-            $dateFin = $dateDebut;
-            if ($demiJournee == "matin") {
-                $horraire = "Matin";
-                $vacances->setDemiJournee($horraire);
-            } elseif ($demiJournee == "aprem") {
-                $horraire = "Aprés-Midi";
-                $vacances->setDemiJournee($horraire);
-            }
-
-            if ( $request->request->get('maladie') == 'true') {
-                $vacances->setMaladie('1');
-            } elseif ($request->request->get('congesSansSoldes')) {
-                // Ne fait rien
-            } else {
-                $nbConges = $utilisateur->getNbConges() - 0.5;
-    
-                $utilisateur->setNbConges($nbConges);
-            }
-            if($request->request->get('rtt') == true){
-                $vacances->setRtt('1');
-            }
-        }
-
-        $ajd = new DateTime("now");
-        $vacances->setDateDemande($ajd);
-        $vacances->setDateDebut($dateDebut);
-        $vacances->setDateFin($dateFin);
-        $vacances->setAutoriser('0');
-        $vacances->setAttente('1');
-        
-        $utilisateur->addVacance($vacances);
-        $entityManager->persist($utilisateur);
-        $entityManager->flush();
-        
-        $diffAjd = $dateDebut->diff($ajd);
-        $diffAjd = intval($diffAjd->format('%a'));
-
-        $dateEnd = $dateFin->add(new DateInterval('P1D'));
-
-        // Create the ics file
-        $fs = new Filesystem();
-
-        //temporary folder, it has to be writable
-        $tmpFolder = $this->getParameter('kernel.project_dir') . '/tmp/';
-
-        //the name of your file to attach
-        $fileName = 'meeting.ics';
-
+            //the name of your file to attach
+            $fileName = 'meeting.ics';
 $icsContent = "
 BEGIN:VCALENDAR
 VERSION:2.0
@@ -154,12 +111,88 @@ TRANSP:OPAQUE
 END:VEVENT
 END:VCALENDAR"
 ;
+            //creation of the file on the server
+            $icfFile = $fs->dumpFile($tmpFolder.$fileName, $icsContent);
 
-        //creation of the file on the server
-        $icfFile = $fs->dumpFile($tmpFolder.$fileName, $icsContent);
+        } else {
+            
+            $demiJournee = $request->request->get('demiJournee');
+            $dateFin = $dateDebut;
+            if ($demiJournee == "matin") {
+                $horraire = "Matin";
+                $vacances->setDemiJournee($horraire);
+                $dateDebut = $dateDebut->add(new DateInterval('PT9H'));
+                $dateFin = $dateFin->add(new DateInterval('PT12H'));
+            } elseif ($demiJournee == "aprem") {
+                $horraire = "Aprés-Midi";
+                $vacances->setDemiJournee($horraire);
+                $dateDebut = $dateDebut->add(new DateInterval('PT12H'));
+                $dateFin = $dateFin->add(new DateInterval('PT18H'));
+            }
 
+            if ( $request->request->get('maladie') == 'true') {
+                $vacances->setMaladie('1');
+            } elseif ($request->request->get('congesSansSoldes')) {
+                // Ne fait rien
+            } else {
+                $nbConges = $utilisateur->getNbConges() - 0.5;
+    
+                $utilisateur->setNbConges($nbConges);
+            }
+            if($request->request->get('rtt') == true){
+                $vacances->setRtt('1');
+            }
+
+             // Create the ics file
+            $fs = new Filesystem();
+            //temporary folder, it has to be writable
+            $tmpFolder = $this->getParameter('kernel.project_dir') . '/tmp/';
+            
+            //the name of your file to attach
+            $fileName = 'meeting.ics';
+$icsContent = "
+BEGIN:VCALENDAR
+VERSION:2.0
+CALSCALE:GREGORIAN
+METHOD:REQUEST
+BEGIN:VEVENT
+DTSTART:".$dateDebut->format('Ymd')."T".$dateDebut->format('His')."
+DTEND:".$dateFin->format('Ymd')."T".$dateFin->format('His')."
+ORGANIZER;CN=Adeo Informatique:mailto:adeo-informatique@gmail.com
+UID:".rand(5, 1500)."
+DESCRIPTION:"." Vacances du ".$dateDebut->format('d/m/Y H:i:s')." au ".$dateFin->format('d/m/Y H:i:s')."
+SEQUENCE:0
+STATUS:CONFIRMED
+SUMMARY:Vacances
+TRANSP:OPAQUE
+END:VEVENT
+END:VCALENDAR"
+;
+            //creation of the file on the server
+            $icfFile = $fs->dumpFile($tmpFolder.$fileName, $icsContent);    
+        }
+
+        
+        $ajd = new DateTime("now");
+        $vacances->setDateDemande($ajd);
+        $vacances->setDateDebut($dateDebut);
+        $vacances->setDateFin($dateFin);
+        $vacances->setAutoriser('0');
+        $vacances->setAttente('1');
+        
+        $utilisateur->addVacance($vacances);
+        $entityManager->persist($utilisateur);
+        $entityManager->flush();
+        
+        $diffAjd = $dateDebut->diff($ajd);
+        $diffAjd = intval($diffAjd->format('%a'));
+
+
+        // Format les dates
         $dateDebut = $dateDebut->format('d/m/Y');
         $dateFin = $dateFin->format('d/m/Y');
+
+
 
         $email = (new Email())
         ->from('enzo.mangiante.adeo@gmail.com')
@@ -170,7 +203,7 @@ END:VCALENDAR"
 
         $mailer->send($email);
 
-        if ($diffAjd < 15) {
+        if ($diffAjd < 14) {
             $this->addFlash(
                 'msg',
                 'Vacances ajouté mais les poser 15j avant est le bienvenue !!'
