@@ -23,6 +23,7 @@ use phpDocumentor\Reflection\PseudoTypes\False_;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
+use App\Service\ICSGenerator;
 
 
 #[Route('/vacances')]
@@ -52,7 +53,7 @@ class Controller extends AbstractController
         ]);
     }
     #[Route('/createVacance', name: 'create_vacances')]
-    public function create_vacances(Request $request, UserRepository $repoUser,MailerInterface $mailer): Response
+    public function create_vacances(Request $request, UserRepository $repoUser,MailerInterface $mailer, ICSGenerator $ICSGenerator): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $repoUser->find($this->getUser());
@@ -84,35 +85,8 @@ class Controller extends AbstractController
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
             }
-            $dateEnd = $dateFin->add(new DateInterval('P1D'));
 
-            // Create the ics file
-            $fs = new Filesystem();
-            //temporary folder, it has to be writable
-            $tmpFolder = $this->getParameter('kernel.project_dir') . '/tmp/';
-            
-            //the name of your file to attach
-            $fileName = 'meeting.ics';
-$icsContent = "
-BEGIN:VCALENDAR
-VERSION:2.0
-CALSCALE:GREGORIAN
-METHOD:REQUEST
-BEGIN:VEVENT
-DTSTART:".$dateDebut->format('Ymd')."
-DTEND:".$dateEnd->format('Ymd')."
-ORGANIZER;CN=Adeo Informatique:mailto:adeo-informatique@gmail.com
-UID:".rand(5, 1500)."
-DESCRIPTION:"." Vacances du ".$dateDebut->format('d/m/Y')." au ".$dateFin->format('d/m/Y')."
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Vacances
-TRANSP:OPAQUE
-END:VEVENT
-END:VCALENDAR"
-;
-            //creation of the file on the server
-            $icfFile = $fs->dumpFile($tmpFolder.$fileName, $icsContent);
+            $ics = $ICSGenerator->getICS($dateDebut,$dateFin);
 
         } else {
             
@@ -121,7 +95,7 @@ END:VCALENDAR"
             if ($demiJournee == "matin") {
                 $horraire = "Matin";
                 $vacances->setDemiJournee($horraire);
-                $dateDebut = $dateDebut->add(new DateInterval('PT9H'));
+                $dateDebut = $dateDebut->add(new DateInterval('PT8H'));
                 $dateFin = $dateFin->add(new DateInterval('PT12H'));
             } elseif ($demiJournee == "aprem") {
                 $horraire = "Aprés-Midi";
@@ -142,34 +116,7 @@ END:VCALENDAR"
             if($request->request->get('rtt') == true){
                 $vacances->setRtt('1');
             }
-
-             // Create the ics file
-            $fs = new Filesystem();
-            //temporary folder, it has to be writable
-            $tmpFolder = $this->getParameter('kernel.project_dir') . '/tmp/';
-            
-            //the name of your file to attach
-            $fileName = 'meeting.ics';
-$icsContent = "
-BEGIN:VCALENDAR
-VERSION:2.0
-CALSCALE:GREGORIAN
-METHOD:REQUEST
-BEGIN:VEVENT
-DTSTART:".$dateDebut->format('Ymd')."T".$dateDebut->format('His')."
-DTEND:".$dateFin->format('Ymd')."T".$dateFin->format('His')."
-ORGANIZER;CN=Adeo Informatique:mailto:adeo-informatique@gmail.com
-UID:".rand(5, 1500)."
-DESCRIPTION:"." Vacances du ".$dateDebut->format('d/m/Y H:i:s')." au ".$dateFin->format('d/m/Y H:i:s')."
-SEQUENCE:0
-STATUS:CONFIRMED
-SUMMARY:Vacances
-TRANSP:OPAQUE
-END:VEVENT
-END:VCALENDAR"
-;
-            //creation of the file on the server
-            $icfFile = $fs->dumpFile($tmpFolder.$fileName, $icsContent);    
+            $ics = $ICSGenerator->getICS($dateDebut,$dateFin, true);
         }
 
         
@@ -193,13 +140,13 @@ END:VCALENDAR"
         $dateFin = $dateFin->format('d/m/Y');
 
 
-
         $email = (new Email())
         ->from('enzo.mangiante.adeo@gmail.com')
         ->to($utilisateur->getMail())
         ->subject("Confirmation d'enregistrement de vos congés")
         ->html("<p> Vos Vacances du $dateDebut au $dateFin sont enregistrées par la direction. </p>")
-        ->attachFromPath($tmpFolder.$fileName, null, 'text/calendar');
+        ->attachFromPath($ics, null, 'text/calendar');
+
 
         $mailer->send($email);
 
