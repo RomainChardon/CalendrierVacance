@@ -7,6 +7,7 @@ use DateInterval;
 use DateTimeImmutable;
 use App\Entity\Vacances;
 use App\Entity\Utilisateur;
+use App\Service\ICSGenerator;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\Entity;
 use Symfony\Component\Mime\Email;
@@ -20,10 +21,11 @@ use Symfony\Component\HttpFoundation\Response;
 use phpDocumentor\Reflection\PseudoTypes\True_;
 use Symfony\Component\Routing\Annotation\Route;
 use phpDocumentor\Reflection\PseudoTypes\False_;
+use Symfony\Component\EventDispatcher\GenericEvent;
+use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
-use App\Service\ICSGenerator;
 
 
 #[Route('/vacances')]
@@ -53,7 +55,7 @@ class Controller extends AbstractController
         ]);
     }
     #[Route('/createVacance', name: 'create_vacances')]
-    public function create_vacances(Request $request, UserRepository $repoUser,MailerInterface $mailer, ICSGenerator $ICSGenerator): Response
+    public function create_vacances(Request $request, UserRepository $repoUser,MailerInterface $mailer, ICSGenerator $ICSGenerator, EventDispatcherInterface $dispatcher): Response
     {
         $entityManager = $this->getDoctrine()->getManager();
         $utilisateur = $repoUser->find($this->getUser());
@@ -62,7 +64,9 @@ class Controller extends AbstractController
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));
 
         if ($request->request->get('demiJournee') == null) {
+
             $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
+            $ics = $ICSGenerator->getICS($dateDebut,$dateFin, true);
 
             if ( $request->request->get('maladie') == 'true') {
                 $vacances->setMaladie('1');
@@ -78,7 +82,6 @@ class Controller extends AbstractController
                 }    
                 $nbConges = $utilisateur->getNbConges() - $diff;
 
-
                 $utilisateur->setNbConges($nbConges);
             }
 
@@ -86,7 +89,6 @@ class Controller extends AbstractController
                 $vacances->setRtt('1');
             }
 
-            $ics = $ICSGenerator->getICS($dateDebut,$dateFin);
 
         } else {
             
@@ -126,6 +128,7 @@ class Controller extends AbstractController
         $vacances->setDateFin($dateFin);
         $vacances->setAutoriser('0');
         $vacances->setAttente('1');
+
         
         $utilisateur->addVacance($vacances);
         $entityManager->persist($utilisateur);
@@ -140,6 +143,7 @@ class Controller extends AbstractController
         $dateFin = $dateFin->format('d/m/Y');
 
 
+        //$dispatcher->dispatch(new GenericEvent(),"mail.event");
         $email = (new Email())
         ->from('enzo.mangiante.adeo@gmail.com')
         ->to($utilisateur->getMail())
@@ -161,6 +165,7 @@ class Controller extends AbstractController
                 'Vacances ajouté !!'
             );
         }
+
 
         return $this->redirectToRoute("index");
     }
@@ -266,6 +271,10 @@ class Controller extends AbstractController
         $utilisateur->setNbConges($nbConges);
 
         $vacances->setAnnuler("0");
+
+        // Format les dates
+        $dateDebut = $dateDebut->format('d/m/Y');
+        $dateFin = $dateFin->format('d/m/Y');
 
         $email = (new Email())
         ->from('enzo.mangiante.adeo@gmail.com')
