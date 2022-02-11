@@ -6,6 +6,7 @@ use DateTime;
 use DateInterval;
 use DateTimeImmutable;
 use App\Entity\Vacances;
+use App\Event\MailEvent;
 use App\Entity\Utilisateur;
 use App\Service\ICSGenerator;
 use Doctrine\ORM\EntityManager;
@@ -62,11 +63,11 @@ class Controller extends AbstractController
         $vacances = new Vacances();
 
         $dateDebut = new DateTimeImmutable($request->request->get('date_debut'));
-
         if ($request->request->get('demiJournee') == null) {
 
             $dateFin = new DateTimeImmutable($request->request->get('date_fin'));
-            $ics = $ICSGenerator->getICS($dateDebut,$dateFin, true);
+
+            $ics = $ICSGenerator->getICS($dateDebut,$dateFin);
 
             if ( $request->request->get('maladie') == 'true') {
                 $vacances->setMaladie('1');
@@ -138,23 +139,11 @@ class Controller extends AbstractController
         $diffAjd = intval($diffAjd->format('%a'));
 
 
-        // Format les dates
-        $dateDebut = $dateDebut->format('d/m/Y');
-        $dateFin = $dateFin->format('d/m/Y');
+        $dispatcher->dispatch(new MailEvent($dateDebut,$dateFin,$utilisateur,$ics), 'mailICS.event');
 
 
-        //$dispatcher->dispatch(new GenericEvent(),"mail.event");
-        $email = (new Email())
-        ->from('enzo.mangiante.adeo@gmail.com')
-        ->to($utilisateur->getMail())
-        ->subject("Confirmation d'enregistrement de vos congés")
-        ->html("<p> Vos Vacances du $dateDebut au $dateFin sont enregistrées par la direction. </p>")
-        ->attachFromPath($ics, null, 'text/calendar');
-
-
-        $mailer->send($email);
-
-        if ($diffAjd < 14) {
+        if ($diffAjd < 14) 
+        {
             $this->addFlash(
                 'msg',
                 'Vacances ajouté mais les poser 15j avant est le bienvenue !!'
@@ -337,41 +326,32 @@ class Controller extends AbstractController
     }
 
     #[Route('/autoriseVacance/{id}/modif', name: 'autorise_vacance')]
-    public function autoriseVacances( UserRepository $userRepo, Vacances $vacances, Request $request, EntityManagerInterface $manager,MailerInterface $mailer): Response
+    public function autoriseVacances( UserRepository $userRepo, Vacances $vacances, Request $request, EntityManagerInterface $manager,ICSGenerator $ICSGenerator, EventDispatcherInterface $dispatcher): Response
     {
         $utilisateur = $userRepo->find($this->getUser());
+        $user = $vacances->getUsers();
         $vacances->setAttente('0');
         $vacances->setAutoriser('1');
-        $dateDébut = $vacances->getDateDebut();
+        $dateDebut = $vacances->getDateDebut();
         $dateFin = $vacances->getDateFin();
-        $dateDébut = $dateDébut->format('d/m/Y');
-        $dateFin = $dateFin->format('d/m/Y');
-        $maladie = $vacances->getMaladie();
-        $sansSoldes = $vacances->getSansSoldes();
+        $demiJournee = $vacances->getDemiJournee();
 
+        dd($user);
 
-        $email = (new Email())
-        ->from('enzo.mangiante.adeo@gmail.com')
-        ->to($utilisateur->getMail())
-        //->cc('cc@example.com')
-        //->bcc('bcc@example.com')
-        //->replyTo('fabien@example.com')
-        //->priority(Email::PRIORITY_HIGH)
-        ->subject("Confirmation d'autorisation de vos congés");
+        if ($demiJournee == true) {
+            $ics = $ICSGenerator->getICS($dateDebut,$dateFin, true);
 
-        if ($maladie == "1") {
-            $email->html("<p> Votre arrêt maladie du $dateDébut au $dateFin sont autorisé par la direction. </p>");
-        } elseif ($sansSoldes == "1") {
-            $email->html("<p> Vos congés sans soldes du $dateDébut au $dateFin sont autorisé par la direction. </p>");
         } else {
-            $email->html("<p> Vos Vacances du $dateDébut au $dateFin sont autorisé par la direction. </p>");
+            $ics = $ICSGenerator->getICS($dateDebut,$dateFin);
+
         }
 
-        $mailer->send($email);
+        dd($utilisateur);
+        $dispatcher->dispatch(new MailEvent($dateDebut,$dateFin,$utilisateur,$ics), 'mailICS.event');
+
 
         $manager->flush();
 
-       
         return $this->redirectToRoute("calendrier");    
     }
 

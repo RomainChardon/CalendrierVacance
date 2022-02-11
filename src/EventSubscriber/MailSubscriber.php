@@ -25,19 +25,34 @@ class MailSubscriber implements EventSubscriberInterface
         // return the subscribed events, their methods and priorities
         return [
             'mail.event' => "mailTest",
+            'mailICS.event' => "mailTestICS",
         ];
     }
 
-    public function mailTest($event,$ics,$dateDebut,$dateFin,$utilisateur){
-
-
+    public function mailTest($event){
 
         $email = (new Email())
         ->from('enzo.mangiante.adeo@gmail.com')
-        ->to($utilisateur->getMail())
+        ->to($event->getUser()->getMail())
         ->subject("Confirmation d'enregistrement de vos congés")
-        ->html("<p> Vos Vacances du $dateDebut au $dateFin sont enregistrées par la direction. </p>")
-        ->attachFromPath($ics, null, 'text/calendar');
+        ->html("<p> Vos Vacances du ".$event->getDateDebut()." au ".$event->getDateFin()." sont enregistrées par la direction. </p>");
+        //->attachFromPath($ics, null, 'text/calendar');
+
+        $this->mailer->send($email);
+
+    }
+
+    public function mailTestICS($event){
+
+        $email = (new Email())
+        ->from('enzo.mangiante.adeo@gmail.com')
+        ->to($event->getUser()->getMail())
+        ->subject("Confirmation d'enregistrement de vos congés")
+        ->html("<p> Vos Vacances du ".$event->getDateDebut()." au ".$event->getDateFin()." sont enregistrées par la direction. </p>")
+        ->attachFromPath($event->getICS(), null, 'text/calendar');
+
+        $this->mailer->send($email);
+
     }
 
     public function logException(ExceptionEvent $event)
