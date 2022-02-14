@@ -1,3 +1,4 @@
+[![Pipeline-CI](https://github.com/RomainChardon/CalendrierVacance/actions/workflows/ci.yml/badge.svg)](https://github.com/RomainChardon/CalendrierVacance/actions/workflows/ci.yml)
 # Tableau de visualisation et de suivi de vacances.
 
 **Objectif :** Visualiser par équipe qui est absent ou non dans une période donnée.
