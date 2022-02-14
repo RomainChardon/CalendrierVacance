@@ -35,10 +35,16 @@ class Groupe
      */
     private $users;
 
+    /**
+     * @ORM\OneToMany(targetEntity=User::class, mappedBy="groupe")
+     */
+    private $User;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
         $this->users = new ArrayCollection();
+        $this->User = new ArrayCollection();
     }
 
 
@@ -74,15 +80,15 @@ class Groupe
     /**
      * @return Collection|User[]
      */
-    public function getUsers(): Collection
+    public function getUser(): Collection
     {
-        return $this->users;
+        return $this->User;
     }
 
     public function addUser(User $user): self
     {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
+        if (!$this->User->contains($user)) {
+            $this->User[] = $user;
             $user->setGroupe($this);
         }
 
@@ -91,7 +97,7 @@ class Groupe
 
     public function removeUser(User $user): self
     {
-        if ($this->users->removeElement($user)) {
+        if ($this->User->removeElement($user)) {
             // set the owning side to null (unless already changed)
             if ($user->getGroupe() === $this) {
                 $user->setGroupe(null);
@@ -100,5 +106,7 @@ class Groupe
 
         return $this;
     }
+
+    
 
 }

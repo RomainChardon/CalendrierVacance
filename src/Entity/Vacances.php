@@ -83,6 +83,11 @@ class Vacances
      */
     private $textAnnuler;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="vacances")
+     */
+    private $User;
+
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
@@ -153,32 +158,8 @@ class Vacances
 
         return $this;
     }
-    /**
-     * @return Collection|User[]
-     */
-    public function getUsers(): Collection
-    {
-        return $this->users;
-    }
-
-    public function addUser(User $user): self
-    {
-        if (!$this->users->contains($user)) {
-            $this->users[] = $user;
-            $user->addVacance($this);
-        }
-
-        return $this;
-    }
-
-    public function removeUser(User $user): self
-    {
-        if ($this->users->removeElement($user)) {
-            $user->removeVacance($this);
-        }
-
-        return $this;
-    }
+    
+    
 
     public function getDemiJournee(): ?string
     {
@@ -260,6 +241,18 @@ class Vacances
     public function setTextAnnuler(?string $textAnnuler): self
     {
         $this->textAnnuler = $textAnnuler;
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->User;
+    }
+
+    public function setUser(?User $User): self
+    {
+        $this->User = $User;
 
         return $this;
     }

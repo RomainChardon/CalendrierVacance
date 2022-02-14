@@ -76,9 +76,20 @@ class User implements UserInterface
      */
     private $cadre;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Vacances::class, mappedBy="User")
+     */
+    private $vacances;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="User")
+     */
+    private $groupe;
+
     public function __construct()
     {
         $this->Vacances = new ArrayCollection();
+        $this->vacances = new ArrayCollection();
     }
 
     public function getId(): ?int
