@@ -54,6 +54,7 @@ jobs:
             ./vendor/bin/php-cs-fixer fix --dry-run
       - name: PHP-STAN
         run: |
+            composer require symfony/flex
             ./vendor/bin/simple-phpunit install
             composer require phpstan/phpstan
             composer require phpstan/extension-installer
