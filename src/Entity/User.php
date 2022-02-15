@@ -77,7 +77,7 @@ class User implements UserInterface
     private $groupe;
 
     /**
-     * @ORM\OneToMany(targetEntity=Vacances::class,mappedBy="User")
+     * @ORM\OneToMany(targetEntity=Vacances::class,mappedBy="User",cascade={"persist"})
      */
     private $vacances;
 
