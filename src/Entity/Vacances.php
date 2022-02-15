@@ -4,7 +4,6 @@ namespace App\Entity;
 
 use App\Repository\VacancesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -39,11 +38,11 @@ class Vacances
      */
     private $attente;
 
-        /**
+    /**
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $maladie;
-    
+
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -80,15 +79,13 @@ class Vacances
     private $textAnnuler;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="vacances")
+     * @ORM\ManyToOne(targetEntity="User",cascade={"persist"},inversedBy="vacances")
      */
     private $User;
-
 
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
-        $this->users = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -155,8 +152,6 @@ class Vacances
 
         return $this;
     }
-    
-    
 
     public function getDemiJournee(): ?string
     {
@@ -218,7 +213,7 @@ class Vacances
         return $this;
     }
 
-    public function getDateAnnulation(): ?\DateTimeInterface  
+    public function getDateAnnulation(): ?\DateTimeInterface
     {
         return $this->dateAnnulation;
     }

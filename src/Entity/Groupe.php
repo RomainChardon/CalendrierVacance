@@ -24,7 +24,6 @@ class Groupe
      */
     private $nomGroupe;
 
-
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -46,7 +45,6 @@ class Groupe
         $this->users = new ArrayCollection();
         $this->User = new ArrayCollection();
     }
-
 
     public function getId(): ?int
     {
@@ -106,7 +104,4 @@ class Groupe
 
         return $this;
     }
-
-    
-
 }

@@ -86,7 +86,7 @@
 
 						<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
 						{% for unGroupe in tousLesGroupes %}
-							{% for user in unGroupe.getUsers %}
+							{% for user in unGroupe.getUser %}
 								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}} desactiver{{user.desactiver}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
 									{{ user.prenom}}
 									{% if is_granted('ROLE_ADMIN') %}
@@ -185,7 +185,7 @@
 						</th>
 						<th class="p-1 px-2 border-r border-gray-200">{{ anneeUtiliser }}</th>
 						{% for unGroupe in tousLesGroupes %}
-							{% for user in unGroupe.getUsers %}
+							{% for user in unGroupe.getUser %}
 								<th class="p-1 px-2 border-r border-gray-200 {{unGroupe.nomGroupe}} desactiver{{user.desactiver}}" style="background-color:{{ unGroupe.couleur }}; display: relative;">{{ user.nom }}
 									{{ user.prenom}}</th>
 
