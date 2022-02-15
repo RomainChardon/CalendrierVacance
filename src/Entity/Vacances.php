@@ -43,11 +43,7 @@ class Vacances
      * @ORM\Column(type="boolean", nullable=true)
      */
     private $maladie;
-    /**
-     * @ORM\ManyToMany(targetEntity=User::class, mappedBy="Vacances")
-     */
-    private $users;
-
+    
     /**
      * @ORM\Column(type="string", length=255, nullable=true)
      */
@@ -87,6 +83,7 @@ class Vacances
      * @ORM\ManyToOne(targetEntity=User::class, inversedBy="vacances")
      */
     private $User;
+
 
     public function __construct()
     {
@@ -221,7 +218,7 @@ class Vacances
         return $this;
     }
 
-    public function getDateAnnulation(): ?\DateTimeInterface
+    public function getDateAnnulation(): ?\DateTimeInterface  
     {
         return $this->dateAnnulation;
     }

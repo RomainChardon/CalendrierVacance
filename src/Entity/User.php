@@ -46,10 +46,6 @@ class User implements UserInterface
      */
     private $prenom;
 
-    /**
-     * @ORM\ManyToMany(targetEntity=Vacances::class, inversedBy="users", cascade={"persist", "remove"})
-     */
-    private $Vacances;
 
     /**
      * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="users")
@@ -76,15 +72,17 @@ class User implements UserInterface
      */
     private $cadre;
 
-    /**
-     * @ORM\OneToMany(targetEntity=Vacances::class, mappedBy="User")
-     */
-    private $vacances;
+    
 
     /**
      * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="User")
      */
     private $groupe;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Vacances::class, mappedBy="User")
+     */
+    private $vacances;
 
     public function __construct()
     {
@@ -192,29 +190,7 @@ class User implements UserInterface
         return $this;
     }
 
-    /**
-     * @return Collection|Vacances[]
-     */
-    public function getVacances(): Collection
-    {
-        return $this->Vacances;
-    }
-
-    public function addVacance(Vacances $vacance): self
-    {
-        if (!$this->Vacances->contains($vacance)) {
-            $this->Vacances[] = $vacance;
-        }
-
-        return $this;
-    }
-
-    public function removeVacance(Vacances $vacance): self
-    {
-        $this->Vacances->removeElement($vacance);
-
-        return $this;
-    }
+   
 
     public function getGroupe(): ?Groupe
     {
@@ -272,6 +248,36 @@ class User implements UserInterface
     public function setCadre(?bool $cadre): self
     {
         $this->cadre = $cadre;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Vacances[]
+     */
+    public function getVacances(): Collection
+    {
+        return $this->vacances;
+    }
+
+    public function addVacance(Vacances $vacance): self
+    {
+        if (!$this->vacances->contains($vacance)) {
+            $this->vacances[] = $vacance;
+            $vacance->setUser($this);
+        }
+
+        return $this;
+    }
+
+    public function removeVacance(Vacances $vacance): self
+    {
+        if ($this->vacances->removeElement($vacance)) {
+            // set the owning side to null (unless already changed)
+            if ($vacance->getUser() === $this) {
+                $vacance->setUser(null);
+            }
+        }
 
         return $this;
     }
