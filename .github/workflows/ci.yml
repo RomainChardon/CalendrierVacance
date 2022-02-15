@@ -52,15 +52,7 @@ jobs:
         run: |
             composer require friendsofphp/php-cs-fixer
             ./vendor/bin/php-cs-fixer fix --dry-run
-      - name: PHP-STAN
-        run: |
-            composer require symfony/flex
-            ./vendor/bin/simple-phpunit install
-            composer require phpstan/phpstan
-            composer require phpstan/extension-installer
-            composer config --no-plugins allow-plugins.phpstan/extension-intaller true
-            composer require phpstan/phpstan-symfony
-            ./vendor/bin/phpstan analyse src --memory-limit 1G
+
       - name: Lint YAML files
         run: symfony console lint:yaml config --parse-tags
 
