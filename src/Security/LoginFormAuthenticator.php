@@ -17,7 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
 use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 
 class LoginFormAuthenticator extends AbstractAuthenticator
-{    
+{
     private $userRepository;
 
     public function __construct(UserRepository $userRepository)
@@ -26,28 +26,28 @@ class LoginFormAuthenticator extends AbstractAuthenticator
     }
 
     /**
-     * supports
+     * supports.
      *
-     * @param  mixed $request
+     * @param mixed $request
+     *
      * @return bool
      */
     public function supports(Request $request): ?bool
     {
-        return $request->attributes->get('_route') == 'app_login'
+        return 'app_login' == $request->attributes->get('_route')
             && $request->isMethod('POST');
     }
-    
+
     /**
-     * authenticate
+     * authenticate.
      *
-     * @param  mixed $request
-     * @return PassportInterface
+     * @param mixed $request
      */
     public function authenticate(Request $request): PassportInterface
     {
         $user = $this->userRepository->findOneByUsername($request->request->get('username'));
 
-        # Save de l'username si erreur
+        // Save de l'username si erreur
         $request->getSession()->set(
             'app_login_form_old_username',
             $request->request->get('username')
@@ -58,34 +58,36 @@ class LoginFormAuthenticator extends AbstractAuthenticator
         }
 
         return new Passport(
-            new UserBadge($request->request->get('username')), 
+            new UserBadge($request->request->get('username')),
             new PasswordCredentials($request->request->get('password')), [
-                new CsrfTokenBadge('login_form', $request->request->get('csrf_token'))
+                new CsrfTokenBadge('login_form', $request->request->get('csrf_token')),
             ]);
     }
-    
+
     /**
-     * onAuthenticationSuccess
+     * onAuthenticationSuccess.
      *
-     * @param  mixed $request
-     * @param  mixed $token
-     * @param  mixed $firewallName
+     * @param mixed $request
+     * @param mixed $token
+     * @param mixed $firewallName
+     *
      * @return Response
      */
     public function onAuthenticationSuccess(Request $request, TokenInterface $token, string $firewallName): ?Response
     {
         return new RedirectResponse('vacances/calendrier');
     }
-    
+
     /**
-     * onAuthenticationFailure
+     * onAuthenticationFailure.
      *
-     * @param  mixed $request
-     * @param  mixed $exception
+     * @param mixed $request
+     * @param mixed $exception
+     *
      * @return Response
      */
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
-    {   
+    {
         return new RedirectResponse('/');
     }
 }

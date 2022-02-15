@@ -46,7 +46,6 @@ class User implements UserInterface
      */
     private $prenom;
 
-
     /**
      * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="users")
      */
@@ -72,22 +71,19 @@ class User implements UserInterface
      */
     private $cadre;
 
-    
-
     /**
      * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="User")
      */
     private $groupe;
 
     /**
-     * @ORM\OneToMany(targetEntity=Vacances::class, mappedBy="User")
+     * @ORM\OneToMany(targetEntity=Vacances::class,mappedBy="User")
      */
     private $vacances;
 
     public function __construct()
     {
         $this->Vacances = new ArrayCollection();
-        $this->vacances = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -189,8 +185,6 @@ class User implements UserInterface
 
         return $this;
     }
-
-   
 
     public function getGroupe(): ?Groupe
     {

@@ -2,20 +2,20 @@
 
 namespace App\Tests;
 
-use App\Entity\User;
 use App\Entity\Groupe;
+use App\Entity\User;
 use Doctrine\ORM\Tools\SchemaTool;
 
 trait UserTrait
 {
-    public function login($user) 
+    public function login($user)
     {
         $client = static::createClient();
         $doctrine = $client->getContainer()->get('doctrine');
 
         static $metadata = null;
 
-        if ($metadata === null) {
+        if (null === $metadata) {
             $metadata = $doctrine->getManager()->getMetadataFactory()->getAllMetadata();
         }
 
@@ -25,7 +25,6 @@ trait UserTrait
         if (!empty($metadata)) {
             $schemaTool->createSchema($metadata);
         }
-        
 
         $doctrine->getManager()->persist($user);
         $doctrine->getManager()->flush();
@@ -38,10 +37,11 @@ trait UserTrait
         $groupe = (new Groupe())
             ->setNomGroupe('Dev')
             ->setCouleur('#FFF');
-            
+
         return $groupe;
     }
-    public function createUser() 
+
+    public function createUser()
     {
         $user = (new User())
             ->setUsername('rchardon')
@@ -50,9 +50,8 @@ trait UserTrait
             ->setNom('Chadon')
             ->setPrenom('Romain')
             ->setMail('rchardon@gmail.com');
-            // ->setGroupe($groupe);
+        // ->setGroupe($groupe);
 
         return $user;
     }
-
 }

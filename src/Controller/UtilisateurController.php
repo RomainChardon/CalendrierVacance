@@ -2,22 +2,17 @@
 
 namespace App\Controller;
 
-use App\Entity\Groupe;
 use App\Entity\User;
-use App\Entity\Vacances;
 use App\Repository\GroupeRepository;
 use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Mailer\MailerInterface;
+use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
-use Symfony\Component\Mime\Email;
-use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPasswordValidator;
-use Symfony\Component\Security\Http\Authenticator\Passport\UserPassportInterface;
 
 #[Route('/vacances/gestionUtilisateur')]
 class UtilisateurController extends AbstractController
@@ -25,17 +20,16 @@ class UtilisateurController extends AbstractController
     #[Route('/utilisateur', name: 'utilisateur')]
     public function index(UserRepository $repoUser, GroupeRepository $repoGroupe): Response
     {
-        #dd($repoUtilisateur->findAll());
+        //dd($repoUtilisateur->findAll());
         return $this->render('utilisateur/index.html.twig', [
             'tousLesUtilisateurs' => $repoUser->findAll(),
-            'tousLesGroupes' => $repoGroupe->findAll()
+            'tousLesGroupes' => $repoGroupe->findAll(),
         ]);
     }
 
     #[Route('/create_utilisateur', name: 'create_utilisateur')]
     public function create_utilisateur(Request $request, GroupeRepository $repoGroupe, UserPasswordEncoderInterface $userPass, MailerInterface $mailer): Response
     {
-
         $entityManager = $this->getDoctrine()->getManager();
 
         $groupe = $repoGroupe->find($request->request->get('groupe'));
@@ -46,28 +40,26 @@ class UtilisateurController extends AbstractController
 
         $utilisateur->setNom($request->request->get('nom'));
         $utilisateur->setPrenom($request->request->get('prenom'));
-        $utilisateur->setUsername(strtolower(substr($request->request->get('prenom'),0,1) . ($request->request->get('nom'))));
+        $utilisateur->setUsername(strtolower(substr($request->request->get('prenom'), 0, 1).($request->request->get('nom'))));
         $utilisateur->setPassword($passHash);
         $utilisateur->setGroupe($groupe);
         $utilisateur->setMail($request->request->get('mail'));
         $utilisateur->setNbConges(0);
         $utilisateur->setDesactiver(false);
 
-        if (($utilisateur->getGroupe()->getNomGroupe()) == "Cadre"){
+        if (($utilisateur->getGroupe()->getNomGroupe()) == 'Cadre') {
             $utilisateur->setNbConges(10);
         }
 
-        
-        if ( $request->request->get('admin') == 'true') {
-            $role[]= 'ROLE_ADMIN';
+        if ('true' == $request->request->get('admin')) {
+            $role[] = 'ROLE_ADMIN';
             $utilisateur->setRoles($role);
         }
-        
-        if ( $request->request->get('cadre') == 'true') {
-            $cadre= '1';
+
+        if ('true' == $request->request->get('cadre')) {
+            $cadre = '1';
             $utilisateur->setCadre($cadre);
             $utilisateur->setNbConges(10);
-
         }
 
         $entityManager->persist($utilisateur);
@@ -93,25 +85,24 @@ class UtilisateurController extends AbstractController
 
         $mailer->send($email);
 
-
         // $this->addFlash(
         //     'succes',
         //     'Utilisateur ajouté et Mail envoyé!!'
         // );
 
-        return $this->redirectToRoute("utilisateur");
+        return $this->redirectToRoute('utilisateur');
     }
 
-    #[Route('/supprimerUtilisateur/{id}/confirmation', name:'suppr_user')]
-    public function supprUtilisateur(User $user,EntityManagerInterface $manager): Response
+    #[Route('/supprimerUtilisateur/{id}/confirmation', name: 'suppr_user')]
+    public function supprUtilisateur(User $user, EntityManagerInterface $manager): Response
     {
         return $this->render('/utilisateur/confSupprUser.html.twig', [
-            'utilisateurID' => $user
+            'utilisateurID' => $user,
         ]);
     }
 
-    #[Route('/supprimerUtilisateur/{id}/delete', name:'remove_user')]
-    public function removeUtilisateur(User $user,EntityManagerInterface $manager): Response
+    #[Route('/supprimerUtilisateur/{id}/delete', name: 'remove_user')]
+    public function removeUtilisateur(User $user, EntityManagerInterface $manager): Response
     {
         $user->setDesactiver(true);
 
@@ -120,12 +111,12 @@ class UtilisateurController extends AbstractController
 
         $this->addFlash(
             'msg',
-            "Utilisateur désactiver !!");
+            'Utilisateur désactiver !!');
 
-        return $this->redirectToRoute("utilisateur");
+        return $this->redirectToRoute('utilisateur');
     }
 
-    #[Route('/reativer_user/{id}/delete', name:'reativer_user')]
+    #[Route('/reativer_user/{id}/delete', name: 'reativer_user')]
     public function reativer_user(User $user, EntityManagerInterface $manager): Response
     {
         $user->setDesactiver(false);
@@ -135,9 +126,9 @@ class UtilisateurController extends AbstractController
 
         $this->addFlash(
             'msg',
-            "Utilisateur réativer !!");
+            'Utilisateur réativer !!');
 
-        return $this->redirectToRoute("utilisateur");
+        return $this->redirectToRoute('utilisateur');
     }
 
     #[Route('/modifUtilisateur/{id}/modif', name: 'modif_utilisateur')]
@@ -145,9 +136,8 @@ class UtilisateurController extends AbstractController
     {
         return $this->render('/utilisateur/modifierUtilisateur.html.twig', [
             'utilisateurID' => $user,
-            "tousLesGroupes" => $repoGroupe->findAll()
+            'tousLesGroupes' => $repoGroupe->findAll(),
         ]);
- 
     }
 
     #[Route('/modifierUtilisateur/{id}/modif', name: 'modifier_utilisateur')]
@@ -157,12 +147,11 @@ class UtilisateurController extends AbstractController
         // if ($nbCongesOLD + $request->request->get('nbConges') == ""){
         //     $user->setNbConges($nbCongesOLD);
         // }
-        $nbCongesNEW = ($nbCongesOLD + (float)$request->request->get('nbConges'));
+        $nbCongesNEW = ($nbCongesOLD + (float) $request->request->get('nbConges'));
         $groupe = $repoGroupe->find($request->request->get('groupe'));
         $user->setNom($request->request->get('nom'));
         $user->setPrenom($request->request->get('prenom'));
         $user->setNbConges($nbCongesNEW);
-
 
         $groupe->addUser($user);
         $manager->flush();
@@ -172,7 +161,7 @@ class UtilisateurController extends AbstractController
             'Utilisateur modifié !!'
         );
 
-        return $this->redirectToRoute("utilisateur");
+        return $this->redirectToRoute('utilisateur');
     }
 
     #[Route('/user/{id}/modif', name: 'modif_user')]
@@ -180,18 +169,17 @@ class UtilisateurController extends AbstractController
     {
         return $this->render('/utilisateur/modifierUser.html.twig', [
             'utilisateurID' => $user,
-            "tousLesGroupes" => $repoGroupe->findAll()
-        ]); 
+            'tousLesGroupes' => $repoGroupe->findAll(),
+        ]);
     }
 
     #[Route('/modifierUser/{id}/modif', name: 'modifier_user')]
     public function modif_user(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $userPass): Response
     {
         $oldPassword = $request->request->get('oldPassword');
-        $user->setMail($request->request->get('email'));  
+        $user->setMail($request->request->get('email'));
 
-
-        if ($oldPassword != null) {
+        if (null != $oldPassword) {
             if ($userPass->isPasswordValid($user, $oldPassword)) {
                 $newPassword = ($userPass->encodePassword($user, $request->request->get('newPassword')));
                 $user->setPassword($newPassword);
@@ -206,19 +194,19 @@ class UtilisateurController extends AbstractController
                     "Votre mot de passe actuel n'est pas bon !!"
                 );
             }
-        } 
-        
-        if ($request->request->get('username') != null) {
+        }
+
+        if (null != $request->request->get('username')) {
             $user->setUsername($request->request->get('username'));
 
             $this->addFlash(
                 'succes',
-                "Utilisateur modifié !!"
+                'Utilisateur modifié !!'
             );
         }
 
         $manager->flush($user);
 
-        return $this->redirectToRoute("calendrier");
+        return $this->redirectToRoute('calendrier');
     }
 }

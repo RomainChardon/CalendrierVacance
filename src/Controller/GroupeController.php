@@ -17,7 +17,7 @@ class GroupeController extends AbstractController
     public function index(GroupeRepository $repoGroupe): Response
     {
         return $this->render('groupe/index.html.twig', [
-            'tousLesGroupes' => $repoGroupe->findAll()
+            'tousLesGroupes' => $repoGroupe->findAll(),
         ]);
     }
 
@@ -26,9 +26,9 @@ class GroupeController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
         $groupe = new Groupe();
-        $groupe ->setNomGroupe($request->request->get('nom'));
-        $groupe ->setCouleur($request->request->get('couleur'));
-        
+        $groupe->setNomGroupe($request->request->get('nom'));
+        $groupe->setCouleur($request->request->get('couleur'));
+
         $entityManager->persist($groupe);
         $entityManager->flush();
 
@@ -37,25 +37,25 @@ class GroupeController extends AbstractController
             'Groupe ajouté !!'
         );
 
-        return $this->redirectToRoute("groupe");
+        return $this->redirectToRoute('groupe');
     }
 
-    #[Route('/removeGroupe/{id}/delete', name:'remove_groupe')]
-    public function remove_groupe(Groupe $groupe,EntityManagerInterface $manager): Response
+    #[Route('/removeGroupe/{id}/delete', name: 'remove_groupe')]
+    public function remove_groupe(Groupe $groupe, EntityManagerInterface $manager): Response
     {
-        if (($groupe->getUsers()->isEmpty()) == false ) {
+        if (($groupe->getUser()->isEmpty()) == false) {
             $this->addFlash(
                 'msg',
-                "Attention des utilisateurs sont encore présent dans le groupe. Veuillez changer leurs groupe avant de le supprimer !!!!");          
+                'Attention des utilisateurs sont encore présent dans le groupe. Veuillez changer leurs groupe avant de le supprimer !!!!');
         } else {
             $manager->remove($groupe);
             $manager->flush();
 
             $this->addFlash(
                 'msg',
-                "Groupe supprimé !!");
+                'Groupe supprimé !!');
         }
 
-        return $this->redirectToRoute("groupe");
+        return $this->redirectToRoute('groupe');
     }
 }
