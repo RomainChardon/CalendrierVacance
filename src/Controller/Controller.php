@@ -22,7 +22,7 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/vacances')]
 class Controller extends AbstractController
 {
-    #[Route('/vacances', name: 'index')]
+    #[Route('/ajoutVacance', name: 'index')]
     public function index(UserRepository $repoUser, VacancesRepository $repoVacances): Response
     {
         $jourActuel = new DateTime('now');

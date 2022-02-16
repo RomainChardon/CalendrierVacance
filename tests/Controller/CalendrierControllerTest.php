@@ -3,6 +3,8 @@
 namespace App\Tests\Controller;
 
 use App\Tests\UserTrait;
+use App\Tests\VacanceTrait;
+use phpDocumentor\Reflection\Types\Void_;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,6 +13,7 @@ use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 class CalendrierControllerTest extends WebTestCase
 {
     use UserTrait;
+    use VacanceTrait;
 
     public function testPageConnexion(): void
     {
@@ -49,6 +52,4 @@ class CalendrierControllerTest extends WebTestCase
         $client->request('GET', 'vacances/calendrier');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    
 }
