@@ -194,7 +194,7 @@ class Vacances
         return $this->annuler;
     }
 
-    public function setAnnuler(bool $annuler): self
+    public function setAnnuler(?bool $annuler): self
     {
         $this->annuler = $annuler;
 
