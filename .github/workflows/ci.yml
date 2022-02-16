@@ -32,9 +32,9 @@ jobs:
         # uses: getong/mariadb-action@acf7bc08e06a9c26e2a534d54284cb9a62697e7d
         uses: getong/mariadb-action@v1.1
         with:
-          mariadb version: mariadb-10.4.11
+          mariadb version: 10.4.11
           # MYSQL_ROOT_PASSWORD - root superuser password
-          mysql root password: root
+          mysql root password: root superuser password
           # MYSQL_DATABASE - name for the default database that is created
           mysql database: CalendrierVacanceTest
           # MYSQL_USER - create the specified user with superuser power for created database
