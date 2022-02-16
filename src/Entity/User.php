@@ -71,10 +71,6 @@ class User implements UserInterface
      */
     private $cadre;
 
-    /**
-     * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="User")
-     */
-    private $groupe;
 
     /**
      * @ORM\OneToMany(targetEntity=Vacances::class,mappedBy="User",cascade={"persist"})
