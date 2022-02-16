@@ -32,14 +32,9 @@ class CalendrierControllerTest extends WebTestCase
         $cookie = new Cookie($session->getName(), $session->getId());
         $client->getCookieJar()->set($cookie);
 
-        $client->request('GET', 'vacances/gestionGroupe/groupe');
+        $client->request('GET', 'vacances/calendrier');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
-    public function testInscription(): void
-    {
-        $user = $this->createUser();
-        $client = $this->login($user);
-        $client->request('GET', '/vacances/calendrier');
-    }
+    
 }

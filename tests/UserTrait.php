@@ -49,7 +49,10 @@ trait UserTrait
             ->setPassword('$argon2id$v=19$m=65536,t=4,p=1$p7qP/12IPAz543KO1yymmQ$VESelxr6bDGigUeOpbIGc7ydFJHUcVpCogModOZD4t8') // toto
             ->setNom('Chadon')
             ->setPrenom('Romain')
-            ->setMail('rchardon@gmail.com');
+            ->setNbConges(2)
+            ->setMail('rchardon@gmail.com')
+            ->setDesactiver(0)
+            ->setCadre(0);
         // ->setGroupe($groupe);
 
         return $user;
