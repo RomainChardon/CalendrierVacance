@@ -16,7 +16,7 @@ class ICSGenerator
 
     public function getICS($dateDebut, $dateFin, $demiJournee = false)
     {
-        $dateEnd = $dateFin->add(new DateInterval('P1D'));
+        $dateEnd = $dateFin;
         // Create the ics file
         $fs = new Filesystem();
         //temporary folder, it has to be writable
@@ -52,7 +52,7 @@ CALSCALE:GREGORIAN
 METHOD:REQUEST
 BEGIN:VEVENT
 DTSTART:'.$dateDebut->format('Ymd').'
-DTEND:'.$dateEnd->format('Ymd').'
+DTEND:'.$dateEnd->add(new DateInterval('P1D'))->format('Ymd').'
 ORGANIZER;CN=Adeo Informatique:mailto:adeo-informatique@gmail.com
 UID:'.rand(5, 1500).'
 DESCRIPTION:'.' Vacances du '.$dateDebut->format('d/m/Y').' au '.$dateFin->format('d/m/Y').'

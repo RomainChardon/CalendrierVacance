@@ -21,6 +21,7 @@ class MailSubscriber implements EventSubscriberInterface
         // return the subscribed events, their methods and priorities
         return [
             'mail.event' => 'mailTest',
+            'mailAnnuler.event' => 'mailAnnuler',
             'mailICS.event' => 'mailTestICS',
         ];
     }
@@ -34,6 +35,7 @@ class MailSubscriber implements EventSubscriberInterface
         ->html('<p> Vos Vacances du '.$event->getDateDebut().' au '.$event->getDateFin().' sont enregistrées par la direction. </p>');
         $this->mailer->send($email);
     }
+
     public function mailAnnuler($event)
     {
         $email = (new Email())

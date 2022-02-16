@@ -13,10 +13,10 @@
 				<h1 class="">Statut vacance :</h1>
 			</div>
 			<div class="mt-5">
-				{% for user in vacanceID.user %}
+				
 					<h3 class="text-center">Vacance de
-						<span class="font-bold">{{ user.nom }}
-							{{ user.prenom }}</span>, du
+						<span class="font-bold">{{ vacanceID.user.nom }}
+							{{ vacanceID.user.prenom }}</span>, du
 						<span class="font-bold">{{vacanceID.dateDebut|date('d/m/Y')}}</span>
 						au
 						<span class="font-bold">{{vacanceID.dateFin|date('d/m/Y')}}</span>.<br>
@@ -50,7 +50,6 @@
 							</span>
 						{% endif %}
 					</h3>
-				{% endfor %}
 				{% if vacanceID.autoriser == false %}
 					<div class="container w-full mt-9 mb-5 flex justify-center">
 						<form action="{{ path('autorise_vacance', {'id':vacanceID.id}) }}" method="POST">

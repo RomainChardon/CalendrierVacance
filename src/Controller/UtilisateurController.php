@@ -32,8 +32,8 @@ class UtilisateurController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $groupe = $repoGroupe->find($request->request->get('groupe'));
-
+        $groupe = $repoGroupe->findById($request->request->get('groupe'));
+        // dd($groupe[0]);
         $utilisateur = new User();
 
         $passHash = ($userPass->encodePassword($utilisateur, $request->request->get('password')));
@@ -42,7 +42,7 @@ class UtilisateurController extends AbstractController
         $utilisateur->setPrenom($request->request->get('prenom'));
         $utilisateur->setUsername(strtolower(substr($request->request->get('prenom'), 0, 1).($request->request->get('nom'))));
         $utilisateur->setPassword($passHash);
-        $utilisateur->setGroupe($groupe);
+        $utilisateur->setGroupe($groupe[0]);
         $utilisateur->setMail($request->request->get('mail'));
         $utilisateur->setNbConges(0);
         $utilisateur->setDesactiver(false);
@@ -177,7 +177,6 @@ class UtilisateurController extends AbstractController
     public function modif_user(User $user, GroupeRepository $repoGroupe, Request $request, EntityManagerInterface $manager, UserPasswordEncoderInterface $userPass): Response
     {
         $oldPassword = $request->request->get('oldPassword');
-        $user->setMail($request->request->get('email'));
 
         if (null != $oldPassword) {
             if ($userPass->isPasswordValid($user, $oldPassword)) {
@@ -198,6 +197,15 @@ class UtilisateurController extends AbstractController
 
         if (null != $request->request->get('username')) {
             $user->setUsername($request->request->get('username'));
+
+            $this->addFlash(
+                'succes',
+                'Utilisateur modifié !!'
+            );
+        }
+
+        if (null != $request->request->get('email')) {
+            $user->setMail($request->request->get('email'));
 
             $this->addFlash(
                 'succes',

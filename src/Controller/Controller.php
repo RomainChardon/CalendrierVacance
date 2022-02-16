@@ -16,7 +16,6 @@ use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mailer\MailerInterface;
-use Symfony\Component\Mime\Email;
 use Symfony\Component\Routing\Annotation\Route;
 
 #[Route('/vacances')]
@@ -110,7 +109,7 @@ class Controller extends AbstractController
             $ics = $ICSGenerator->getICS($dateDebut, $dateFin, true);
         }
 
-        $ajd = new DateTime('now');
+        $ajd = new DateTimeImmutable('now');
         $vacances->setDateDemande($ajd);
         $vacances->setDateDebut($dateDebut);
         $vacances->setDateFin($dateFin);
@@ -181,7 +180,10 @@ class Controller extends AbstractController
     #[Route('/annulerVacances/{id}/delete', name: 'refuserAnnuler_vacance')]
     public function refuserAnnuler(Vacances $vacances, EntityManagerInterface $manager): Response
     {
-        $manager->remove($vacances);
+        $vacances->setAutoriser(1);
+        $vacances->setAttente(0);
+        $vacances->setAnnuler(null);
+
         $manager->flush();
 
         $this->addFlash(
@@ -202,7 +204,7 @@ class Controller extends AbstractController
     #[Route('/annulerVacances/{id}/validation', name: 'validAnnuler_vacance')]
     public function validAnnulerVacances(Vacances $vacances, EntityManagerInterface $manager): Response
     {
-        $dateAnnulation = new \DateTime('now');
+        $dateAnnulation = new \DateTimeImmutable('now');
         $vacances->setDateAnnulation($dateAnnulation);
         $vacances->setAnnuler('1');
         $manager->flush();
@@ -215,7 +217,7 @@ class Controller extends AbstractController
     }
 
     #[Route('/annulerVacances/{id}/annuler', name: 'annule_vacance')]
-    public function annulerVacances(Request $request, Vacances $vacances, EntityManagerInterface $manager, UserRepository $repoUser,EventDispatcherInterface $dispatcher, ICSGenerator $ICSGenerator): Response
+    public function annulerVacances(Request $request, Vacances $vacances, EntityManagerInterface $manager, UserRepository $repoUser, EventDispatcherInterface $dispatcher, ICSGenerator $ICSGenerator): Response
     {
         $utilisateur = $repoUser->find($this->getUser());
 
@@ -237,17 +239,15 @@ class Controller extends AbstractController
             $nbConges = $utilisateur->getNbConges() + $diff;
             $utilisateur->setNbConges($nbConges);
 
-            if ($vacances->getDemiJournee() == true)
-            {
-                $ics = $ICSGenerator->getICS($dateDebut, $dateFin,true);
-            }else
-            {
+            if (true == $vacances->getDemiJournee()) {
+                $ics = $ICSGenerator->getICS($dateDebut, $dateFin, true);
+            } else {
                 $ics = $ICSGenerator->getICS($dateDebut, $dateFin);
             }
-            
+
             $vacances->setAnnuler('0');
 
-            $dispatcher->dispatch(new MailEvent($dateDebut, $dateFin, $utilisateur,$ics), 'mail.event');
+            $dispatcher->dispatch(new MailEvent($dateDebut, $dateFin, $utilisateur, $ics), 'mailAnnuler.event');
 
             // Texte d'explication
             $textAnnuler = $request->request->get('explication');

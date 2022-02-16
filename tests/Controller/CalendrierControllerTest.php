@@ -49,6 +49,4 @@ class CalendrierControllerTest extends WebTestCase
         $client->request('GET', 'vacances/calendrier');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
-
-    
 }

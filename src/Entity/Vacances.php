@@ -19,12 +19,12 @@ class Vacances
     private $id;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date_immutable")
      */
     private $dateDebut;
 
     /**
-     * @ORM\Column(type="date")
+     * @ORM\Column(type="date_immutable")
      */
     private $dateFin;
 
