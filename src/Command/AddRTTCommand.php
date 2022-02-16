@@ -35,7 +35,7 @@ class AddRTTCommand extends Command
         $users = $this->userRepository->findAll();
         $io->progressStart(count($users));
         foreach ($users as $user) {
-            if ('Cadre' == $user->getGroupe()->getNomGroupe()) {
+            if ('Cadre' == $user->getCadre()) {
                 $nbConges = $user->getNbConges();
                 $nbConges += 10;
                 $user->setNbConges($nbConges);

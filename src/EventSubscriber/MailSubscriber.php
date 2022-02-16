@@ -32,8 +32,15 @@ class MailSubscriber implements EventSubscriberInterface
         ->to($event->getUser()->getMail())
         ->subject("Confirmation d'enregistrement de vos congés")
         ->html('<p> Vos Vacances du '.$event->getDateDebut().' au '.$event->getDateFin().' sont enregistrées par la direction. </p>');
-        //->attachFromPath($ics, null, 'text/calendar');
-
+        $this->mailer->send($email);
+    }
+    public function mailAnnuler($event)
+    {
+        $email = (new Email())
+        ->from('enzo.mangiante.adeo@gmail.com')
+        ->to($event->getUser()->getMail())
+        ->subject("Confirmation d'enregistrement de vos congés")
+        ->html('<p> Votre demande d\'annulation des Vacances du '.$event->getDateDebut().' au '.$event->getDateFin().' a été enregistré par la direction. </p>');
         $this->mailer->send($email);
     }
 
