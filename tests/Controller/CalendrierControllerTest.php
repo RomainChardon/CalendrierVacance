@@ -12,6 +12,20 @@ class CalendrierControllerTest extends WebTestCase
 {
     use UserTrait;
 
+    public function testPageConnexion(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/');
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+    public function testPageGestionUser(): void
+    {
+        $client = static::createClient();
+        $client->request('GET', '/vacances/gestionUtilisateur/utilisateur');
+        $this->assertResponseStatusCodeSame(Response::HTTP_UNAUTHORIZED);
+    }
+
     public function testPageCalendier(): void
     {
         $client = static::createClient();
