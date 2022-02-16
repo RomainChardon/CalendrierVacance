@@ -27,6 +27,20 @@ jobs:
           # Setup PHP extensions.
           extensions: mbstring, xml, ctype, iconv, intl, pdo, pdo_mysql, dom, filter, gd, json
       # Runs a single command using the runners shell
+      - name: Start MariaDB
+        # You may pin to the exact commit or the version.
+        # uses: getong/mariadb-action@acf7bc08e06a9c26e2a534d54284cb9a62697e7d
+        uses: getong/mariadb-action@v1.1
+        with:
+          mariadb version: mariadb-10.4.11
+          # MYSQL_ROOT_PASSWORD - root superuser password
+          mysql root password: root
+          # MYSQL_DATABASE - name for the default database that is created
+          mysql database: CalendrierVacanceTest
+          # MYSQL_USER - create the specified user with superuser power for created database
+          mysql user: root
+          # MYSQL_PASSWORD - specified superuser password which user is power for created database
+          mysql password: root
     
       - name: Cache multiple paths
         uses: actions/cache@v2.1.7
