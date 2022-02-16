@@ -110,7 +110,6 @@ class Controller extends AbstractController
             $ics = $ICSGenerator->getICS($dateDebut, $dateFin, true);
         }
 
-
         $ajd = new DateTime('now');
         $vacances->setDateDemande($ajd);
         $vacances->setDateDebut($dateDebut);
@@ -122,12 +121,10 @@ class Controller extends AbstractController
         $entityManager->persist($utilisateur);
         $entityManager->flush();
 
-
         $diffAjd = $dateDebut->diff($ajd);
         $diffAjd = intval($diffAjd->format('%a'));
 
         $dispatcher->dispatch(new MailEvent($dateDebut, $dateFin, $utilisateur, $ics), 'mailICS.event');
-
 
         if ($diffAjd < 14) {
             $this->addFlash(
