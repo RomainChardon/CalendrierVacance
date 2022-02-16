@@ -215,7 +215,7 @@ class Controller extends AbstractController
     }
 
     #[Route('/annulerVacances/{id}/annuler', name: 'annule_vacance')]
-    public function annulerVacances(Request $request, Vacances $vacances, EntityManagerInterface $manager, UserRepository $repoUser, MailerInterface $mailer): Response
+    public function annulerVacances(Request $request, Vacances $vacances, EntityManagerInterface $manager, UserRepository $repoUser,EventDispatcherInterface $dispatcher, ICSGenerator $ICSGenerator): Response
     {
         $utilisateur = $repoUser->find($this->getUser());
 
@@ -237,19 +237,17 @@ class Controller extends AbstractController
             $nbConges = $utilisateur->getNbConges() + $diff;
             $utilisateur->setNbConges($nbConges);
 
+            if ($vacances->getDemiJournee() == true)
+            {
+                $ics = $ICSGenerator->getICS($dateDebut, $dateFin,true);
+            }else
+            {
+                $ics = $ICSGenerator->getICS($dateDebut, $dateFin);
+            }
+            
             $vacances->setAnnuler('0');
 
-            // Format les dates
-            $dateDebut = $dateDebut->format('d/m/Y');
-            $dateFin = $dateFin->format('d/m/Y');
-
-            $email = (new Email())
-        ->from('enzo.mangiante.adeo@gmail.com')
-        ->to($utilisateur->getMail())
-        ->subject("Confirmation d'enregistrement de vos congés")
-        ->html("<p> Votre demande d'annulation des vacances du $dateDebut au $dateFin à était enregistré. </p>");
-
-            $mailer->send($email);
+            $dispatcher->dispatch(new MailEvent($dateDebut, $dateFin, $utilisateur,$ics), 'mail.event');
 
             // Texte d'explication
             $textAnnuler = $request->request->get('explication');
@@ -303,23 +301,11 @@ class Controller extends AbstractController
     public function autoriseVacances(UserRepository $userRepo, Vacances $vacances, Request $request, EntityManagerInterface $manager, ICSGenerator $ICSGenerator, EventDispatcherInterface $dispatcher): Response
     {
         $utilisateur = $userRepo->find($this->getUser());
-        $user = $vacances->getUser();
         $vacances->setAttente('0');
         $vacances->setAutoriser('1');
         $dateDebut = $vacances->getDateDebut();
         $dateFin = $vacances->getDateFin();
         $demiJournee = $vacances->getDemiJournee();
-
-        dd($user);
-
-        if (true == $demiJournee) {
-            $ics = $ICSGenerator->getICS($dateDebut, $dateFin, true);
-        } else {
-            $ics = $ICSGenerator->getICS($dateDebut, $dateFin);
-        }
-
-        dd($utilisateur);
-        $dispatcher->dispatch(new MailEvent($dateDebut, $dateFin, $utilisateur, $ics), 'mailICS.event');
 
         $manager->flush();
 
