@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Groupe;
 use App\Entity\User;
 use App\Repository\GroupeRepository;
 use App\Repository\UserRepository;

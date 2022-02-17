@@ -151,7 +151,7 @@ class CalendrierController extends AbstractController
                     $groupeUser = $groupe->getUser();
                     $nomGroupe = $groupe->getNomGroupe();
                     $couleurGroupe = $groupe->getCouleur();
-                    
+
                     foreach ($groupeUser as $user) {
                         $prenomUser = $user->getPrenom();
                         $nomUser = $user->getNom();

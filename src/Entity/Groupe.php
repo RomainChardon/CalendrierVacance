@@ -29,7 +29,6 @@ class Groupe
      */
     private $couleur;
 
-
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="groupe")
      */
