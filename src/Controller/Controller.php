@@ -97,7 +97,7 @@ class Controller extends AbstractController
             if ('true' == $request->request->get('maladie')) {
                 $vacances->setMaladie('1');
             } elseif ($request->request->get('congesSansSoldes')) {
-                // Ne fait rien
+                $vacances->setSansSoldes('1');
             } else {
                 $nbConges = $utilisateur->getNbConges() - 0.5;
 
