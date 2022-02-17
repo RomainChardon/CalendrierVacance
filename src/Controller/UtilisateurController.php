@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Entity\Groupe;
 use App\Entity\User;
 use App\Repository\GroupeRepository;
 use App\Repository\UserRepository;
@@ -32,8 +33,8 @@ class UtilisateurController extends AbstractController
     {
         $entityManager = $this->getDoctrine()->getManager();
 
-        $groupe = $repoGroupe->findById($request->request->get('groupe'));
-        // dd($groupe[0]);
+        $groupe = $repoGroupe->findOneById($request->request->get('groupe'));
+        // dd($groupe);
         $utilisateur = new User();
 
         $passHash = ($userPass->encodePassword($utilisateur, $request->request->get('password')));
@@ -42,10 +43,11 @@ class UtilisateurController extends AbstractController
         $utilisateur->setPrenom($request->request->get('prenom'));
         $utilisateur->setUsername(strtolower(substr($request->request->get('prenom'), 0, 1).($request->request->get('nom'))));
         $utilisateur->setPassword($passHash);
-        $utilisateur->setGroupe($groupe[0]);
+        $utilisateur->setGroupe($groupe);
         $utilisateur->setMail($request->request->get('mail'));
         $utilisateur->setNbConges(0);
         $utilisateur->setDesactiver(false);
+        // dd($utilisateur);
 
         if (($utilisateur->getGroupe()->getNomGroupe()) == 'Cadre') {
             $utilisateur->setNbConges(10);
@@ -60,6 +62,9 @@ class UtilisateurController extends AbstractController
             $cadre = '1';
             $utilisateur->setCadre($cadre);
             $utilisateur->setNbConges(10);
+        } else {
+            $cadre = '0';
+            $utilisateur->setCadre($cadre);
         }
 
         $entityManager->persist($utilisateur);

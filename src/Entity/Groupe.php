@@ -29,10 +29,6 @@ class Groupe
      */
     private $couleur;
 
-    /**
-     * @ORM\OneToMany(targetEntity=User::class, mappedBy="Groupe")
-     */
-    private $users;
 
     /**
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="groupe")
@@ -42,7 +38,6 @@ class Groupe
     public function __construct()
     {
         $this->utilisateurs = new ArrayCollection();
-        $this->users = new ArrayCollection();
         $this->User = new ArrayCollection();
     }
 

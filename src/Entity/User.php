@@ -47,11 +47,6 @@ class User implements UserInterface
     private $prenom;
 
     /**
-     * @ORM\ManyToOne(targetEntity=Groupe::class, inversedBy="users")
-     */
-    private $Groupe;
-
-    /**
      * @ORM\Column(type="float", nullable=true)
      */
     private $nbConges;
@@ -188,12 +183,12 @@ class User implements UserInterface
 
     public function getGroupe(): ?Groupe
     {
-        return $this->Groupe;
+        return $this->groupe;
     }
 
-    public function setGroupe(?Groupe $Groupe): self
+    public function setGroupe(?Groupe $groupe): self
     {
-        $this->Groupe = $Groupe;
+        $this->groupe = $groupe;
 
         return $this;
     }
